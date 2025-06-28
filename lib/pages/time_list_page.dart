@@ -46,13 +46,13 @@ class _TimeListPageState extends State<TimeListPage> {
   void _startTimer(int index, DateTime initialTime) {
     _timers[index]?.cancel();
     _currentTimes[index] = _currentTimes[index] ?? initialTime;
-    
+
     _timers[index] = Timer.periodic(
       const Duration(seconds: 1),
       (timer) {
         if (mounted) {
           setState(() {
-            _currentTimes[index] = 
+            _currentTimes[index] =
                 _currentTimes[index]!.add(const Duration(seconds: 1));
           });
         }
@@ -197,7 +197,8 @@ class _TimeListPageState extends State<TimeListPage> {
                     Padding(
                       padding: const EdgeInsets.only(left: 20),
                       child: FlipClockPlus.simple(
-                        startTime: _currentTimes[index]?.toLocal() ?? DateTime.now(),
+                        startTime:
+                            _currentTimes[index]?.toLocal() ?? DateTime.now(),
                         digitColor: darkBlue,
                         backgroundColor: Colors.transparent,
                         digitSize: 20.0,

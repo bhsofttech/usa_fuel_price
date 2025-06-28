@@ -5,13 +5,15 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import '../../controller/google_ads_controller.dart';
 import '../../controller/update_controller.dart';
-import '../../widgets/data_widget.dart';
 
 class DataDetailsScreen extends StatefulWidget {
   final String endPoint;
   final String title;
-  const DataDetailsScreen(
-      {super.key, required this.endPoint, required this.title});
+  const DataDetailsScreen({
+    super.key,
+    required this.endPoint,
+    required this.title,
+  });
 
   @override
   State<DataDetailsScreen> createState() => _DataDetailsScreenState();
@@ -22,18 +24,21 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
   final UpdateController _updateController = Get.find();
   final GoogleAdsController _googleAdsController = Get.find();
   FirebaseAnalytics analytics = FirebaseAnalytics.instance;
-  
-  // Enhanced iOS color palette
+
+  // Modern iOS color palette matching gas_state_wise_price.dart
   final Color primaryBlue = const Color(0xFF007AFF);
   final Color darkBlue = const Color(0xFF0A4B9A);
-  final Color iosBackground = const Color(0xFFF2F2F7);
-  final Color iosCardBackground = const Color(0xFFFFFFFF);
-  final Color iosSecondaryBackground = const Color(0xFFF9FAFB);
-  final Color iosBorder = const Color(0xFFE5E5EA);
-  final Color iosText = const Color(0xFF1C1C1E);
-  final Color iosSecondaryText = const Color(0xFF8E8E93);
-  final Color iosAccent = const Color(0xFF34C759);
-  
+  final Color lightBlue = const Color(0xFF4DA6FF);
+  final Color backgroundGray = const Color(0xFFF2F2F7);
+  final Color cardWhite = const Color(0xFFFFFFFF);
+  final Color textPrimary = const Color(0xFF1C1C1E);
+  final Color textSecondary = const Color(0xFF8E8E93);
+  final Color separatorGray = const Color(0xFFD1D1D6);
+  final Color successGreen = const Color(0xFF34C759);
+  final Color warningOrange = const Color(0xFFFF9500);
+  final Color errorRed = const Color(0xFFFF3B30);
+  final Color purpleAccent = const Color(0xFFAF52DE);
+
   late AnimationController _fadeController;
   late AnimationController _slideController;
   late Animation<double> _fadeAnimation;
@@ -45,7 +50,7 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
   void initState() {
     super.initState();
     current_date = DateTime.now();
-    
+
     // Initialize animations
     _fadeController = AnimationController(
       vsync: this,
@@ -55,7 +60,7 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
-    
+
     _fadeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
@@ -63,7 +68,7 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
       parent: _fadeController,
       curve: Curves.easeOutCubic,
     ));
-    
+
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.1),
       end: Offset.zero,
@@ -71,11 +76,11 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
       parent: _slideController,
       curve: Curves.easeOutCubic,
     ));
-    
+
     callApi();
     _googleAdsController.showAds();
     analytics.setCurrentScreen(screenName: widget.title);
-    
+
     // Start animations
     _fadeController.forward();
     _slideController.forward();
@@ -95,7 +100,7 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: iosBackground,
+      backgroundColor: backgroundGray,
       appBar: _buildModernAppBar(),
       body: SafeArea(
         child: Obx(
@@ -117,54 +122,38 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
 
   PreferredSizeWidget _buildModernAppBar() {
     return AppBar(
-      backgroundColor: Colors.white,
+      leadingWidth: 50,
+      backgroundColor: cardWhite,
       elevation: 0,
-      shadowColor: Colors.black.withOpacity(0.1),
-      surfaceTintColor: Colors.transparent,
-      systemOverlayStyle: SystemUiOverlayStyle.dark,
       centerTitle: true,
-      leading: Container(
-        margin: const EdgeInsets.only(left: 16),
-        child: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              color: iosSecondaryBackground,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(
-              Icons.chevron_left,
+      systemOverlayStyle: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+      title: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(width: 8),
+          Text(
+            widget.title.toUpperCase(),
+            style: TextStyle(
               color: primaryBlue,
-              size: 20,
+              fontFamily: "SF Pro Display",
+              fontSize: 17.0,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.5,
             ),
           ),
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-        ),
+        ],
       ),
-      title: Text(
-        widget.title.toUpperCase(),
-        style: TextStyle(
-          color: iosText,
-          fontFamily: "SF Pro Display",
-          fontSize: 17.0,
-          fontWeight: FontWeight.w600,
-          letterSpacing: -0.41,
-        ),
-      ),
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(1),
-        child: Container(
-          height: 0.5,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                iosBorder.withOpacity(0.3),
-                iosBorder,
-                iosBorder.withOpacity(0.3),
-              ],
+      iconTheme: IconThemeData(color: primaryBlue),
+      flexibleSpace: Container(
+        decoration: BoxDecoration(
+          color: cardWhite,
+          border: Border(
+            bottom: BorderSide(
+              color: separatorGray,
+              width: 0.33,
             ),
           ),
         ),
@@ -177,38 +166,18 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: iosCardBackground,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 20,
-                  spreadRadius: 0,
-                  offset: const Offset(0, 8),
-                ),
-              ],
-            ),
-            child: Column(
-              children: [
-                SpinKitFadingCircle(
-                  color: primaryBlue,
-                  size: 32.0,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  "Loading Data...",
-                  style: TextStyle(
-                    color: iosText,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: "SF Pro Text",
-                    letterSpacing: -0.24,
-                  ),
-                ),
-              ],
+          SpinKitFadingCircle(
+            color: primaryBlue,
+            size: 45.0,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            "Fetching ${widget.title}",
+            style: TextStyle(
+              color: textPrimary,
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              fontFamily: "SF Pro Text",
             ),
           ),
         ],
@@ -222,7 +191,7 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _buildDateTimeCard(),
+          _buildHeaderStats(),
           const SizedBox(height: 16.0),
           Expanded(
             child: _buildDataTable(),
@@ -232,22 +201,72 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
     );
   }
 
-  Widget _buildDateTimeCard() {
+  Widget _buildHeaderStats() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: iosCardBackground,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 8,
-            spreadRadius: 0,
-            offset: const Offset(0, 2),
+        borderRadius: BorderRadius.circular(20),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            primaryBlue.withOpacity(0.08),
+            lightBlue.withOpacity(0.04),
+          ],
+        ),
+        border: Border.all(
+          color: primaryBlue.withOpacity(0.1),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [primaryBlue, lightBlue],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: const Icon(
+              Icons.bar_chart,
+              color: Colors.white,
+              size: 24,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.title,
+                  style: TextStyle(
+                    color: textPrimary,
+                    fontFamily: "SF Pro Display",
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: -0.3,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  "${_updateController.getdata.length} records available",
+                  style: TextStyle(
+                    color: textSecondary,
+                    fontFamily: "SF Pro Text",
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
-      child: const DateTimeWidget(),
     );
   }
 
@@ -263,7 +282,7 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
         label: Text(
           key.replaceAll('_', ' ').toUpperCase(),
           style: TextStyle(
-            color: iosText,
+            color: textPrimary,
             fontFamily: "SF Pro Display",
             fontSize: 13.0,
             fontWeight: FontWeight.w600,
@@ -279,19 +298,19 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
 
     return Container(
       decoration: BoxDecoration(
-        color: iosCardBackground,
-        borderRadius: BorderRadius.circular(16),
+        color: cardWhite,
+        borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 16,
+            color: Colors.black.withOpacity(0.06),
+            blurRadius: 25,
             spreadRadius: 0,
-            offset: const Offset(0, 4),
+            offset: const Offset(0, 8),
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(18),
         child: SingleChildScrollView(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -300,10 +319,10 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
               Container(
                 width: firstColumnWidth,
                 decoration: BoxDecoration(
-                  color: iosSecondaryBackground,
+                  color: cardWhite,
                   border: Border(
                     right: BorderSide(
-                      color: iosBorder.withOpacity(0.8),
+                      color: separatorGray.withOpacity(0.5),
                       width: 0.5,
                     ),
                   ),
@@ -315,18 +334,29 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
                       height: 50,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        color: iosSecondaryBackground,
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            backgroundGray,
+                            backgroundGray.withOpacity(0.7),
+                          ],
+                        ),
                         border: Border(
                           bottom: BorderSide(
-                            color: iosBorder.withOpacity(0.8),
+                            color: separatorGray.withOpacity(0.5),
                             width: 0.5,
                           ),
                         ),
                       ),
                       child: Text(
-                        columns[0].label.toString().replaceAll('Text("', '').replaceAll('")', ''),
+                        columns[0]
+                            .label
+                            .toString()
+                            .replaceAll('Text("', '')
+                            .replaceAll('")', ''),
                         style: TextStyle(
-                          color: iosText,
+                          color: textPrimary,
                           fontFamily: "SF Pro Display",
                           fontSize: 13.0,
                           fontWeight: FontWeight.w600,
@@ -347,12 +377,12 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
                           height: 48,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
-                            color: index.isEven 
-                                ? iosCardBackground 
-                                : iosSecondaryBackground.withOpacity(0.5),
+                            color: index.isEven
+                                ? cardWhite
+                                : backgroundGray.withOpacity(0.5),
                             border: Border(
                               bottom: BorderSide(
-                                color: iosBorder.withOpacity(0.5),
+                                color: separatorGray.withOpacity(0.5),
                                 width: 0.5,
                               ),
                             ),
@@ -362,7 +392,7 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
                             child: Text(
                               value?.toString() ?? '',
                               style: TextStyle(
-                                color: iosText,
+                                color: textPrimary,
                                 fontFamily: "SF Pro Text",
                                 fontSize: 13.0,
                                 fontWeight: FontWeight.w400,
@@ -385,17 +415,17 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
                   scrollDirection: Axis.horizontal,
                   child: DataTable(
                     headingRowColor: MaterialStateProperty.all(
-                      iosSecondaryBackground,
+                      backgroundGray,
                     ),
                     headingTextStyle: TextStyle(
-                      color: iosText,
+                      color: textPrimary,
                       fontFamily: "SF Pro Display",
                       fontSize: 13.0,
                       fontWeight: FontWeight.w600,
                       letterSpacing: -0.08,
                     ),
                     dataTextStyle: TextStyle(
-                      color: iosText,
+                      color: textPrimary,
                       fontFamily: "SF Pro Text",
                       fontSize: 13.0,
                       fontWeight: FontWeight.w400,
@@ -408,19 +438,20 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
                     dividerThickness: 0.5,
                     border: TableBorder(
                       horizontalInside: BorderSide(
-                        color: iosBorder.withOpacity(0.5),
+                        color: separatorGray.withOpacity(0.5),
                         width: 0.5,
                       ),
                     ),
                     columns: columns.sublist(1), // Exclude first column
-                    rows: _updateController.getdata.asMap().entries.map((entry) {
+                    rows:
+                        _updateController.getdata.asMap().entries.map((entry) {
                       final index = entry.key;
                       final item = entry.value;
                       return DataRow(
                         color: MaterialStateProperty.all(
-                          index.isEven 
-                              ? iosCardBackground 
-                              : iosSecondaryBackground.withOpacity(0.5),
+                          index.isEven
+                              ? cardWhite
+                              : backgroundGray.withOpacity(0.5),
                         ),
                         cells: item.toJson().values.skip(1).map((value) {
                           return DataCell(
@@ -430,9 +461,10 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
                               maxLines: 1,
                             ),
                             onTap: () => _showCellDialog(
-                                context,
-                                item,
-                                item.toJson().values.toList().indexOf(value)),
+                              context,
+                              item,
+                              item.toJson().values.toList().indexOf(value),
+                            ),
                           );
                         }).toList(),
                       );
@@ -452,14 +484,14 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
       child: Container(
         padding: const EdgeInsets.all(32),
         decoration: BoxDecoration(
-          color: iosCardBackground,
-          borderRadius: BorderRadius.circular(16),
+          color: cardWhite,
+          borderRadius: BorderRadius.circular(18),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
-              blurRadius: 16,
+              color: Colors.black.withOpacity(0.06),
+              blurRadius: 25,
               spreadRadius: 0,
-              offset: const Offset(0, 4),
+              offset: const Offset(0, 8),
             ),
           ],
         ),
@@ -470,12 +502,12 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
               width: 64,
               height: 64,
               decoration: BoxDecoration(
-                color: iosSecondaryBackground,
+                color: backgroundGray,
                 borderRadius: BorderRadius.circular(32),
               ),
               child: Icon(
                 Icons.inbox_outlined,
-                color: iosSecondaryText,
+                color: textSecondary,
                 size: 32,
               ),
             ),
@@ -483,18 +515,18 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
             Text(
               "No Data Available",
               style: TextStyle(
-                color: iosText,
-                fontSize: 17,
+                color: textPrimary,
+                fontSize: 18,
                 fontFamily: "SF Pro Display",
                 fontWeight: FontWeight.w600,
-                letterSpacing: -0.41,
+                letterSpacing: -0.3,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               "There's no data to display at the moment.",
               style: TextStyle(
-                color: iosSecondaryText,
+                color: textSecondary,
                 fontSize: 15,
                 fontFamily: "SF Pro Text",
                 fontWeight: FontWeight.w400,
@@ -508,13 +540,12 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
     );
   }
 
-  // Enhanced cell dialog with modern iOS styling
   void _showCellDialog(BuildContext context, dynamic item, int index) {
     showDialog(
       context: context,
       barrierColor: Colors.black.withOpacity(0.4),
       builder: (context) => AlertDialog(
-        backgroundColor: iosCardBackground,
+        backgroundColor: cardWhite,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(14),
@@ -523,9 +554,14 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
         contentPadding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
         actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
         title: Text(
-          item.toJson().keys.elementAt(index).replaceAll('_', ' ').toUpperCase(),
+          item
+              .toJson()
+              .keys
+              .elementAt(index)
+              .replaceAll('_', ' ')
+              .toUpperCase(),
           style: TextStyle(
-            color: iosText,
+            color: textPrimary,
             fontFamily: "SF Pro Display",
             fontSize: 17,
             fontWeight: FontWeight.w600,
@@ -537,7 +573,7 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
           child: Text(
             item.toJson().values.elementAt(index)?.toString() ?? '',
             style: TextStyle(
-              color: iosText,
+              color: textPrimary,
               fontFamily: "SF Pro Text",
               fontSize: 15,
               fontWeight: FontWeight.w400,
@@ -550,11 +586,19 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
           Container(
             width: double.infinity,
             height: 44,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [primaryBlue, lightBlue],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(8),
+            ),
             child: TextButton(
               onPressed: () => Navigator.pop(context),
               style: TextButton.styleFrom(
                 backgroundColor: Colors.transparent,
-                foregroundColor: primaryBlue,
+                foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -562,7 +606,7 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
               child: Text(
                 'Done',
                 style: TextStyle(
-                  color: primaryBlue,
+                  color: Colors.white,
                   fontFamily: "SF Pro Text",
                   fontSize: 17,
                   fontWeight: FontWeight.w600,
@@ -576,7 +620,6 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
     );
   }
 
-  // Enhanced PaginatedDataTable implementation
   Widget _buildPaginatedDataTable() {
     if (_updateController.getdata.isEmpty) {
       return _buildDataTable(); // Fallback to regular table for empty data
@@ -588,7 +631,7 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
         label: Text(
           key.replaceAll('_', ' ').toUpperCase(),
           style: TextStyle(
-            color: iosText,
+            color: textPrimary,
             fontFamily: "SF Pro Display",
             fontSize: 13.0,
             fontWeight: FontWeight.w600,
@@ -601,24 +644,24 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
 
     return Container(
       decoration: BoxDecoration(
-        color: iosCardBackground,
-        borderRadius: BorderRadius.circular(16),
+        color: cardWhite,
+        borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 16,
+            color: Colors.black.withOpacity(0.06),
+            blurRadius: 25,
             spreadRadius: 0,
-            offset: const Offset(0, 4),
+            offset: const Offset(0, 8),
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(18),
         child: PaginatedDataTable(
           header: Text(
             widget.title,
             style: TextStyle(
-              color: iosText,
+              color: textPrimary,
               fontFamily: "SF Pro Display",
               fontSize: 17.0,
               fontWeight: FontWeight.w600,
@@ -626,7 +669,7 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
             ),
           ),
           headingRowColor: MaterialStateProperty.all(
-            iosSecondaryBackground,
+            backgroundGray,
           ),
           columnSpacing: 24,
           horizontalMargin: 16,
@@ -635,7 +678,7 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
           dataRowHeight: 48,
           headingRowHeight: 50,
           columns: columns,
-          source: _DataTableSource(_updateController.getdata, iosText),
+          source: _DataTableSource(_updateController.getdata, textPrimary),
         ),
       ),
     );
@@ -655,9 +698,7 @@ class _DataTableSource extends DataTableSource {
     final item = data[index];
     return DataRow(
       color: MaterialStateProperty.all(
-        index.isEven 
-            ? const Color(0xFFFFFFFF) 
-            : const Color(0xFFF9FAFB).withOpacity(0.5),
+        index.isEven ? Colors.white : Colors.grey.withOpacity(0.5),
       ),
       cells: item.toJson().values.map((value) {
         return DataCell(

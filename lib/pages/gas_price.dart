@@ -96,24 +96,9 @@ class _GasPriceState extends State<GasPrice> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: cardWhite,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.04),
-                  blurRadius: 20,
-                  spreadRadius: 0,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: SpinKitFadingCircle(
-              color: primaryBlue,
-              size: 40.0,
-            ),
+          SpinKitFadingCircle(
+            color: primaryBlue,
+            size: 40.0,
           ),
           const SizedBox(height: 24),
           Text(

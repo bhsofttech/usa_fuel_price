@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
+import '../controller/google_ads_controller.dart';
+
 class EvPrice extends StatefulWidget {
   const EvPrice({super.key});
 
@@ -47,6 +49,7 @@ class _EvPriceState extends State<EvPrice> with TickerProviderStateMixin {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       callApi();
+      Get.find<GoogleAdsController>().showAds();
     });
   }
 
@@ -125,62 +128,24 @@ class _EvPriceState extends State<EvPrice> with TickerProviderStateMixin {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            padding: const EdgeInsets.all(28),
-            decoration: BoxDecoration(
-              color: cardWhite,
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.08),
-                  blurRadius: 30,
-                  spreadRadius: 0,
-                  offset: const Offset(0, 12),
+          Column(
+            children: [
+              SpinKitFadingCircle(
+                color: primaryBlue,
+                size: 40.0,
+              ),
+              const SizedBox(height: 20),
+              Text(
+                "Loading EV Charging Prices",
+                style: TextStyle(
+                  color: textSecondary,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: "SF Pro Text",
                 ),
-              ],
-            ),
-            child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        electricGreen.withOpacity(0.2),
-                        electricPurple.withOpacity(0.2)
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: SpinKitFadingCircle(
-                    color: electricGreen,
-                    size: 50.0,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  "Loading EV Charging Prices",
-                  style: TextStyle(
-                    color: textPrimary,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: "SF Pro Display",
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  "Fetching latest rates...",
-                  style: TextStyle(
-                    color: textSecondary,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    fontFamily: "SF Pro Text",
-                  ),
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 8),
+            ],
           ),
         ],
       ),

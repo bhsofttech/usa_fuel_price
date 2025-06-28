@@ -7,7 +7,6 @@ import 'package:path/path.dart';
 import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:usa_gas_price/controller/google_ads_controller.dart';
 
 class VehicleScreen extends StatefulWidget {
@@ -100,7 +99,7 @@ class _VehicleScreenState extends State<VehicleScreen>
             title: Text(
               "Vehicle Trip System".toUpperCase(),
               style: TextStyle(
-                color: darkBlue,
+                color: primaryBlue,
                 fontFamily: "SF Pro Display",
                 fontSize: 18.0,
                 fontWeight: FontWeight.w600,

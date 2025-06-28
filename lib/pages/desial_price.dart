@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:usa_gas_price/controller/google_ads_controller.dart';
 
 class DesialPrice extends StatefulWidget {
   const DesialPrice({super.key});
@@ -48,6 +49,7 @@ class _DesialPriceState extends State<DesialPrice>
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       callApi();
+      Get.find<GoogleAdsController>().showAds();
     });
   }
 
@@ -126,61 +128,18 @@ class _DesialPriceState extends State<DesialPrice>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            padding: const EdgeInsets.all(28),
-            decoration: BoxDecoration(
-              color: cardWhite,
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.08),
-                  blurRadius: 30,
-                  spreadRadius: 0,
-                  offset: const Offset(0, 12),
-                ),
-              ],
-            ),
-            child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        dieselOrange.withOpacity(0.2),
-                        dieselPurple.withOpacity(0.2)
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: SpinKitFadingCircle(
-                    color: dieselOrange,
-                    size: 50.0,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  "Loading Diesel Prices",
-                  style: TextStyle(
-                    color: textPrimary,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: "SF Pro Display",
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  "Fetching latest rates...",
-                  style: TextStyle(
-                    color: textSecondary,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    fontFamily: "SF Pro Text",
-                  ),
-                ),
-              ],
+          SpinKitFadingCircle(
+            color: primaryBlue,
+            size: 40.0,
+          ),
+          const SizedBox(height: 20),
+          Text(
+            "Loading Diesel Prices",
+            style: TextStyle(
+              color: textSecondary,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              fontFamily: "SF Pro Text",
             ),
           ),
         ],

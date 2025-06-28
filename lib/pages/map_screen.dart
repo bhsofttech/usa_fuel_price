@@ -158,7 +158,7 @@ class _GasMapHitTestAppState extends State<GasMapHitTestApp> {
         title: Text(
           "USA Fuel Prices".toUpperCase(),
           style: TextStyle(
-            color: darkBlue,
+            color: primaryBlue,
             fontFamily: "SF Pro Display",
             fontSize: 18.0,
             fontWeight: FontWeight.w600,

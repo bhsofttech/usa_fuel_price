@@ -20,12 +20,12 @@ class ServicePage extends StatefulWidget {
   State<ServicePage> createState() => _ServicePageState();
 }
 
-class _ServicePageState extends State<ServicePage> with TickerProviderStateMixin {
+class _ServicePageState extends State<ServicePage>
+    with TickerProviderStateMixin {
   final TimeController _timeController = Get.find();
-  final Color primaryOrange = const Color(0xffF47D4E);
-  final Color darkBlue = const Color(0xFF0A4B9A);
+  final Color primaryBlue = const Color(0xFF007AFF);
   FirebaseAnalytics analytics = FirebaseAnalytics.instance;
-  
+
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
@@ -37,7 +37,7 @@ class _ServicePageState extends State<ServicePage> with TickerProviderStateMixin
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
-    
+
     _fadeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
@@ -45,7 +45,7 @@ class _ServicePageState extends State<ServicePage> with TickerProviderStateMixin
       parent: _animationController,
       curve: Curves.easeOutCubic,
     ));
-    
+
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.3),
       end: Offset.zero,
@@ -53,7 +53,7 @@ class _ServicePageState extends State<ServicePage> with TickerProviderStateMixin
       parent: _animationController,
       curve: Curves.easeOutCubic,
     ));
-    
+
     init();
   }
 
@@ -64,7 +64,6 @@ class _ServicePageState extends State<ServicePage> with TickerProviderStateMixin
   }
 
   Future<void> init() async {
- 
     _animationController.forward();
   }
 
@@ -83,14 +82,14 @@ class _ServicePageState extends State<ServicePage> with TickerProviderStateMixin
           title: Text(
             "Services".toUpperCase(),
             style: TextStyle(
-              color: darkBlue,
+              color: primaryBlue,
               fontFamily: "SF Pro Display",
               fontSize: 18.0,
               fontWeight: FontWeight.w700,
               letterSpacing: 1.2,
             ),
           ),
-          iconTheme: IconThemeData(color: darkBlue),
+          iconTheme: IconThemeData(color: primaryBlue),
           flexibleSpace: Container(
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.95),
@@ -118,14 +117,15 @@ class _ServicePageState extends State<ServicePage> with TickerProviderStateMixin
             position: _slideAnimation,
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 24.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 24.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     "Choose a Service",
                     style: TextStyle(
-                      color: darkBlue.withOpacity(0.8),
+                      color: primaryBlue.withOpacity(0.8),
                       fontFamily: "SF Pro Text",
                       fontSize: 15.0,
                       fontWeight: FontWeight.w500,
@@ -197,8 +197,8 @@ class _ServicePageState extends State<ServicePage> with TickerProviderStateMixin
       {
         'title': 'Age Calculator',
         'icon': Icons.calculate_rounded,
-        'color': primaryOrange,
-        'gradient': [const Color(0xFFFF8A65), primaryOrange],
+        'color': primaryBlue,
+        'gradient': [const Color(0xFFFF8A65), primaryBlue],
         'onTap': () => Get.to(() => const AgeCalculatorScreen()),
       },
       {
@@ -221,12 +221,13 @@ class _ServicePageState extends State<ServicePage> with TickerProviderStateMixin
       children: services.asMap().entries.map((entry) {
         int index = entry.key;
         Map<String, dynamic> service = entry.value;
-        
+
         return AnimatedBuilder(
           animation: _animationController,
           builder: (context, child) {
             return Transform.translate(
-              offset: Offset(0, (1 - _animationController.value) * 30 * (index + 1)),
+              offset: Offset(
+                  0, (1 - _animationController.value) * 30 * (index + 1)),
               child: Opacity(
                 opacity: _animationController.value,
                 child: Padding(
@@ -315,7 +316,7 @@ class _ServicePageState extends State<ServicePage> with TickerProviderStateMixin
                   child: Text(
                     title,
                     style: TextStyle(
-                      color: darkBlue,
+                      color: primaryBlue,
                       fontFamily: "SF Pro Text",
                       fontSize: 17.0,
                       fontWeight: FontWeight.w600,
@@ -332,7 +333,7 @@ class _ServicePageState extends State<ServicePage> with TickerProviderStateMixin
                   ),
                   child: Icon(
                     Icons.chevron_right_rounded,
-                    color: darkBlue.withOpacity(0.4),
+                    color: primaryBlue.withOpacity(0.4),
                     size: 16,
                   ),
                 ),

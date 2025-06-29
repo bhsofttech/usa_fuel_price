@@ -2,8 +2,10 @@ import 'dart:async';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flip_panel_plus/flip_panel_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:usa_gas_price/controller/time_controller.dart';
 import 'package:usa_gas_price/controller/google_ads_controller.dart';
 
@@ -14,19 +16,46 @@ class TimeListPage extends StatefulWidget {
   State<TimeListPage> createState() => _TimeListPageState();
 }
 
-class _TimeListPageState extends State<TimeListPage> {
+class _TimeListPageState extends State<TimeListPage>
+    with TickerProviderStateMixin {
   final TimeController _timeController = Get.find();
   final Map<int, Timer> _timers = {};
   final Map<int, DateTime> _currentTimes = {};
   final GoogleAdsController _googleAdsController = Get.find();
   final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+
+  // Modern iOS color palette matching other screens
   final Color primaryBlue = const Color(0xFF007AFF);
   final Color darkBlue = const Color(0xFF0A4B9A);
+  final Color lightBlue = const Color(0xFF4DA6FF);
+  final Color backgroundGray = const Color(0xFFF2F2F7);
+  final Color cardWhite = const Color(0xFFFFFFFF);
+  final Color textPrimary = const Color(0xFF1C1C1E);
+  final Color textSecondary = const Color(0xFF8E8E93);
+  final Color separatorGray = const Color(0xFFD1D1D6);
+
+  late AnimationController _fadeController;
+  late Animation<double> _fadeAnimation;
 
   @override
   void initState() {
     super.initState();
-    callApi();
+    _fadeController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _fadeController,
+      curve: Curves.easeOutCubic,
+    ));
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      callApi();
+      _fadeController.forward();
+    });
     analytics.logScreenView(screenName: "World Time");
   }
 
@@ -40,6 +69,7 @@ class _TimeListPageState extends State<TimeListPage> {
     for (var timer in _timers.values) {
       timer.cancel();
     }
+    _fadeController.dispose();
     super.dispose();
   }
 
@@ -63,28 +93,35 @@ class _TimeListPageState extends State<TimeListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F2F7),
+      backgroundColor: backgroundGray,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0.5,
+        backgroundColor: cardWhite,
+        elevation: 0,
+        shadowColor: Colors.black.withOpacity(0.1),
+        surfaceTintColor: Colors.transparent,
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.dark,
+        ),
         centerTitle: true,
-        title: const Text(
-          "World Time",
+        title: Text(
+          "World Time".toUpperCase(),
           style: TextStyle(
-            color: Color(0xFF0A4B9A),
+            color: primaryBlue,
             fontFamily: "SF Pro Display",
-            fontSize: 18.0,
+            fontSize: 16.0, // Reduced font size
             fontWeight: FontWeight.w600,
+            letterSpacing: 0.5,
           ),
         ),
-        iconTheme: const IconThemeData(color: Color(0xFF0A4B9A)),
+        iconTheme: IconThemeData(color: primaryBlue),
         flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
+          decoration: BoxDecoration(
+            color: cardWhite,
             border: Border(
               bottom: BorderSide(
-                color: Color(0xFFD1D1D6),
-                width: 0.5,
+                color: separatorGray,
+                width: 0.33,
               ),
             ),
           ),
@@ -94,7 +131,10 @@ class _TimeListPageState extends State<TimeListPage> {
         child: Obx(
           () => _timeController.showLoading.value
               ? _buildLoadingIndicator()
-              : _buildTimeList(),
+              : FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: _buildTimeList(),
+                ),
         ),
       ),
     );
@@ -103,20 +143,20 @@ class _TimeListPageState extends State<TimeListPage> {
   Widget _buildLoadingIndicator() {
     return Center(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
           SpinKitFadingCircle(
             color: primaryBlue,
-            size: 40.0,
+            size: 36.0, // Smaller spinner
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 12), // Reduced spacing
           Text(
-            "Loading World Times...",
+            "Loading World Times",
             style: TextStyle(
-              color: darkBlue.withOpacity(0.8),
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
+              color: textPrimary,
               fontFamily: "SF Pro Text",
+              fontSize: 14, // Reduced font size
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],
@@ -126,13 +166,11 @@ class _TimeListPageState extends State<TimeListPage> {
 
   Widget _buildTimeList() {
     return ListView.separated(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(
+          horizontal: 12, vertical: 16), // Balanced padding
       itemCount: _timeController.getTimeInfo.length,
-      separatorBuilder: (context, index) => const Divider(
-        height: 1,
-        thickness: 0.5,
-        color: Color(0xFFD1D1D6),
-      ),
+      separatorBuilder: (context, index) =>
+          const SizedBox(height: 10), // Reduced separator
       itemBuilder: (context, index) {
         if (!_timers.containsKey(index)) {
           _startTimer(
@@ -143,71 +181,77 @@ class _TimeListPageState extends State<TimeListPage> {
 
         final timeInfo = _timeController.getTimeInfo[index];
         return Container(
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(
+              horizontal: 12, vertical: 12), // Reduced padding
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(0),
+            color: cardWhite,
+            borderRadius: BorderRadius.circular(12), // Updated radius
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.06),
+                blurRadius: 12, // Reduced blur
+                spreadRadius: 0,
+                offset: const Offset(0, 2), // Smaller offset
+              ),
+            ],
           ),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              Container(
+                width: 8, // Consistent size
+                height: 8, // Consistent size
+                margin: const EdgeInsets.only(right: 10), // Reduced margin
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [primaryBlue, lightBlue],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  shape: BoxShape.circle,
+                ),
+              ),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Container(
-                          width: 8,
-                          height: 8,
-                          margin: const EdgeInsets.only(right: 12),
-                          decoration: BoxDecoration(
-                            color: primaryBlue,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        Expanded(
-                          child: Text.rich(
-                            TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: timeInfo.city,
-                                  style: TextStyle(
-                                    color: darkBlue,
-                                    fontFamily: "SF Pro Text",
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: " (${timeInfo.country})",
-                                  style: TextStyle(
-                                    color: const Color(0xFF8E8E93),
-                                    fontFamily: "SF Pro Text",
-                                    fontSize: 14.0,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                              ],
+                    Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text: timeInfo.city,
+                            style: TextStyle(
+                              color: textPrimary,
+                              fontFamily: "SF Pro Display",
+                              fontSize: 16.0, // Consistent font size
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: -0.3,
                             ),
                           ),
-                        ),
-                      ],
+                          TextSpan(
+                            text: " (${timeInfo.country})",
+                            style: TextStyle(
+                              color: textSecondary,
+                              fontFamily: "SF Pro Text",
+                              fontSize: 13.0, // Reduced font size
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 12),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: FlipClockPlus.simple(
-                        startTime:
-                            _currentTimes[index]?.toLocal() ?? DateTime.now(),
-                        digitColor: darkBlue,
-                        backgroundColor: Colors.transparent,
-                        digitSize: 20.0,
-                        height: 50,
-                        width: 25,
-                        centerGapSpace: 0.0,
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(4.0),
-                        ),
+                    const SizedBox(height: 8), // Reduced spacing
+                    FlipClockPlus.simple(
+                      startTime:
+                          _currentTimes[index]?.toLocal() ?? DateTime.now(),
+                      digitColor: textPrimary,
+                      backgroundColor: backgroundGray,
+                      digitSize: 18.0, // Reduced size
+                      height: 40, // Reduced height
+                      width: 22, // Reduced width
+                      centerGapSpace: 0.0,
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(4.0),
                       ),
                     ),
                   ],

@@ -6,6 +6,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:usa_gas_price/controller/google_ads_controller.dart';
 
+import '../widgets/data_widget.dart';
+
 class DesialPrice extends StatefulWidget {
   const DesialPrice({super.key});
 
@@ -101,7 +103,7 @@ class _DesialPriceState extends State<DesialPrice>
             style: TextStyle(
               color: primaryBlue,
               fontFamily: "SF Pro Display",
-              fontSize: 17.0,
+              fontSize: 16.0, // Reduced font size for consistency
               fontWeight: FontWeight.w600,
               letterSpacing: 0.5,
             ),
@@ -128,19 +130,23 @@ class _DesialPriceState extends State<DesialPrice>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SpinKitFadingCircle(
-            color: primaryBlue,
-            size: 40.0,
-          ),
-          const SizedBox(height: 20),
-          Text(
-            "Loading Diesel Prices",
-            style: TextStyle(
-              color: textSecondary,
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              fontFamily: "SF Pro Text",
-            ),
+          Column(
+            children: [
+              SpinKitFadingCircle(
+                color: primaryBlue,
+                size: 36.0, // Smaller spinner for balance
+              ),
+              const SizedBox(height: 12), // Tighter spacing
+              Text(
+                "Loading Diesel Prices",
+                style: TextStyle(
+                  color: textSecondary,
+                  fontSize: 14, // Smaller font for less clutter
+                  fontWeight: FontWeight.w500,
+                  fontFamily: "SF Pro Text",
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -160,10 +166,11 @@ class _DesialPriceState extends State<DesialPrice>
 
   Widget _buildHeaderStats() {
     return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(20),
+      margin: const EdgeInsets.symmetric(
+          horizontal: 12, vertical: 16), // Balanced margin
+      padding: const EdgeInsets.all(16), // Reduced padding
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(12), // Smaller radius
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -180,22 +187,22 @@ class _DesialPriceState extends State<DesialPrice>
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(8), // Smaller padding
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [primaryBlue, dieselPurple],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(10), // Smaller radius
             ),
             child: const Icon(
               Icons.local_shipping,
               color: Colors.white,
-              size: 24,
+              size: 20, // Smaller icon
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 12), // Reduced spacing
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -205,18 +212,20 @@ class _DesialPriceState extends State<DesialPrice>
                   style: TextStyle(
                     color: textPrimary,
                     fontFamily: "SF Pro Display",
-                    fontSize: 20.0,
+                    fontSize: 18.0, // Reduced font size
                     fontWeight: FontWeight.w600,
                     letterSpacing: -0.3,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 4), // Tighter spacing
+                const DateTimeWidget(),
+                const SizedBox(height: 4), // Tighter spacing
                 Text(
                   "${_gasController.gasInfo.length} states available",
                   style: TextStyle(
                     color: textSecondary,
                     fontFamily: "SF Pro Text",
-                    fontSize: 14.0,
+                    fontSize: 13.0, // Smaller font
                     fontWeight: FontWeight.w400,
                   ),
                 ),
@@ -232,9 +241,11 @@ class _DesialPriceState extends State<DesialPrice>
     return FadeTransition(
       opacity: _fadeAnimation,
       child: ListView.separated(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(
+            horizontal: 12, vertical: 12), // Balanced padding
         itemCount: _gasController.gasInfo.length,
-        separatorBuilder: (context, index) => const SizedBox(height: 12),
+        separatorBuilder: (context, index) =>
+            const SizedBox(height: 10), // Reduced separator height
         itemBuilder: (context, index) {
           return _buildDieselPriceCard(index);
         },
@@ -245,19 +256,19 @@ class _DesialPriceState extends State<DesialPrice>
   Widget _buildDieselPriceCard(int index) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(12), // Smaller radius
         color: cardWhite,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.06),
-            blurRadius: 20,
+            blurRadius: 12, // Reduced blur for sharper shadow
             spreadRadius: 0,
-            offset: const Offset(0, 6),
+            offset: const Offset(0, 2), // Smaller offset
           ),
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16), // Reduced padding
         child: Row(
           children: [
             _buildStateInfo(index),
@@ -278,25 +289,25 @@ class _DesialPriceState extends State<DesialPrice>
           Row(
             children: [
               Container(
-                width: 8,
-                height: 8,
+                width: 6, // Smaller dot
+                height: 6, // Smaller dot
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [primaryBlue, dieselPurple],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(3), // Smaller radius
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 10), // Reduced spacing
               Expanded(
                 child: Text(
                   _gasController.gasInfo[index].city,
                   style: TextStyle(
                     color: textPrimary,
                     fontFamily: "SF Pro Display",
-                    fontSize: 18.0,
+                    fontSize: 16.0, // Reduced font size
                     fontWeight: FontWeight.w600,
                     letterSpacing: -0.2,
                   ),
@@ -304,15 +315,15 @@ class _DesialPriceState extends State<DesialPrice>
               ),
             ],
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 4), // Tighter spacing
           Padding(
-            padding: EdgeInsets.only(left: 20),
+            padding: EdgeInsets.only(left: 16), // Slightly reduced padding
             child: Text(
               "Diesel Rate",
               style: TextStyle(
                 color: textSecondary,
                 fontFamily: "SF Pro Text",
-                fontSize: 13.0,
+                fontSize: 12.0, // Smaller font
                 fontWeight: FontWeight.w400,
               ),
             ),
@@ -324,7 +335,8 @@ class _DesialPriceState extends State<DesialPrice>
 
   Widget _buildPriceSection(int index) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(
+          horizontal: 12, vertical: 10), // Reduced padding
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -334,7 +346,7 @@ class _DesialPriceState extends State<DesialPrice>
             dieselPurple.withOpacity(0.05),
           ],
         ),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(10), // Smaller radius
         border: Border.all(
           color: primaryBlue.withOpacity(0.2),
           width: 1,
@@ -351,7 +363,7 @@ class _DesialPriceState extends State<DesialPrice>
                 style: TextStyle(
                   color: primaryBlue,
                   fontFamily: "SF Pro Display",
-                  fontSize: 20.0,
+                  fontSize: 18.0, // Reduced font size
                   fontWeight: FontWeight.w700,
                   letterSpacing: -0.3,
                 ),
@@ -374,7 +386,7 @@ Widget buildPrice({
     style: TextStyle(
       color: color,
       fontFamily: "SF Pro Text",
-      fontSize: 16.0,
+      fontSize: 14.0, // Reduced font size for consistency
       fontWeight: FontWeight.w600,
     ),
   );

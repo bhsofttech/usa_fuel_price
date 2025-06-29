@@ -17,7 +17,8 @@ class HoliDayPage extends StatefulWidget {
   State<HoliDayPage> createState() => _HoliDayPageState();
 }
 
-class _HoliDayPageState extends State<HoliDayPage> with TickerProviderStateMixin {
+class _HoliDayPageState extends State<HoliDayPage>
+    with TickerProviderStateMixin {
   final TimeController _timeController = Get.find();
   final GoogleAdsController _googleAdsController = Get.find();
   final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
@@ -57,7 +58,8 @@ class _HoliDayPageState extends State<HoliDayPage> with TickerProviderStateMixin
     WidgetsBinding.instance.addPostFrameCallback((_) {
       callApi();
       _googleAdsController.showAds();
-      analytics.logScreenView(screenName: "${widget.countryInfo.country} Holidays");
+      analytics.logScreenView(
+          screenName: "${widget.countryInfo.country} Holidays");
       _fadeController.forward();
     });
   }
@@ -99,11 +101,11 @@ class _HoliDayPageState extends State<HoliDayPage> with TickerProviderStateMixin
       ),
       centerTitle: true,
       title: Text(
-       "${widget.countryInfo.country} Holidays",
+        "${widget.countryInfo.country} Holidays",
         style: TextStyle(
           color: textPrimary,
           fontFamily: "SF Pro Display",
-          fontSize: 17.0,
+          fontSize: 16.0, // Reduced font size
           fontWeight: FontWeight.w600,
           letterSpacing: 0.5,
         ),
@@ -121,33 +123,27 @@ class _HoliDayPageState extends State<HoliDayPage> with TickerProviderStateMixin
         ),
       ),
     );
-
   }
 
   Widget _buildLoadingIndicator() {
     return Center(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Column(
-            children: [
-              SpinKitFadingCircle(
-                color: primaryBlue,
-                size: 40.0,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                "Fetching Holidays",
-                style: TextStyle(
-                  color: textPrimary,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: "SF Pro Text",
-                ),
-              ),
-            ],
+          SpinKitFadingCircle(
+            color: primaryBlue,
+            size: 36.0, // Smaller spinner
           ),
-          
+          const SizedBox(height: 12), // Reduced spacing
+          Text(
+            "Fetching Holidays",
+            style: TextStyle(
+              color: textPrimary,
+              fontSize: 14, // Reduced font size
+              fontWeight: FontWeight.w600,
+              fontFamily: "SF Pro Text",
+            ),
+          ),
         ],
       ),
     );
@@ -162,9 +158,11 @@ class _HoliDayPageState extends State<HoliDayPage> with TickerProviderStateMixin
           _buildHeaderStats(),
           Expanded(
             child: ListView.separated(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 12, vertical: 16), // Balanced padding
               itemCount: _timeController.getHoliDays.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 16),
+              separatorBuilder: (context, index) =>
+                  const SizedBox(height: 10), // Reduced separator
               itemBuilder: (context, index) {
                 final holiday = _timeController.getHoliDays[index];
                 return _buildHolidayCard(holiday, index == 0);
@@ -178,10 +176,11 @@ class _HoliDayPageState extends State<HoliDayPage> with TickerProviderStateMixin
 
   Widget _buildHeaderStats() {
     return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(20),
+      margin: const EdgeInsets.symmetric(
+          horizontal: 12, vertical: 16), // Balanced margin
+      padding: const EdgeInsets.all(16), // Reduced padding
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(12), // Smaller radius
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -198,22 +197,22 @@ class _HoliDayPageState extends State<HoliDayPage> with TickerProviderStateMixin
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(8), // Reduced padding
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [primaryBlue, lightBlue],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(10), // Smaller radius
             ),
             child: const Icon(
               Icons.celebration,
               color: Colors.white,
-              size: 24,
+              size: 20, // Smaller icon
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 12), // Reduced spacing
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -223,18 +222,18 @@ class _HoliDayPageState extends State<HoliDayPage> with TickerProviderStateMixin
                   style: TextStyle(
                     color: textPrimary,
                     fontFamily: "SF Pro Display",
-                    fontSize: 20.0,
+                    fontSize: 18.0, // Reduced font size
                     fontWeight: FontWeight.w600,
                     letterSpacing: -0.3,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 4), // Tighter spacing
                 Text(
                   "${_timeController.getHoliDays.length} holidays listed",
                   style: TextStyle(
                     color: textSecondary,
                     fontFamily: "SF Pro Text",
-                    fontSize: 14.0,
+                    fontSize: 13.0, // Reduced font size
                     fontWeight: FontWeight.w400,
                   ),
                 ),
@@ -249,19 +248,19 @@ class _HoliDayPageState extends State<HoliDayPage> with TickerProviderStateMixin
   Widget _buildHolidayCard(dynamic holiday, bool isFirstItem) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(12), // Smaller radius
         color: cardWhite,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.06),
-            blurRadius: 25,
+            blurRadius: 12, // Reduced blur
             spreadRadius: 0,
-            offset: const Offset(0, 8),
+            offset: const Offset(0, 2), // Smaller offset
           ),
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(16), // Reduced padding
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -271,7 +270,10 @@ class _HoliDayPageState extends State<HoliDayPage> with TickerProviderStateMixin
                   padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [_getHolidayColor(holiday.type), _getHolidayColor(holiday.type).withOpacity(0.7)],
+                      colors: [
+                        _getHolidayColor(holiday.type),
+                        _getHolidayColor(holiday.type).withOpacity(0.7)
+                      ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
@@ -280,7 +282,7 @@ class _HoliDayPageState extends State<HoliDayPage> with TickerProviderStateMixin
                   child: Icon(
                     _getHolidayIcon(holiday.type),
                     color: Colors.white,
-                    size: 16,
+                    size: 14, // Smaller icon
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -290,7 +292,7 @@ class _HoliDayPageState extends State<HoliDayPage> with TickerProviderStateMixin
                     style: TextStyle(
                       color: textPrimary,
                       fontFamily: "SF Pro Display",
-                      fontSize: isFirstItem ? 22.0 : 18.0,
+                      fontSize: 16.0, // Reduced font sizes
                       fontWeight: FontWeight.w600,
                       letterSpacing: -0.3,
                     ),
@@ -298,20 +300,10 @@ class _HoliDayPageState extends State<HoliDayPage> with TickerProviderStateMixin
                 ),
               ],
             ),
-            const SizedBox(height: 6),
-            if (isFirstItem)
-              Text(
-                "Major Holiday",
-                style: TextStyle(
-                  color: textSecondary,
-                  fontFamily: "SF Pro Text",
-                  fontSize: 15.0,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            const SizedBox(height: 20),
+
+            const SizedBox(height: 12), // Reduced spacing
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(16), // Reduced padding
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -321,7 +313,7 @@ class _HoliDayPageState extends State<HoliDayPage> with TickerProviderStateMixin
                     backgroundGray.withOpacity(0.7),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(12), // Smaller radius
                 border: Border.all(
                   color: separatorGray.withOpacity(0.3),
                   width: 0.5,
@@ -341,9 +333,10 @@ class _HoliDayPageState extends State<HoliDayPage> with TickerProviderStateMixin
                       ),
                       Container(
                         width: 1,
-                        height: 50,
+                        height: 44, // Reduced height
                         color: separatorGray.withOpacity(0.5),
-                        margin: const EdgeInsets.symmetric(horizontal: 16),
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 12), // Reduced margin
                       ),
                       Expanded(
                         child: _buildInfoItem(
@@ -356,13 +349,14 @@ class _HoliDayPageState extends State<HoliDayPage> with TickerProviderStateMixin
                     ],
                   ),
                   if (holiday.comment.isNotEmpty) ...[
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12), // Reduced spacing
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(10), // Reduced padding
                       decoration: BoxDecoration(
                         color: cardWhite,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius:
+                            BorderRadius.circular(10), // Smaller radius
                         border: Border.all(
                           color: separatorGray.withOpacity(0.3),
                           width: 0.5,
@@ -376,18 +370,18 @@ class _HoliDayPageState extends State<HoliDayPage> with TickerProviderStateMixin
                             style: TextStyle(
                               color: textSecondary,
                               fontFamily: "SF Pro Text",
-                              fontSize: 13.0,
+                              fontSize: 12.0, // Reduced font size
                               fontWeight: FontWeight.w500,
                               letterSpacing: 0.1,
                             ),
                           ),
-                          const SizedBox(height: 6),
+                          const SizedBox(height: 4), // Reduced spacing
                           Text(
                             holiday.comment,
                             style: TextStyle(
                               color: textPrimary,
                               fontFamily: "SF Pro Display",
-                              fontSize: 16.0,
+                              fontSize: 14.0, // Reduced font size
                               fontWeight: FontWeight.w500,
                               letterSpacing: -0.3,
                             ),
@@ -415,35 +409,35 @@ class _HoliDayPageState extends State<HoliDayPage> with TickerProviderStateMixin
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(8), // Reduced padding
           decoration: BoxDecoration(
             color: color.withOpacity(0.12),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(10), // Smaller radius
           ),
           child: Icon(
             icon,
             color: color,
-            size: 20,
+            size: 18, // Smaller icon
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8), // Reduced spacing
         Text(
           title,
           style: TextStyle(
             color: textSecondary,
             fontFamily: "SF Pro Text",
-            fontSize: 13.0,
+            fontSize: 12.0, // Reduced font size
             fontWeight: FontWeight.w500,
             letterSpacing: 0.1,
           ),
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 4), // Reduced spacing
         Text(
           value,
           style: TextStyle(
             color: color,
             fontFamily: "SF Pro Display",
-            fontSize: 18.0,
+            fontSize: 16.0, // Reduced font size
             fontWeight: FontWeight.w600,
             letterSpacing: -0.3,
           ),

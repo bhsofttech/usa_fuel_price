@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class GoogleAdsController extends GetxController {
-  final isForTest = true;
+  final isForTest = false;
   //! Change this value to false when generating signed apk to upload on store.
   final bannerAndroidTest = 'ca-app-pub-3940256099942544/6300978111';
   final interAndroidTest = 'ca-app-pub-3940256099942544/1033173712';
@@ -28,7 +28,7 @@ class GoogleAdsController extends GetxController {
 
   // Increment count variable value on every button tap action.
 
-  int noOfCount = 6;
+  int noOfCount = 8;
   int count = 0;
   RxBool isShow = true.obs;
 

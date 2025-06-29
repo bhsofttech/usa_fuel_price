@@ -208,17 +208,17 @@ Widget buildPrice({
         style: TextStyle(
           color: const Color(0xFF8E8E93),
           fontFamily: "SF Pro Text",
-          fontSize: 12.0,
+          fontSize: 12.0, // Consistent font size
           fontWeight: FontWeight.w500,
         ),
       ),
-      const SizedBox(height: 4),
+      const SizedBox(height: 4), // Consistent spacing
       Text(
         price,
         style: TextStyle(
           color: color,
           fontFamily: "SF Pro Text",
-          fontSize: 16.0,
+          fontSize: 14.0, // Reduced font size
           fontWeight: FontWeight.w600,
         ),
       ),

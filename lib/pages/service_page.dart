@@ -72,7 +72,7 @@ class _ServicePageState extends State<ServicePage>
     return Scaffold(
       backgroundColor: const Color(0xFFF2F4F7),
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(60),
+        preferredSize: const Size.fromHeight(56), // Slightly reduced height
         child: AppBar(
           leadingWidth: 50,
           backgroundColor: Colors.white.withOpacity(0.95),
@@ -84,9 +84,9 @@ class _ServicePageState extends State<ServicePage>
             style: TextStyle(
               color: primaryBlue,
               fontFamily: "SF Pro Display",
-              fontSize: 18.0,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 1.2,
+              fontSize: 16.0, // Reduced font size for consistency
+              fontWeight: FontWeight.w600, // Slightly lighter weight
+              letterSpacing: 0.5,
             ),
           ),
           iconTheme: IconThemeData(color: primaryBlue),
@@ -102,8 +102,8 @@ class _ServicePageState extends State<ServicePage>
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.03),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
+                  blurRadius: 6, // Reduced blur for sharper shadow
+                  offset: const Offset(0, 1), // Smaller offset
                 ),
               ],
             ),
@@ -117,8 +117,8 @@ class _ServicePageState extends State<ServicePage>
             position: _slideAnimation,
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 24.0),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0, vertical: 16.0), // Reduced padding
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -127,12 +127,12 @@ class _ServicePageState extends State<ServicePage>
                     style: TextStyle(
                       color: primaryBlue.withOpacity(0.8),
                       fontFamily: "SF Pro Text",
-                      fontSize: 15.0,
+                      fontSize: 14.0, // Reduced font size
                       fontWeight: FontWeight.w500,
                       letterSpacing: 0.2,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12), // Reduced spacing
                   _buildQuick(),
                 ],
               ),
@@ -152,13 +152,13 @@ class _ServicePageState extends State<ServicePage>
         'gradient': [const Color(0xFFFF6B6B), const Color(0xFFFF3B30)],
         'onTap': () => Get.to(() => const UnitConverterApp()),
       },
-      {
-        'title': 'Import Export Data',
-        'icon': Icons.import_export_rounded,
-        'color': const Color(0xFF007AFF),
-        'gradient': [const Color(0xFF4A90E2), const Color(0xFF007AFF)],
-        'onTap': () => Get.to(() => const CountryListScreen()),
-      },
+      // {
+      //   'title': 'Import Export Data',
+      //   'icon': Icons.import_export_rounded,
+      //   'color': const Color(0xFF007AFF),
+      //   'gradient': [const Color(0xFF4A90E2), const Color(0xFF007AFF)],
+      //   'onTap': () => Get.to(() => const CountryListScreen()),
+      // },
       {
         'title': 'World Economy',
         'icon': Icons.trending_up_rounded,
@@ -227,11 +227,14 @@ class _ServicePageState extends State<ServicePage>
           builder: (context, child) {
             return Transform.translate(
               offset: Offset(
-                  0, (1 - _animationController.value) * 30 * (index + 1)),
+                  0,
+                  (1 - _animationController.value) *
+                      20 *
+                      (index + 1)), // Reduced offset for smoother animation
               child: Opacity(
                 opacity: _animationController.value,
                 child: Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
+                  padding: const EdgeInsets.only(bottom: 12), // Reduced padding
                   child: _buildEnhancedServiceCard(
                     service['title'],
                     service['icon'],
@@ -258,40 +261,36 @@ class _ServicePageState extends State<ServicePage>
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12), // Smaller radius
         onTap: () {
           HapticFeedback.lightImpact();
           onTap();
         },
         child: Container(
-          height: 72,
+          height: 64, // Reduced height for compact cards
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(12), // Smaller radius
             color: Colors.white,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.04),
-                blurRadius: 12,
+                color:
+                    Colors.black.withOpacity(0.06), // Slightly stronger shadow
+                blurRadius: 8, // Reduced blur for sharper shadow
                 spreadRadius: 0,
-                offset: const Offset(0, 4),
-              ),
-              BoxShadow(
-                color: Colors.black.withOpacity(0.02),
-                blurRadius: 6,
-                spreadRadius: 0,
-                offset: const Offset(0, 2),
+                offset: const Offset(0, 2), // Smaller offset
               ),
             ],
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            padding: const EdgeInsets.symmetric(
+                horizontal: 16, vertical: 12), // Reduced padding
             child: Row(
               children: [
                 Container(
-                  width: 40,
-                  height: 40,
+                  width: 36, // Smaller icon container
+                  height: 36, // Smaller icon container
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(10), // Smaller radius
                     gradient: LinearGradient(
                       colors: gradient,
                       begin: Alignment.topLeft,
@@ -299,34 +298,34 @@ class _ServicePageState extends State<ServicePage>
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: color.withOpacity(0.3),
-                        blurRadius: 8,
-                        offset: const Offset(0, 3),
+                        color: color.withOpacity(0.2), // Lighter shadow
+                        blurRadius: 6, // Reduced blur
+                        offset: const Offset(0, 2), // Smaller offset
                       ),
                     ],
                   ),
                   child: Icon(
                     icon,
                     color: Colors.white,
-                    size: 22,
+                    size: 20, // Smaller icon
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 12), // Reduced spacing
                 Expanded(
                   child: Text(
                     title,
                     style: TextStyle(
                       color: primaryBlue,
                       fontFamily: "SF Pro Text",
-                      fontSize: 17.0,
+                      fontSize: 15.0, // Reduced font size
                       fontWeight: FontWeight.w600,
                       letterSpacing: -0.2,
                     ),
                   ),
                 ),
                 Container(
-                  width: 24,
-                  height: 24,
+                  width: 20, // Smaller chevron container
+                  height: 20, // Smaller chevron container
                   decoration: BoxDecoration(
                     color: const Color(0xFFF2F2F7),
                     borderRadius: BorderRadius.circular(6),
@@ -334,7 +333,7 @@ class _ServicePageState extends State<ServicePage>
                   child: Icon(
                     Icons.chevron_right_rounded,
                     color: primaryBlue.withOpacity(0.4),
-                    size: 16,
+                    size: 14, // Smaller chevron
                   ),
                 ),
               ],

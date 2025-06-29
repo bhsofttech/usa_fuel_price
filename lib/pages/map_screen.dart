@@ -259,32 +259,42 @@ class _GasMapHitTestAppState extends State<GasMapHitTestApp> {
                                   if (hoveredState != null)
                                     Container(
                                       width: MediaQuery.of(context).size.width,
-                                      margin: const EdgeInsets.only(bottom: 16),
+                                      margin: const EdgeInsets.only(
+                                          bottom: 12), // Reduced margin
                                       padding: const EdgeInsets.symmetric(
-                                          horizontal: 16, vertical: 12),
+                                          horizontal: 12,
+                                          vertical: 10), // Reduced padding
                                       decoration: BoxDecoration(
                                         color: Colors.white,
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(
+                                            10), // Smaller radius
+                                        border: Border.all(
+                                          color: Colors.grey.withOpacity(0.3),
+                                          width: 0.5,
+                                        ),
                                         boxShadow: [
                                           BoxShadow(
                                             color:
-                                                Colors.black.withOpacity(0.1),
-                                            blurRadius: 10,
-                                            spreadRadius: 2,
-                                            offset: const Offset(0, 2),
+                                                Colors.black.withOpacity(0.06),
+                                            blurRadius: 12, // Adjusted blur
+                                            spreadRadius: 0, // Removed spread
+                                            offset: const Offset(
+                                                0, 2), // Consistent offset
                                           ),
                                         ],
                                       ),
                                       child: Text(
                                         getTooltipText(hoveredState!, gasData),
-                                        style: TextStyle(
-                                          color: darkBlue,
+                                        style: const TextStyle(
+                                          color: const Color(0xFF1C1C1E),
                                           fontFamily: "SF Pro Text",
-                                          fontSize: 14,
+                                          fontSize: 13, // Reduced font size
                                           fontWeight: FontWeight.w500,
+                                          letterSpacing:
+                                              -0.3, // Added letter spacing
                                         ),
                                       ),
-                                    ),
+                                    )
                                 ],
                               ),
                             ),

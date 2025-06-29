@@ -7,16 +7,43 @@ class DateTimeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.topRight,
-      child: Text(
-        "${DateFormat(' d MMM, yyyy').format(DateTime.now())} - ${DateFormat('EEEE').format(DateTime.now())}",
-        style:  TextStyle(
-          fontWeight: FontWeight.w500,
-          fontFamily: "RiformaLL",
-          fontSize: 14,
-          color:titleColor?? const Color(0xff0D9D7C),
+    return Container(
+      padding: const EdgeInsets.symmetric(
+          horizontal: 10, vertical: 5), // Smaller padding
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            const Color(0xFF007AFF).withOpacity(0.1),
+            const Color(0xFF007AFF).withOpacity(0.05),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
+        borderRadius: BorderRadius.circular(10), // Smaller radius
+        border: Border.all(
+          color: const Color(0xFF007AFF).withOpacity(0.2),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.schedule,
+            color: const Color(0xFF007AFF),
+            size: 12, // Smaller icon
+          ),
+          const SizedBox(width: 4),
+          Text(
+            DateFormat('MMM d, yyyy').format(DateTime.now().toUtc().toLocal()),
+            style: const TextStyle(
+              color: const Color(0xFF007AFF),
+              fontSize: 11, // Smaller font
+              fontWeight: FontWeight.w600,
+              fontFamily: "SF Pro Text",
+            ),
+          ),
+        ],
       ),
     );
   }

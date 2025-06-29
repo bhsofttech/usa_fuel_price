@@ -79,7 +79,7 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
 
     callApi();
     _googleAdsController.showAds();
-    analytics.setCurrentScreen(screenName: widget.title);
+    analytics.logScreenView(screenName: widget.title);
 
     // Start animations
     _fadeController.forward();
@@ -139,7 +139,7 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
             style: TextStyle(
               color: primaryBlue,
               fontFamily: "SF Pro Display",
-              fontSize: 17.0,
+              fontSize: 16.0,
               fontWeight: FontWeight.w600,
               letterSpacing: 0.5,
             ),
@@ -164,18 +164,18 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
   Widget _buildLoadingView() {
     return Center(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
           SpinKitFadingCircle(
             color: primaryBlue,
-            size: 45.0,
+            size: 36.0,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
           Text(
             "Fetching ${widget.title}",
             style: TextStyle(
               color: textPrimary,
-              fontSize: 16,
+              fontSize: 14,
               fontWeight: FontWeight.w600,
               fontFamily: "SF Pro Text",
             ),
@@ -187,12 +187,12 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
 
   Widget _buildMainContent() {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _buildHeaderStats(),
-          const SizedBox(height: 16.0),
+          const SizedBox(height: 12),
           Expanded(
             child: _buildDataTable(),
           ),
@@ -203,9 +203,9 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
 
   Widget _buildHeaderStats() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(12),
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -222,22 +222,22 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [primaryBlue, lightBlue],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(10),
             ),
             child: const Icon(
               Icons.bar_chart,
               color: Colors.white,
-              size: 24,
+              size: 20,
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -247,7 +247,7 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
                   style: TextStyle(
                     color: textPrimary,
                     fontFamily: "SF Pro Display",
-                    fontSize: 20.0,
+                    fontSize: 18.0,
                     fontWeight: FontWeight.w600,
                     letterSpacing: -0.3,
                   ),
@@ -258,7 +258,7 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
                   style: TextStyle(
                     color: textSecondary,
                     fontFamily: "SF Pro Text",
-                    fontSize: 14.0,
+                    fontSize: 13.0,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
@@ -284,7 +284,7 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
           style: TextStyle(
             color: textPrimary,
             fontFamily: "SF Pro Display",
-            fontSize: 13.0,
+            fontSize: 12.0,
             fontWeight: FontWeight.w600,
             letterSpacing: -0.08,
           ),
@@ -294,23 +294,23 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
     }).toList();
 
     // Fixed first column width
-    const double firstColumnWidth = 120.0;
+    const double firstColumnWidth = 100.0;
 
     return Container(
       decoration: BoxDecoration(
         color: cardWhite,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.06),
-            blurRadius: 25,
+            blurRadius: 12,
             spreadRadius: 0,
-            offset: const Offset(0, 8),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(12),
         child: SingleChildScrollView(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -331,7 +331,7 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
                   children: [
                     // Header for first column
                     Container(
-                      height: 50,
+                      height: 44,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
@@ -358,7 +358,7 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
                         style: TextStyle(
                           color: textPrimary,
                           fontFamily: "SF Pro Display",
-                          fontSize: 13.0,
+                          fontSize: 12.0,
                           fontWeight: FontWeight.w600,
                           letterSpacing: -0.08,
                         ),
@@ -374,7 +374,7 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
                       return GestureDetector(
                         onTap: () => _showCellDialog(context, item, 0),
                         child: Container(
-                          height: 48,
+                          height: 40,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             color: index.isEven
@@ -394,7 +394,7 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
                               style: TextStyle(
                                 color: textPrimary,
                                 fontFamily: "SF Pro Text",
-                                fontSize: 13.0,
+                                fontSize: 12.0,
                                 fontWeight: FontWeight.w400,
                                 letterSpacing: -0.08,
                               ),
@@ -406,9 +406,10 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
                         ),
                       );
                     }).toList(),
-                  ],
+                 ]
+                 ),
                 ),
-              ),
+              
               // Scrollable remaining columns
               Expanded(
                 child: SingleChildScrollView(
@@ -420,21 +421,21 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
                     headingTextStyle: TextStyle(
                       color: textPrimary,
                       fontFamily: "SF Pro Display",
-                      fontSize: 13.0,
+                      fontSize: 12.0,
                       fontWeight: FontWeight.w600,
                       letterSpacing: -0.08,
                     ),
                     dataTextStyle: TextStyle(
                       color: textPrimary,
                       fontFamily: "SF Pro Text",
-                      fontSize: 13.0,
+                      fontSize: 12.0,
                       fontWeight: FontWeight.w400,
                       letterSpacing: -0.08,
                     ),
-                    columnSpacing: 24,
-                    horizontalMargin: 16,
-                    headingRowHeight: 50,
-                    dataRowHeight: 48,
+                    columnSpacing: 20,
+                    horizontalMargin: 12,
+                    headingRowHeight: 44,
+                    dataRowHeight: 40,
                     dividerThickness: 0.5,
                     border: TableBorder(
                       horizontalInside: BorderSide(
@@ -472,26 +473,26 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
                   ),
                 ),
               ),
-            ],
+            ]),
           ),
         ),
-      ),
-    );
+      );
+    
   }
 
   Widget _buildEmptyState() {
     return Center(
       child: Container(
-        padding: const EdgeInsets.all(32),
+        padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
           color: cardWhite,
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.06),
-              blurRadius: 25,
+              blurRadius: 12,
               spreadRadius: 0,
-              offset: const Offset(0, 8),
+              offset: const Offset(0, 2),
             ),
           ],
         ),
@@ -499,35 +500,35 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 64,
-              height: 64,
+              width: 56,
+              height: 56,
               decoration: BoxDecoration(
                 color: backgroundGray,
-                borderRadius: BorderRadius.circular(32),
+                borderRadius: BorderRadius.circular(28),
               ),
               child: Icon(
                 Icons.inbox_outlined,
                 color: textSecondary,
-                size: 32,
+                size: 28,
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             Text(
               "No Data Available",
               style: TextStyle(
                 color: textPrimary,
-                fontSize: 18,
+                fontSize: 16,
                 fontFamily: "SF Pro Display",
                 fontWeight: FontWeight.w600,
                 letterSpacing: -0.3,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             Text(
               "There's no data to display at the moment.",
               style: TextStyle(
                 color: textSecondary,
-                fontSize: 15,
+                fontSize: 13,
                 fontFamily: "SF Pro Text",
                 fontWeight: FontWeight.w400,
                 letterSpacing: -0.24,
@@ -548,11 +549,11 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
         backgroundColor: cardWhite,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(12),
         ),
-        titlePadding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
-        contentPadding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-        actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+        titlePadding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+        contentPadding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+        actionsPadding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
         title: Text(
           item
               .toJson()
@@ -563,19 +564,19 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
           style: TextStyle(
             color: textPrimary,
             fontFamily: "SF Pro Display",
-            fontSize: 17,
+            fontSize: 16,
             fontWeight: FontWeight.w600,
             letterSpacing: -0.41,
           ),
         ),
         content: Container(
-          constraints: const BoxConstraints(maxWidth: 280),
+          constraints: const BoxConstraints(maxWidth: 260),
           child: Text(
             item.toJson().values.elementAt(index)?.toString() ?? '',
             style: TextStyle(
               color: textPrimary,
               fontFamily: "SF Pro Text",
-              fontSize: 15,
+              fontSize: 14,
               fontWeight: FontWeight.w400,
               letterSpacing: -0.24,
               height: 1.4,
@@ -585,7 +586,7 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
         actions: [
           Container(
             width: double.infinity,
-            height: 44,
+            height: 40,
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [primaryBlue, lightBlue],
@@ -608,7 +609,7 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
                 style: TextStyle(
                   color: Colors.white,
                   fontFamily: "SF Pro Text",
-                  fontSize: 17,
+                  fontSize: 16,
                   fontWeight: FontWeight.w600,
                   letterSpacing: -0.41,
                 ),
@@ -633,7 +634,7 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
           style: TextStyle(
             color: textPrimary,
             fontFamily: "SF Pro Display",
-            fontSize: 13.0,
+            fontSize: 12.0,
             fontWeight: FontWeight.w600,
             letterSpacing: -0.08,
           ),
@@ -645,25 +646,25 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
     return Container(
       decoration: BoxDecoration(
         color: cardWhite,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.06),
-            blurRadius: 25,
+            blurRadius: 12,
             spreadRadius: 0,
-            offset: const Offset(0, 8),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(12),
         child: PaginatedDataTable(
           header: Text(
             widget.title,
             style: TextStyle(
               color: textPrimary,
               fontFamily: "SF Pro Display",
-              fontSize: 17.0,
+              fontSize: 16.0,
               fontWeight: FontWeight.w600,
               letterSpacing: -0.41,
             ),
@@ -671,12 +672,12 @@ class _DataDetailsScreenState extends State<DataDetailsScreen>
           headingRowColor: MaterialStateProperty.all(
             backgroundGray,
           ),
-          columnSpacing: 24,
-          horizontalMargin: 16,
+          columnSpacing: 20,
+          horizontalMargin: 12,
           rowsPerPage: 10,
           showCheckboxColumn: false,
-          dataRowHeight: 48,
-          headingRowHeight: 50,
+          dataRowHeight: 40,
+          headingRowHeight: 44,
           columns: columns,
           source: _DataTableSource(_updateController.getdata, textPrimary),
         ),
@@ -707,7 +708,7 @@ class _DataTableSource extends DataTableSource {
             style: TextStyle(
               color: textColor,
               fontFamily: "SF Pro Text",
-              fontSize: 13.0,
+              fontSize: 12.0,
               fontWeight: FontWeight.w400,
               letterSpacing: -0.08,
             ),

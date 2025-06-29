@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:usa_gas_price/widgets/data_widget.dart';
 
 import '../controller/google_ads_controller.dart';
 
@@ -101,7 +102,7 @@ class _EvPriceState extends State<EvPrice> with TickerProviderStateMixin {
             style: TextStyle(
               color: primaryBlue,
               fontFamily: "SF Pro Display",
-              fontSize: 17.0,
+              fontSize: 16.0, // Reduced font size for consistency
               fontWeight: FontWeight.w600,
               letterSpacing: 0.5,
             ),
@@ -132,19 +133,18 @@ class _EvPriceState extends State<EvPrice> with TickerProviderStateMixin {
             children: [
               SpinKitFadingCircle(
                 color: primaryBlue,
-                size: 40.0,
+                size: 36.0, // Smaller spinner for balance
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 12), // Tighter spacing
               Text(
                 "Loading EV Charging Prices",
                 style: TextStyle(
                   color: textSecondary,
-                  fontSize: 16,
+                  fontSize: 14, // Smaller font for less clutter
                   fontWeight: FontWeight.w500,
                   fontFamily: "SF Pro Text",
                 ),
               ),
-              const SizedBox(height: 8),
             ],
           ),
         ],
@@ -165,10 +165,11 @@ class _EvPriceState extends State<EvPrice> with TickerProviderStateMixin {
 
   Widget _buildHeaderStats() {
     return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(20),
+      margin: const EdgeInsets.symmetric(
+          horizontal: 12, vertical: 16), // Balanced margin
+      padding: const EdgeInsets.all(16), // Reduced padding
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(12), // Smaller radius
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -185,22 +186,22 @@ class _EvPriceState extends State<EvPrice> with TickerProviderStateMixin {
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(8), // Smaller padding
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [primaryBlue, electricPurple],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(10), // Smaller radius
             ),
             child: const Icon(
               Icons.electric_car,
               color: Colors.white,
-              size: 24,
+              size: 20, // Smaller icon
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 12), // Reduced spacing
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -210,18 +211,20 @@ class _EvPriceState extends State<EvPrice> with TickerProviderStateMixin {
                   style: TextStyle(
                     color: textPrimary,
                     fontFamily: "SF Pro Display",
-                    fontSize: 20.0,
+                    fontSize: 18.0, // Reduced font size
                     fontWeight: FontWeight.w600,
                     letterSpacing: -0.3,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 4), // Tighter spacing
+                const DateTimeWidget(),
+                const SizedBox(height: 4), // Tighter spacing
                 Text(
                   "${_gasController.gasInfo.length} states available",
                   style: TextStyle(
                     color: textSecondary,
                     fontFamily: "SF Pro Text",
-                    fontSize: 14.0,
+                    fontSize: 13.0, // Smaller font
                     fontWeight: FontWeight.w400,
                   ),
                 ),
@@ -237,31 +240,34 @@ class _EvPriceState extends State<EvPrice> with TickerProviderStateMixin {
     return FadeTransition(
       opacity: _fadeAnimation,
       child: ListView.separated(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          itemCount: _gasController.gasInfo.length,
-          separatorBuilder: (context, index) => const SizedBox(height: 12),
-          itemBuilder: (context, index) {
-            return _buildEvPriceCard(index);
-          }),
+        padding: const EdgeInsets.symmetric(
+            horizontal: 12, vertical: 12), // Balanced padding
+        itemCount: _gasController.gasInfo.length,
+        separatorBuilder: (context, index) =>
+            const SizedBox(height: 10), // Reduced separator height
+        itemBuilder: (context, index) {
+          return _buildEvPriceCard(index);
+        },
+      ),
     );
   }
 
   Widget _buildEvPriceCard(int index) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(12), // Smaller radius
         color: cardWhite,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.06),
-            blurRadius: 20,
+            blurRadius: 12, // Reduced blur for sharper shadow
             spreadRadius: 0,
-            offset: const Offset(0, 6),
+            offset: const Offset(0, 2), // Smaller offset
           ),
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16), // Reduced padding
         child: Row(
           children: [
             _buildStateInfo(index),
@@ -282,25 +288,25 @@ class _EvPriceState extends State<EvPrice> with TickerProviderStateMixin {
           Row(
             children: [
               Container(
-                width: 8,
-                height: 8,
+                width: 6, // Smaller dot
+                height: 6, // Smaller dot
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [primaryBlue, electricPurple],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(3), // Smaller radius
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 10), // Reduced spacing
               Expanded(
                 child: Text(
                   _gasController.gasInfo[index].city,
                   style: TextStyle(
                     color: textPrimary,
                     fontFamily: "SF Pro Display",
-                    fontSize: 18.0,
+                    fontSize: 16.0, // Reduced font size
                     fontWeight: FontWeight.w600,
                     letterSpacing: -0.2,
                   ),
@@ -308,15 +314,16 @@ class _EvPriceState extends State<EvPrice> with TickerProviderStateMixin {
               ),
             ],
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 4), // Tighter spacing
           Padding(
-            padding: const EdgeInsets.only(left: 20),
+            padding:
+                const EdgeInsets.only(left: 16), // Slightly reduced padding
             child: Text(
               "EV Charging Rate",
               style: TextStyle(
                 color: textSecondary,
                 fontFamily: "SF Pro Text",
-                fontSize: 13.0,
+                fontSize: 12.0, // Smaller font
                 fontWeight: FontWeight.w400,
               ),
             ),
@@ -328,7 +335,8 @@ class _EvPriceState extends State<EvPrice> with TickerProviderStateMixin {
 
   Widget _buildPriceSection(int index) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(
+          horizontal: 12, vertical: 10), // Reduced padding
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -338,7 +346,7 @@ class _EvPriceState extends State<EvPrice> with TickerProviderStateMixin {
             electricPurple.withOpacity(0.05),
           ],
         ),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(10), // Smaller radius
         border: Border.all(
           color: primaryBlue.withOpacity(0.2),
           width: 1,
@@ -355,24 +363,24 @@ class _EvPriceState extends State<EvPrice> with TickerProviderStateMixin {
                 style: TextStyle(
                   color: primaryBlue,
                   fontFamily: "SF Pro Display",
-                  fontSize: 20.0,
+                  fontSize: 18.0, // Reduced font size
                   fontWeight: FontWeight.w700,
                   letterSpacing: -0.3,
                 ),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 4), // Tighter spacing
               Text(
                 "Cost/kWh",
                 style: TextStyle(
                   color: textSecondary,
                   fontFamily: "SF Pro Text",
-                  fontSize: 13.0,
+                  fontSize: 12.0, // Smaller font
                   fontWeight: FontWeight.w400,
                 ),
               ),
             ],
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 12), // Reduced spacing
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -381,18 +389,18 @@ class _EvPriceState extends State<EvPrice> with TickerProviderStateMixin {
                 style: TextStyle(
                   color: electricGreen,
                   fontFamily: "SF Pro Display",
-                  fontSize: 20.0,
+                  fontSize: 18.0, // Reduced font size
                   fontWeight: FontWeight.w700,
                   letterSpacing: -0.3,
                 ),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 4), // Tighter spacing
               Text(
                 "Chargers",
                 style: TextStyle(
                   color: textSecondary,
                   fontFamily: "SF Pro Text",
-                  fontSize: 13.0,
+                  fontSize: 12.0, // Smaller font
                   fontWeight: FontWeight.w400,
                 ),
               ),

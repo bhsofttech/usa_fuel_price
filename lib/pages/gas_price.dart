@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'package:intl/intl.dart';
 import 'package:usa_gas_price/controller/gas_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:usa_gas_price/pages/gas_state_wise_price.dart';
 import 'package:usa_gas_price/controller/google_ads_controller.dart';
+import 'package:usa_gas_price/widgets/data_widget.dart';
 
 class GasPrice extends StatefulWidget {
   const GasPrice({super.key});
@@ -60,7 +62,7 @@ class _GasPriceState extends State<GasPrice> {
           style: TextStyle(
             color: primaryBlue,
             fontFamily: "SF Pro Display",
-            fontSize: 17.0,
+            fontSize: 16.0, // Reduced font size for a cleaner look
             fontWeight: FontWeight.w600,
             letterSpacing: 0.5,
           ),
@@ -98,14 +100,14 @@ class _GasPriceState extends State<GasPrice> {
         children: [
           SpinKitFadingCircle(
             color: primaryBlue,
-            size: 40.0,
+            size: 36.0, // Slightly smaller spinner for balance
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 16), // Reduced spacing for tighter layout
           Text(
             "Loading Gas Prices...",
             style: TextStyle(
               color: textSecondary,
-              fontSize: 16,
+              fontSize: 14, // Smaller font for less visual clutter
               fontWeight: FontWeight.w500,
               fontFamily: "SF Pro Text",
             ),
@@ -116,35 +118,46 @@ class _GasPriceState extends State<GasPrice> {
   }
 
   Widget _buildGasPriceList() {
-    return ListView.separated(
-      padding: const EdgeInsets.all(16),
-      itemCount: _gasController.gasInfo.length,
-      separatorBuilder: (context, index) => const SizedBox(height: 12),
-      itemBuilder: (context, index) {
-        return _buildGasPriceCard(index);
-      },
+    return Column(
+      children: [
+       const SizedBox(height: 12),
+     const  DateTimeWidget(),
+        Expanded(
+            child: ListView.separated(
+          padding: const EdgeInsets.symmetric(
+              horizontal: 12, vertical: 12), // Balanced padding
+          itemCount: _gasController.gasInfo.length,
+          separatorBuilder: (context, index) =>
+              const SizedBox(height: 10), // Reduced separator height
+          itemBuilder: (context, index) {
+            return _buildGasPriceCard(index);
+          },
+        ))
+      ],
     );
   }
 
   Widget _buildGasPriceCard(int index) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(
+            12), // Slightly smaller radius for modern look
         color: cardWhite,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 20,
+            color: Colors.black
+                .withOpacity(0.06), // Slightly stronger shadow for depth
+            blurRadius: 12, // Reduced blur for sharper shadow
             spreadRadius: 0,
-            offset: const Offset(0, 4),
+            offset: const Offset(0, 2), // Smaller offset for subtle effect
           ),
         ],
       ),
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
         child: InkWell(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(12),
           onTap: () => Get.to(
             () => GasStateWisePrice(
               gasinfo: _gasController.gasInfo[index],
@@ -152,12 +165,14 @@ class _GasPriceState extends State<GasPrice> {
             transition: Transition.cupertino,
           ),
           child: Padding(
-            padding: const EdgeInsets.all(20),
+            padding:
+                const EdgeInsets.all(16), // Reduced padding for compact card
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildCardHeader(index),
-                const SizedBox(height: 20),
+                const SizedBox(
+                    height: 16), // Reduced spacing for tighter layout
                 _buildPriceContainer(index),
               ],
             ),
@@ -180,7 +195,7 @@ class _GasPriceState extends State<GasPrice> {
                 style: TextStyle(
                   color: primaryBlue,
                   fontFamily: "SF Pro Display",
-                  fontSize: 18.0,
+                  fontSize: 16.0, // Reduced font size for better proportion
                   fontWeight: FontWeight.w600,
                   letterSpacing: -0.2,
                 ),
@@ -191,7 +206,7 @@ class _GasPriceState extends State<GasPrice> {
                 style: TextStyle(
                   color: textSecondary,
                   fontFamily: "SF Pro Text",
-                  fontSize: 14.0,
+                  fontSize: 13.0, // Slightly smaller for hierarchy
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -199,7 +214,8 @@ class _GasPriceState extends State<GasPrice> {
           ),
         ),
         Container(
-          padding: const EdgeInsets.all(8),
+          padding:
+              const EdgeInsets.all(6), // Smaller padding for icon container
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
@@ -209,12 +225,12 @@ class _GasPriceState extends State<GasPrice> {
                 lightBlue.withOpacity(0.08),
               ],
             ),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(10), // Smaller radius
           ),
           child: Icon(
             Icons.chevron_right_rounded,
             color: primaryBlue,
-            size: 22,
+            size: 20, // Slightly smaller icon
           ),
         ),
       ],
@@ -223,9 +239,10 @@ class _GasPriceState extends State<GasPrice> {
 
   Widget _buildPriceContainer(int index) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12), // Reduced padding for compact layout
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius:
+            BorderRadius.circular(10), // Smaller radius for modern look
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -250,7 +267,7 @@ class _GasPriceState extends State<GasPrice> {
           ),
           Container(
             width: 1,
-            height: 40,
+            height: 36, // Slightly shorter divider
             color: separatorGray.withOpacity(0.5),
           ),
           _buildEnhancedPrice(
@@ -261,7 +278,7 @@ class _GasPriceState extends State<GasPrice> {
           ),
           Container(
             width: 1,
-            height: 40,
+            height: 36, // Slightly shorter divider
             color: separatorGray.withOpacity(0.5),
           ),
           _buildEnhancedPrice(
@@ -285,24 +302,24 @@ class _GasPriceState extends State<GasPrice> {
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(6), // Smaller padding for icon
             decoration: BoxDecoration(
               color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(8), // Smaller radius
             ),
             child: Icon(
               icon,
               color: color,
-              size: 18,
+              size: 16, // Smaller icon for balance
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6), // Tighter spacing
           Text(
             title,
             style: TextStyle(
               color: textSecondary,
               fontFamily: "SF Pro Text",
-              fontSize: 12.0,
+              fontSize: 11.0, // Smaller font for hierarchy
               fontWeight: FontWeight.w500,
               letterSpacing: 0.2,
             ),
@@ -313,7 +330,7 @@ class _GasPriceState extends State<GasPrice> {
             style: TextStyle(
               color: color,
               fontFamily: "SF Pro Display",
-              fontSize: 17.0,
+              fontSize: 15.0, // Reduced font size for proportion
               fontWeight: FontWeight.w600,
               letterSpacing: -0.2,
             ),
@@ -338,7 +355,7 @@ Widget buildPrice({
         style: const TextStyle(
           color: Color(0xFF8E8E93),
           fontFamily: "SF Pro Text",
-          fontSize: 12.0,
+          fontSize: 11.0, // Reduced font size
           fontWeight: FontWeight.w500,
         ),
       ),
@@ -348,7 +365,7 @@ Widget buildPrice({
         style: TextStyle(
           color: color,
           fontFamily: "SF Pro Text",
-          fontSize: 16.0,
+          fontSize: 14.0, // Reduced font size
           fontWeight: FontWeight.w600,
         ),
       ),

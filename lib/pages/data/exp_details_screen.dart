@@ -31,7 +31,7 @@ class _ExpDetailsScreenState extends State<ExpDetailsScreen> {
     super.initState();
     callApi();
     _googleAdsController.showAds();
-    analytics.setCurrentScreen(screenName: widget.title);
+    analytics.logScreenView(screenName: widget.title);
   }
 
   Future<void> callApi() async {

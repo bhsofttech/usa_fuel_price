@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:usa_gas_price/controller/time_controller.dart';
 import 'package:usa_gas_price/controller/google_ads_controller.dart';
 
@@ -95,7 +94,7 @@ class _HistoryPageState extends State<HistoryPage>
               headerBackgroundColor: primaryBlue,
               headerForegroundColor: Colors.white,
               headerHeadlineStyle: const TextStyle(
-                fontSize: 20,
+                fontSize: 18, // Reduced font size
                 fontWeight: FontWeight.w600,
                 fontFamily: "SF Pro Display",
                 letterSpacing: -0.3,
@@ -103,20 +102,20 @@ class _HistoryPageState extends State<HistoryPage>
               dayStyle: TextStyle(
                 fontFamily: "SF Pro Text",
                 color: textPrimary,
-                fontSize: 14,
+                fontSize: 13, // Reduced font size
                 fontWeight: FontWeight.w400,
                 letterSpacing: -0.24,
               ),
               todayBackgroundColor:
                   MaterialStateProperty.all(primaryBlue.withOpacity(0.12)),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(12), // Smaller radius
               ),
               cancelButtonStyle: TextButton.styleFrom(
                 foregroundColor: primaryBlue,
                 textStyle: const TextStyle(
                   fontFamily: "SF Pro Text",
-                  fontSize: 17,
+                  fontSize: 16, // Reduced font size
                   fontWeight: FontWeight.w600,
                   letterSpacing: -0.41,
                 ),
@@ -125,7 +124,7 @@ class _HistoryPageState extends State<HistoryPage>
                 foregroundColor: primaryBlue,
                 textStyle: const TextStyle(
                   fontFamily: "SF Pro Text",
-                  fontSize: 17,
+                  fontSize: 16, // Reduced font size
                   fontWeight: FontWeight.w600,
                   letterSpacing: -0.41,
                 ),
@@ -182,7 +181,7 @@ class _HistoryPageState extends State<HistoryPage>
         style: TextStyle(
           color: primaryBlue,
           fontFamily: "SF Pro Display",
-          fontSize: 17.0,
+          fontSize: 16.0, // Reduced font size
           fontWeight: FontWeight.w600,
           letterSpacing: 0.5,
         ),
@@ -204,54 +203,39 @@ class _HistoryPageState extends State<HistoryPage>
 
   Widget _buildLoadingIndicator() {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: cardWhite,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.06),
-                  blurRadius: 25,
-                  spreadRadius: 0,
-                  offset: const Offset(0, 8),
-                ),
-              ],
+      child: Container(
+        padding: const EdgeInsets.all(16), // Reduced padding
+        decoration: BoxDecoration(
+          color: cardWhite,
+          borderRadius: BorderRadius.circular(12), // Smaller radius
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.06),
+              blurRadius: 12, // Reduced blur
+              spreadRadius: 0,
+              offset: const Offset(0, 2), // Smaller offset
             ),
-            child: Column(
-              children: [
-                SpinKitFadingCircle(
-                  color: primaryBlue,
-                  size: 45.0,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  "Fetching Historical Events",
-                  style: TextStyle(
-                    color: textPrimary,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: "SF Pro Text",
-                  ),
-                ),
-              ],
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SpinKitFadingCircle(
+              color: primaryBlue,
+              size: 36.0, // Smaller spinner
             ),
-          ),
-          const SizedBox(height: 32),
-          Text(
-            "Loading events for ${dateFormat.format(selectedDate)}...",
-            style: TextStyle(
-              color: textSecondary,
-              fontSize: 15,
-              fontWeight: FontWeight.w400,
-              fontFamily: "SF Pro Text",
+            const SizedBox(height: 12), // Reduced spacing
+            Text(
+              "Fetching Historical Events",
+              style: TextStyle(
+                color: textPrimary,
+                fontSize: 14, // Reduced font size
+                fontWeight: FontWeight.w600,
+                fontFamily: "SF Pro Text",
+              ),
             ),
-            textAlign: TextAlign.center,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -260,68 +244,16 @@ class _HistoryPageState extends State<HistoryPage>
     return FadeTransition(
       opacity: _fadeAnimation,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(height: 10),
-          Text(
-            "Select date",
-            style: TextStyle(
-              color: Colors.blue,
-              fontFamily: "SF Pro Text",
-              fontSize: 18.0,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          SizedBox(height: 10),
-          GestureDetector(
-            onTap: () => _selectDate(context),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [primaryBlue, lightBlue],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(
-                    Icons.calendar_today,
-                    color: Colors.white,
-                    size: 16,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  dateFormat.format(selectedDate),
-                  style: TextStyle(
-                    color: textPrimary,
-                    fontFamily: "SF Pro Text",
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  "(${_timeController.getHistory.length} events)",
-                  style: TextStyle(
-                    color: textSecondary,
-                    fontFamily: "SF Pro Text",
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          _buildHeaderStats(),
           Expanded(
             child: ListView.separated(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 12, vertical: 16), // Balanced padding
               itemCount: _timeController.getHistory.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 16),
+              separatorBuilder: (context, index) =>
+                  const SizedBox(height: 10), // Reduced separator
               itemBuilder: (context, index) {
                 final event = _timeController.getHistory[index];
                 return _buildEventCard(event, index == 0);
@@ -335,10 +267,11 @@ class _HistoryPageState extends State<HistoryPage>
 
   Widget _buildHeaderStats() {
     return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(20),
+      margin: const EdgeInsets.symmetric(
+          horizontal: 12, vertical: 12), // Balanced margin
+      padding: const EdgeInsets.all(16), // Reduced padding
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(12), // Smaller radius
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -353,24 +286,26 @@ class _HistoryPageState extends State<HistoryPage>
         ),
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(8), // Reduced padding
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [primaryBlue, lightBlue],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(10), // Smaller radius
             ),
             child: const Icon(
               Icons.history,
               color: Colors.white,
-              size: 24,
+              size: 20, // Smaller icon
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 12), // Reduced spacing
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -380,9 +315,68 @@ class _HistoryPageState extends State<HistoryPage>
                   style: TextStyle(
                     color: textPrimary,
                     fontFamily: "SF Pro Display",
-                    fontSize: 20.0,
+                    fontSize: 18.0, // Reduced font size
                     fontWeight: FontWeight.w600,
                     letterSpacing: -0.3,
+                  ),
+                ),
+                const SizedBox(height: 4), // Tighter spacing
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 0, vertical: 8), // Balanced padding
+                  child: GestureDetector(
+                    onTap: () => _selectDate(context),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 6, horizontal: 10),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [primaryBlue, lightBlue],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                dateFormat.format(selectedDate),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: "SF Pro Text",
+                                  fontSize: 13.0, // Reduced font size
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                "Change Date",
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: "SF Pro Text",
+                                  fontSize: 13.0, // Reduced font size
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          "(${_timeController.getHistory.length} events)",
+                          style: TextStyle(
+                            color: textSecondary,
+                            fontFamily: "SF Pro Text",
+                            fontSize: 13.0, // Reduced font size
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -396,19 +390,19 @@ class _HistoryPageState extends State<HistoryPage>
   Widget _buildEventCard(dynamic event, bool isFirstItem) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(12), // Smaller radius
         color: cardWhite,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.06),
-            blurRadius: 25,
+            blurRadius: 12, // Reduced blur
             spreadRadius: 0,
-            offset: const Offset(0, 8),
+            offset: const Offset(0, 2), // Smaller offset
           ),
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(16), // Reduced padding
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -416,9 +410,10 @@ class _HistoryPageState extends State<HistoryPage>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  width: 12,
-                  height: 12,
-                  margin: const EdgeInsets.only(top: 4, right: 12),
+                  width: 10, // Reduced size
+                  height: 10, // Reduced size
+                  margin: const EdgeInsets.only(
+                      top: 4, right: 10), // Reduced margin
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [primaryBlue, lightBlue],
@@ -434,7 +429,7 @@ class _HistoryPageState extends State<HistoryPage>
                     style: TextStyle(
                       color: textPrimary,
                       fontFamily: "SF Pro Display",
-                      fontSize: isFirstItem ? 22.0 : 18.0,
+                      fontSize: 16.0, // Reduced font sizes
                       fontWeight: FontWeight.w600,
                       letterSpacing: -0.3,
                     ),
@@ -442,20 +437,10 @@ class _HistoryPageState extends State<HistoryPage>
                 ),
               ],
             ),
-            const SizedBox(height: 6),
-            if (isFirstItem)
-              Text(
-                "Significant Event",
-                style: TextStyle(
-                  color: textSecondary,
-                  fontFamily: "SF Pro Text",
-                  fontSize: 15.0,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            const SizedBox(height: 12),
+
+            const SizedBox(height: 6), // Reduced spacing
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(16), // Reduced padding
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -465,7 +450,7 @@ class _HistoryPageState extends State<HistoryPage>
                     backgroundGray.withOpacity(0.7),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(12), // Smaller radius
                 border: Border.all(
                   color: separatorGray.withOpacity(0.3),
                   width: 0.5,
@@ -479,18 +464,18 @@ class _HistoryPageState extends State<HistoryPage>
                     style: TextStyle(
                       color: textSecondary,
                       fontFamily: "SF Pro Text",
-                      fontSize: 13.0,
+                      fontSize: 12.0, // Reduced font size
                       fontWeight: FontWeight.w500,
                       letterSpacing: 0.1,
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 4), // Reduced spacing
                   Text(
                     event.subTitle,
                     style: TextStyle(
                       color: textPrimary,
                       fontFamily: "SF Pro Display",
-                      fontSize: 16.0,
+                      fontSize: 14.0, // Reduced font size
                       fontWeight: FontWeight.w500,
                       letterSpacing: -0.3,
                     ),

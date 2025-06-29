@@ -1,5 +1,6 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,6 +27,17 @@ class _AgeCalculatorScreenState extends State<AgeCalculatorScreen> {
   List<String> _calculationHistory = [];
   final TextEditingController _birthDateController = TextEditingController();
   final TextEditingController _selectedDateController = TextEditingController();
+
+  // Modern iOS color palette matching gas_state_wise_price.dart and others
+  final Color primaryBlue = const Color(0xFF007AFF);
+  final Color darkBlue = const Color(0xFF0A4B9A);
+  final Color lightBlue = const Color(0xFF4DA6FF);
+  final Color backgroundGray = const Color(0xFFF2F2F7);
+  final Color cardWhite = const Color(0xFFFFFFFF);
+  final Color textPrimary = const Color(0xFF1C1C1E);
+  final Color textSecondary = const Color(0xFF8E8E93);
+  final Color separatorGray = const Color(0xFFD1D1D6);
+  final Color primaryOrange = const Color(0xFFF47D4E); // Retained from original
 
   final List<String> _zodiacSigns = [
     'Capricorn',
@@ -57,16 +69,12 @@ class _AgeCalculatorScreenState extends State<AgeCalculatorScreen> {
     'Turquoise/Zircon'
   ];
 
-  final Color primaryOrange = const Color(0xffF47D4E);
-  final Color darkBlue = const Color(0xFF0A4B9A);
-
   FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void initState() {
     super.initState();
     _loadHistory();
-    Get.find<GoogleAdsController>().showAds();
     analytics.logScreenView(screenName: "Age Calculator");
   }
 
@@ -104,14 +112,45 @@ class _AgeCalculatorScreenState extends State<AgeCalculatorScreen> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: primaryOrange,
-              onPrimary: Colors.white,
-              onSurface: darkBlue,
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: primaryOrange,
+            datePickerTheme: DatePickerThemeData(
+              backgroundColor: cardWhite,
+              headerBackgroundColor: primaryBlue,
+              headerForegroundColor: Colors.white,
+              headerHeadlineStyle: const TextStyle(
+                fontSize: 18, // Reduced font size
+                fontWeight: FontWeight.w600,
+                fontFamily: "SF Pro Display",
+                letterSpacing: -0.3,
+              ),
+              dayStyle: TextStyle(
+                fontFamily: "SF Pro Text",
+                color: textPrimary,
+                fontSize: 13, // Reduced font size
+                fontWeight: FontWeight.w400,
+                letterSpacing: -0.24,
+              ),
+              todayBackgroundColor:
+                  MaterialStateProperty.all(primaryBlue.withOpacity(0.12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12), // Smaller radius
+              ),
+              cancelButtonStyle: TextButton.styleFrom(
+                foregroundColor: primaryBlue,
+                textStyle: const TextStyle(
+                  fontFamily: "SF Pro Text",
+                  fontSize: 16, // Reduced font size
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: -0.41,
+                ),
+              ),
+              confirmButtonStyle: TextButton.styleFrom(
+                foregroundColor: primaryBlue,
+                textStyle: const TextStyle(
+                  fontFamily: "SF Pro Text",
+                  fontSize: 16, // Reduced font size
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: -0.41,
+                ),
               ),
             ),
           ),
@@ -125,6 +164,8 @@ class _AgeCalculatorScreenState extends State<AgeCalculatorScreen> {
         if (isBirthDate) {
           _birthDate = picked;
           _birthDateController.text = DateFormat('yyyy-MM-dd').format(picked);
+          _calculateZodiacAndBirthstone(picked);
+          _calculateBirthSeason(picked);
         } else {
           _selectedDate = picked;
           _selectedDateController.text =
@@ -193,7 +234,7 @@ Age: $years years, $months months, $days days
 Total: $totalMonths months | $totalWeeks weeks | $totalDays days
 Time: $totalHours hours | $totalMinutes minutes | $totalSeconds seconds
 Next Birthday: ${DateFormat('MMMM d, y').format(nextBirthday)} (in $daysUntilBirthday days)
-Zodiac: $_zodiacSign testo
+Zodiac: $_zodiacSign
 Birthstone: $_birthstone
 Season: $_birthSeason
 Life Progress: ${lifePercentage.toStringAsFixed(2)}% of 90 years
@@ -220,7 +261,6 @@ Next Birthday:
 ${DateFormat('MMMM d, y').format(nextBirthday)}
 In $daysUntilBirthday days
 ''';
-
       _lifePercentage = lifePercentage;
     });
   }
@@ -312,21 +352,54 @@ In $daysUntilBirthday days
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Calculation History'),
+        backgroundColor: cardWhite,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12), // Smaller radius
+        ),
+        title: Text(
+          'Calculation History',
+          style: TextStyle(
+            color: textPrimary,
+            fontFamily: "SF Pro Display",
+            fontSize: 18, // Reduced font size
+            fontWeight: FontWeight.w600,
+            letterSpacing: -0.3,
+          ),
+        ),
         content: SizedBox(
           width: double.maxFinite,
           child: _calculationHistory.isEmpty
-              ? const Text('No history available.')
-              : ListView.builder(
+              ? Text(
+                  'No history available.',
+                  style: TextStyle(
+                    color: textSecondary,
+                    fontFamily: "SF Pro Text",
+                    fontSize: 13, // Reduced font size
+                    fontWeight: FontWeight.w400,
+                  ),
+                )
+              : ListView.separated(
                   shrinkWrap: true,
                   itemCount: _calculationHistory.length,
+                  separatorBuilder: (context, index) => const SizedBox(height: 8), // Reduced separator
                   itemBuilder: (context, index) {
-                    return Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          _calculationHistory[index],
-                          style: const TextStyle(fontSize: 12),
+                    return Container(
+                      padding: const EdgeInsets.all(10), // Reduced padding
+                      decoration: BoxDecoration(
+                        color: cardWhite,
+                        borderRadius: BorderRadius.circular(10), // Smaller radius
+                        border: Border.all(
+                          color: separatorGray.withOpacity(0.3),
+                          width: 0.5,
+                        ),
+                      ),
+                      child: Text(
+                        _calculationHistory[index],
+                        style: TextStyle(
+                          color: textPrimary,
+                          fontFamily: "SF Pro Text",
+                          fontSize: 12, // Consistent font size
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
                     );
@@ -340,11 +413,27 @@ In $daysUntilBirthday days
                 _clearHistory();
                 Navigator.pop(context);
               },
-              child: const Text('Clear History'),
+              child: Text(
+                'Clear History',
+                style: TextStyle(
+                  color: primaryBlue,
+                  fontFamily: "SF Pro Text",
+                  fontSize: 16, // Reduced font size
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
+            child: Text(
+              'Close',
+              style: TextStyle(
+                color: primaryBlue,
+                fontFamily: "SF Pro Text",
+                fontSize: 16, // Reduced font size
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
         ],
       ),
@@ -354,30 +443,36 @@ In $daysUntilBirthday days
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F2F7),
+      backgroundColor: backgroundGray,
       appBar: AppBar(
         leadingWidth: 50,
-        backgroundColor: Colors.white,
-        elevation: 0.5,
+        backgroundColor: cardWhite,
+        elevation: 0,
+        shadowColor: Colors.black.withOpacity(0.1),
+        surfaceTintColor: Colors.transparent,
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.dark,
+        ),
         centerTitle: true,
         title: Text(
-          "Age Calculator".toUpperCase(),
+          "Age Calculator",
           style: TextStyle(
-            color: darkBlue,
+            color: primaryBlue,
             fontFamily: "SF Pro Display",
-            fontSize: 18.0,
+            fontSize: 16.0, // Reduced font size
             fontWeight: FontWeight.w600,
-            letterSpacing: 1.0,
+            letterSpacing: 0.5,
           ),
         ),
-        iconTheme: IconThemeData(color: darkBlue),
+        iconTheme: IconThemeData(color: primaryBlue),
         flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
+          decoration: BoxDecoration(
+            color: cardWhite,
             border: Border(
               bottom: BorderSide(
-                color: Color(0xFFD1D1D6),
-                width: 0.5,
+                color: separatorGray,
+                width: 0.33,
               ),
             ),
           ),
@@ -387,33 +482,32 @@ In $daysUntilBirthday days
               ? IconButton(
                   icon: Icon(
                     Icons.history,
-                    color: darkBlue,
+                    color: primaryBlue,
+                    size: 20, // Smaller icon
                   ),
                   tooltip: 'View History',
-                  onPressed: _calculationHistory.isNotEmpty
-                      ? _showHistoryDialog
-                      : null,
+                  onPressed: _showHistoryDialog,
                 )
               : const SizedBox(),
         ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16), // Balanced padding
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16), // Reduced padding
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
-                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12), // Smaller radius
+                  color: cardWhite,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 6,
-                      spreadRadius: 1,
-                      offset: const Offset(0, 2),
+                      color: Colors.black.withOpacity(0.06),
+                      blurRadius: 12, // Reduced blur
+                      spreadRadius: 0,
+                      offset: const Offset(0, 2), // Smaller offset
                     ),
                   ],
                 ),
@@ -423,151 +517,154 @@ In $daysUntilBirthday days
                     Text(
                       'Birth Date',
                       style: TextStyle(
-                        color: darkBlue,
-                        fontFamily: "SF Pro Text",
-                        fontSize: 16.0,
+                        color: textPrimary,
+                        fontFamily: "SF Pro Display",
+                        fontSize: 18.0, // Reduced font size
                         fontWeight: FontWeight.w600,
+                        letterSpacing: -0.3,
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 8), // Reduced spacing
                     TextField(
                       controller: _birthDateController,
                       onTap: () => _selectDate(context, true),
                       decoration: InputDecoration(
                         hintText: 'Select Birth Date',
                         hintStyle: TextStyle(
-                          color: Colors.black.withOpacity(0.5),
+                          color: textSecondary,
                           fontFamily: "SF Pro Text",
-                          fontSize: 14.0,
+                          fontSize: 13.0, // Reduced font size
                           fontWeight: FontWeight.w400,
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide(
-                            color: Colors.grey.withOpacity(0.2),
-                            width: 1,
+                            color: separatorGray.withOpacity(0.3),
+                            width: 0.5,
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide(
-                            color: Colors.grey.withOpacity(0.2),
-                            width: 1,
+                            color: separatorGray.withOpacity(0.3),
+                            width: 0.5,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide(
-                            color: primaryOrange,
+                            color: primaryBlue,
                             width: 1,
                           ),
                         ),
                         filled: true,
-                        fillColor: const Color(0xFFF2F2F7),
+                        fillColor: backgroundGray,
                         contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 14),
+                            horizontal: 12, vertical: 12), // Reduced padding
                         suffixIcon: Icon(
                           Icons.calendar_today,
-                          color: darkBlue.withOpacity(0.5),
-                          size: 20,
+                          color: primaryBlue.withOpacity(0.5),
+                          size: 18, // Smaller icon
                         ),
                       ),
                       readOnly: true,
                       style: TextStyle(
-                        color: darkBlue,
+                        color: textPrimary,
                         fontFamily: "SF Pro Text",
-                        fontSize: 14.0,
+                        fontSize: 13.0, // Reduced font size
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 12), // Reduced spacing
                     Text(
                       'Compare With Date (Optional)',
                       style: TextStyle(
-                        color: darkBlue,
-                        fontFamily: "SF Pro Text",
-                        fontSize: 16.0,
+                        color: textPrimary,
+                        fontFamily: "SF Pro Display",
+                        fontSize: 18.0, // Reduced font size
                         fontWeight: FontWeight.w600,
+                        letterSpacing: -0.3,
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 8), // Reduced spacing
                     TextField(
                       controller: _selectedDateController,
                       onTap: () => _selectDate(context, false),
                       decoration: InputDecoration(
                         hintText: 'Select Date to Compare',
                         hintStyle: TextStyle(
-                          color: Colors.black.withOpacity(0.5),
+                          color: textSecondary,
                           fontFamily: "SF Pro Text",
-                          fontSize: 14.0,
+                          fontSize: 13.0, // Reduced font size
                           fontWeight: FontWeight.w400,
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide(
-                            color: Colors.grey.withOpacity(0.2),
-                            width: 1,
+                            color: separatorGray.withOpacity(0.3),
+                            width: 0.5,
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide(
-                            color: Colors.grey.withOpacity(0.2),
-                            width: 1,
+                            color: separatorGray.withOpacity(0.3),
+                            width: 0.5,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide(
-                            color: primaryOrange,
+                            color: primaryBlue,
                             width: 1,
                           ),
                         ),
                         filled: true,
-                        fillColor: const Color(0xFFF2F2F7),
+                        fillColor: backgroundGray,
                         contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 14),
+                            horizontal: 12, vertical: 12), // Reduced padding
                         suffixIcon: Icon(
                           Icons.calendar_today,
-                          color: darkBlue.withOpacity(0.5),
-                          size: 20,
+                          color: primaryBlue.withOpacity(0.5),
+                          size: 18, // Smaller icon
                         ),
                       ),
                       readOnly: true,
                       style: TextStyle(
-                        color: darkBlue,
+                        color: textPrimary,
                         fontFamily: "SF Pro Text",
-                        fontSize: 14.0,
+                        fontSize: 13.0, // Reduced font size
                         fontWeight: FontWeight.w400,
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 16), // Reduced spacing
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton.icon(
                     icon: Icon(
                       Icons.calculate,
-                      color: Colors.white,
+                      color: cardWhite,
+                      size: 18, // Smaller icon
                     ),
                     label: Text(
                       'Calculate',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: cardWhite,
                         fontFamily: "SF Pro Text",
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 13.0, // Reduced font size
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     onPressed: _birthDate != null ? _calculateAge : null,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryOrange,
+                      backgroundColor: primaryBlue,
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 14,
+                        horizontal: 20, // Reduced padding
+                        vertical: 12, // Reduced padding
                       ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -575,32 +672,34 @@ In $daysUntilBirthday days
                       elevation: 0,
                     ),
                   ),
+                  const SizedBox(width: 12), // Reduced spacing
                   ElevatedButton.icon(
                     icon: Icon(
                       Icons.refresh,
-                      color: primaryOrange,
+                      color: primaryBlue,
+                      size: 18, // Smaller icon
                     ),
                     label: Text(
                       'Reset',
                       style: TextStyle(
-                        color: primaryOrange,
+                        color: primaryBlue,
                         fontFamily: "SF Pro Text",
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 13.0, // Reduced font size
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     onPressed: _resetCalculator,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
+                      backgroundColor: cardWhite,
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 14,
+                        horizontal: 20, // Reduced padding
+                        vertical: 12, // Reduced padding
                       ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                         side: BorderSide(
-                          color: primaryOrange,
-                          width: 1,
+                          color: primaryBlue,
+                          width: 0.5,
                         ),
                       ),
                       elevation: 0,
@@ -608,21 +707,21 @@ In $daysUntilBirthday days
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 16), // Reduced spacing
               if (_ageResult.isNotEmpty ||
                   _nextBirthday.isNotEmpty ||
                   _zodiacSign.isNotEmpty)
                 Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16), // Reduced padding
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(14),
-                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12), // Smaller radius
+                    color: cardWhite,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 6,
-                        spreadRadius: 1,
-                        offset: const Offset(0, 2),
+                        color: Colors.black.withOpacity(0.06),
+                        blurRadius: 12, // Reduced blur
+                        spreadRadius: 0,
+                        offset: const Offset(0, 2), // Smaller offset
                       ),
                     ],
                   ),
@@ -636,26 +735,27 @@ In $daysUntilBirthday days
                             Text(
                               'Age Calculation',
                               style: TextStyle(
-                                color: darkBlue,
-                                fontFamily: "SF Pro Text",
-                                fontSize: 16.0,
+                                color: textPrimary,
+                                fontFamily: "SF Pro Display",
+                                fontSize: 18.0, // Reduced font size
                                 fontWeight: FontWeight.w600,
+                                letterSpacing: -0.3,
                               ),
                             ),
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 8), // Reduced spacing
                             Text(
                               _ageResult,
                               style: TextStyle(
-                                color: darkBlue.withOpacity(0.8),
+                                color: textPrimary,
                                 fontFamily: "SF Pro Text",
-                                fontSize: 14.0,
+                                fontSize: 13.0, // Reduced font size
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
                             const Divider(
-                              height: 24,
+                              height: 16, // Reduced height
                               thickness: 0.5,
-                              color: Color(0xFFD1D1D6),
+                              color: Colors.grey,
                             ),
                           ],
                         ),
@@ -666,26 +766,58 @@ In $daysUntilBirthday days
                             Text(
                               'Birthday Information',
                               style: TextStyle(
-                                color: darkBlue,
-                                fontFamily: "SF Pro Text",
-                                fontSize: 16.0,
+                                color: textPrimary,
+                                fontFamily: "SF Pro Display",
+                                fontSize: 18.0, // Reduced font size
                                 fontWeight: FontWeight.w600,
+                                letterSpacing: -0.3,
                               ),
                             ),
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 8), // Reduced spacing
                             Text(
                               _nextBirthday,
                               style: TextStyle(
-                                color: darkBlue.withOpacity(0.8),
+                                color: textPrimary,
                                 fontFamily: "SF Pro Text",
-                                fontSize: 14.0,
+                                fontSize: 13.0, // Reduced font size
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
                             const Divider(
-                              height: 24,
+                              height: 16, // Reduced height
                               thickness: 0.5,
-                              color: Color(0xFFD1D1D6),
+                                color: Colors.grey
+                            ),
+                          ],
+                        ),
+                      if (_zodiacSign.isNotEmpty)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Astrological Information',
+                              style: TextStyle(
+                                color: textPrimary,
+                                fontFamily: "SF Pro Display",
+                                fontSize: 18.0, // Reduced font size
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: -0.3,
+                              ),
+                            ),
+                            const SizedBox(height: 8), // Reduced spacing
+                            Text(
+                              'Zodiac: $_zodiacSign\nBirthstone: $_birthstone\nSeason: $_birthSeason',
+                              style: TextStyle(
+                                color: textPrimary,
+                                fontFamily: "SF Pro Text",
+                                fontSize: 13.0, // Reduced font size
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            const Divider(
+                              height: 16, // Reduced height
+                              thickness: 0.5,
+                                color: Colors.grey
                             ),
                           ],
                         ),
@@ -696,31 +828,32 @@ In $daysUntilBirthday days
                             Text(
                               'Life Progress',
                               style: TextStyle(
-                                color: darkBlue,
-                                fontFamily: "SF Pro Text",
-                                fontSize: 16.0,
+                                color: textPrimary,
+                                fontFamily: "SF Pro Display",
+                                fontSize: 18.0, // Reduced font size
                                 fontWeight: FontWeight.w600,
+                                letterSpacing: -0.3,
                               ),
                             ),
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 8), // Reduced spacing
                             Text(
                               '${_lifePercentage.toStringAsFixed(2)}% of 90 years lived',
                               style: TextStyle(
-                                color: darkBlue.withOpacity(0.8),
+                                color: textPrimary,
                                 fontFamily: "SF Pro Text",
-                                fontSize: 14.0,
+                                fontSize: 13.0, // Reduced font size
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 8), // Reduced spacing
                             LinearProgressIndicator(
                               value: _lifePercentage / 100,
-                              backgroundColor: const Color(0xFFD1D1D6),
+                              backgroundColor: separatorGray,
                               valueColor: AlwaysStoppedAnimation<Color>(
-                                primaryOrange,
+                                primaryBlue,
                               ),
-                              minHeight: 8,
-                              borderRadius: BorderRadius.circular(4),
+                              minHeight: 6, // Reduced height
+                              borderRadius: BorderRadius.circular(3), // Smaller radius
                             ),
                           ],
                         ),

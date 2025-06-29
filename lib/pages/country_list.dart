@@ -97,7 +97,7 @@ class _CountryPageState extends State<CountryPage>
         style: TextStyle(
           color: primaryBlue,
           fontFamily: "SF Pro Display",
-          fontSize: 17.0,
+          fontSize: 16.0, // Reduced font size
           fontWeight: FontWeight.w600,
           letterSpacing: 0.5,
         ),
@@ -119,28 +119,39 @@ class _CountryPageState extends State<CountryPage>
 
   Widget _buildLoadingIndicator() {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Column(
-            children: [
-              SpinKitFadingCircle(
-                color: primaryBlue,
-                size: 40.0,
+      child: Container(
+        padding: const EdgeInsets.all(16), // Reduced padding
+        decoration: BoxDecoration(
+          color: cardWhite,
+          borderRadius: BorderRadius.circular(12), // Smaller radius
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.06),
+              blurRadius: 12, // Reduced blur
+              spreadRadius: 0,
+              offset: const Offset(0, 2), // Smaller offset
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SpinKitFadingCircle(
+              color: primaryBlue,
+              size: 36.0, // Smaller spinner
+            ),
+            const SizedBox(height: 12), // Reduced spacing
+            Text(
+              "Fetching Countries",
+              style: TextStyle(
+                color: textPrimary,
+                fontSize: 14, // Reduced font size
+                fontWeight: FontWeight.w600,
+                fontFamily: "SF Pro Text",
               ),
-              const SizedBox(height: 16),
-              Text(
-                "Fetching Countries",
-                style: TextStyle(
-                  color: textPrimary,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: "SF Pro Text",
-                ),
-              ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -154,9 +165,11 @@ class _CountryPageState extends State<CountryPage>
           _buildHeaderStats(),
           Expanded(
             child: ListView.separated(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 12, vertical: 16), // Balanced padding
               itemCount: _timeController.getCountrys.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 16),
+              separatorBuilder: (context, index) =>
+                  const SizedBox(height: 10), // Reduced separator
               itemBuilder: (context, index) {
                 final country = _timeController.getCountrys[index];
                 return _buildCountryCard(country, index == 0);
@@ -170,10 +183,11 @@ class _CountryPageState extends State<CountryPage>
 
   Widget _buildHeaderStats() {
     return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(20),
+      margin: const EdgeInsets.symmetric(
+          horizontal: 12, vertical: 16), // Balanced margin
+      padding: const EdgeInsets.all(16), // Reduced padding
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(12), // Smaller radius
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -190,22 +204,22 @@ class _CountryPageState extends State<CountryPage>
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(8), // Reduced padding
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [primaryBlue, lightBlue],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(10), // Smaller radius
             ),
             child: const Icon(
               Icons.flag,
               color: Colors.white,
-              size: 24,
+              size: 20, // Smaller icon
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 12), // Reduced spacing
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -215,18 +229,18 @@ class _CountryPageState extends State<CountryPage>
                   style: TextStyle(
                     color: textPrimary,
                     fontFamily: "SF Pro Display",
-                    fontSize: 20.0,
+                    fontSize: 18.0, // Reduced font size
                     fontWeight: FontWeight.w600,
                     letterSpacing: -0.3,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 4), // Tighter spacing
                 Text(
                   "${_timeController.getCountrys.length} countries available",
                   style: TextStyle(
                     color: textSecondary,
                     fontFamily: "SF Pro Text",
-                    fontSize: 14.0,
+                    fontSize: 13.0, // Reduced font size
                     fontWeight: FontWeight.w400,
                   ),
                 ),
@@ -240,30 +254,31 @@ class _CountryPageState extends State<CountryPage>
 
   Widget _buildCountryCard(dynamic country, bool isFirstItem) {
     return InkWell(
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(12), // Smaller radius
       onTap: () {
         Get.to(() => HoliDayPage(countryInfo: country),
             transition: Transition.cupertino);
       },
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(12), // Smaller radius
           color: cardWhite,
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.06),
-              blurRadius: 25,
+              blurRadius: 12, // Reduced blur
               spreadRadius: 0,
-              offset: const Offset(0, 8),
+              offset: const Offset(0, 2), // Smaller offset
             ),
           ],
         ),
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(16), // Reduced padding
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: const EdgeInsets.all(6),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [primaryBlue, lightBlue],
@@ -275,7 +290,7 @@ class _CountryPageState extends State<CountryPage>
                 child: const Icon(
                   Icons.flag,
                   color: Colors.white,
-                  size: 16,
+                  size: 14, // Smaller icon
                 ),
               ),
               const SizedBox(width: 8),
@@ -284,39 +299,39 @@ class _CountryPageState extends State<CountryPage>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      country.country,
+                      country.country.toString().trim(),
                       style: TextStyle(
                         color: textPrimary,
                         fontFamily: "SF Pro Display",
-                        fontSize: isFirstItem ? 22.0 : 18.0,
+                        fontSize: 16.0, // Reduced font sizes
                         fontWeight: FontWeight.w600,
                         letterSpacing: -0.3,
                       ),
                     ),
-                    const SizedBox(height: 6),
-                    if (isFirstItem)
-                      Text(
-                        "Select to view holidays",
-                        style: TextStyle(
-                          color: textSecondary,
-                          fontFamily: "SF Pro Text",
-                          fontSize: 15.0,
-                          fontWeight: FontWeight.w400,
-                        ),
+                    const SizedBox(height: 4), // Reduced spacing
+
+                    Text(
+                      "Select to view holidays",
+                      style: TextStyle(
+                        color: textSecondary,
+                        fontFamily: "SF Pro Text",
+                        fontSize: 13.0, // Reduced font size
+                        fontWeight: FontWeight.w400,
                       ),
+                    ),
                   ],
                 ),
               ),
               Container(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(6), // Reduced padding
                 decoration: BoxDecoration(
                   color: primaryBlue.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(10), // Smaller radius
                 ),
                 child: Icon(
                   Icons.chevron_right_rounded,
                   color: primaryBlue,
-                  size: 20,
+                  size: 18, // Smaller icon
                 ),
               ),
             ],

@@ -18,7 +18,7 @@ class GoogleAdsController extends GetxController {
 
   final banneriOSTest = '';
   final interiOSTest = '';
-  final nativeiOSTest = '';
+  final nativeiOSTest = ''; 
   final rewardediOSTest = "";
 
   final banneriOS = "";
@@ -28,7 +28,7 @@ class GoogleAdsController extends GetxController {
 
   // Increment count variable value on every button tap action.
 
-  int noOfCount = 8;
+  int noOfCount = 6;
   int count = 0;
   RxBool isShow = true.obs;
 

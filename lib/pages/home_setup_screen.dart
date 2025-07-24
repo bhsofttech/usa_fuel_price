@@ -1,8 +1,10 @@
 // ignore_for_file: unused_field
 
+import 'package:usa_gas_price/controller/eu_fule_controller.dart';
 import 'package:usa_gas_price/controller/gas_controller.dart';
 import 'package:usa_gas_price/controller/time_controller.dart';
 import 'package:usa_gas_price/controller/update_controller.dart';
+import 'package:usa_gas_price/pages/europe/eu_service_screen.dart';
 import 'package:usa_gas_price/pages/service_page.dart';
 import 'package:usa_gas_price/pages/vehicle_trip.dart';
 import 'package:usa_gas_price/pages/desial_price.dart';
@@ -23,6 +25,7 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
   final GasController _gasController = Get.put(GasController());
   final TimeController _timeController = Get.put(TimeController());
   final UpdateController _updateController = Get.put(UpdateController());
+  final EUFuelController _euFuelController = Get.put(EUFuelController());
   final Color primaryBlue = const Color(0xFF007AFF); // iOS system blue
   final Color darkBlue = const Color(0xFF0A4B9A); // Darker blue variant
 
@@ -45,16 +48,16 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
             child: Column(
               children: [
                 _selectedIndex == 0
-                    ? Expanded(child: GasMapHitTestApp())
+                    ? const Expanded(child: GasMapHitTestApp())
                     : _selectedIndex == 1
-                        ? Expanded(child: const GasPrice())
+                        ? const Expanded(child: GasPrice())
                         : _selectedIndex == 2
-                            ? Expanded(child: const DesialPrice())
+                            ? const Expanded(child: DesialPrice())
                             : _selectedIndex == 3
-                                ? Expanded(child: const EvPrice())
+                                ? const Expanded(child: EvPrice())
                                 : _selectedIndex == 4
-                                    ? Expanded(child: VehicleScreen())
-                                    : Expanded(child: ServicePage()),
+                                    ? const Expanded(child: EUServiceScreen())
+                                    : const Expanded(child: ServicePage()),
                 _buildIOSNavBar(),
               ],
             ),
@@ -137,7 +140,7 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
             _buildNavItem(
               icon: Icons.directions_car_outlined,
               activeIcon: Icons.directions_car,
-              label: 'Vehicle',
+              label: 'Europe',
               index: 4,
             ),
             _buildNavItem(

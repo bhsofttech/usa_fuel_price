@@ -4,10 +4,19 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:usa_gas_price/model/stock_data.dart';
 import 'package:usa_gas_price/pages/splash_screen.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:firebase_core/firebase_core.dart';
+
+List<StockData>? cachedbLargeCapStocksFuture;
+List<StockData>? cachedbLossStocksFuture;
+List<StockData>? cachedbGStocksFuture;
+List<StockData>? cachedbIndicesFuture;
+List<StockData>? cachedbETFFuture;
+List<StockData>? cachedbfuturesFuture;
+List<StockData>? cachedbForexFuture;
 
 Future<Database>? myDatabase;
 void main() async {
@@ -272,20 +281,20 @@ enum CountryList {
   Vanuatu
 }
 
-    Future<bool> checkConnection() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
+Future<bool> checkConnection() async {
+  var connectivityResult = await (Connectivity().checkConnectivity());
 
-    if (connectivityResult.first == ConnectivityResult.mobile) {
-      return true;
-    } else if (connectivityResult.first == ConnectivityResult.wifi) {
-      return true;
-    }
-    return false;
+  if (connectivityResult.first == ConnectivityResult.mobile) {
+    return true;
+  } else if (connectivityResult.first == ConnectivityResult.wifi) {
+    return true;
   }
+  return false;
+}
 
-     String convertDate({required String date}) {
-    String dateInput = date;
-    DateTime parsedDate = DateTime.parse(dateInput);
-    String formattedDate = DateFormat('d MMMM yyyy').format(parsedDate);
-    return formattedDate;
-  }
+String convertDate({required String date}) {
+  String dateInput = date;
+  DateTime parsedDate = DateTime.parse(dateInput);
+  String formattedDate = DateFormat('d MMMM yyyy').format(parsedDate);
+  return formattedDate;
+}

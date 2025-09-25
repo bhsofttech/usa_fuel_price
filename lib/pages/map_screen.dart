@@ -218,13 +218,13 @@ class _GasMapHitTestAppState extends State<GasMapHitTestApp> {
                           Text(
                             "Select a state to check fuel prices",
                             style: TextStyle(
-                              color: const Color(0xFF8E8E93),
+                              color: primaryBlue,
                               fontFamily: "SF Pro Text",
-                              fontSize: 14,
+                              fontSize: 16,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 8),
                           GestureDetector(
                             onTapDown: (e) {},
                             child: MouseRegion(
@@ -259,34 +259,38 @@ class _GasMapHitTestAppState extends State<GasMapHitTestApp> {
                                   if (hoveredState != null)
                                     Container(
                                       width: MediaQuery.of(context).size.width,
-                                      margin: const EdgeInsets.only(
-                                          bottom: 12), // Reduced margin
+                                      // Reduced margin
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 12,
                                           vertical: 10), // Reduced padding
                                       decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(
-                                            10), // Smaller radius
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors: [
+                                            Colors.white.withOpacity(0.9),
+                                            Colors.white.withOpacity(0.6),
+                                          ],
+                                        ),
+                                        borderRadius: BorderRadius.circular(20),
                                         border: Border.all(
-                                          color: Colors.grey.withOpacity(0.3),
-                                          width: 0.5,
+                                          color: Colors.white.withOpacity(0.3),
+                                          width: 1.5,
                                         ),
                                         boxShadow: [
                                           BoxShadow(
                                             color:
-                                                Colors.black.withOpacity(0.06),
-                                            blurRadius: 12, // Adjusted blur
-                                            spreadRadius: 0, // Removed spread
-                                            offset: const Offset(
-                                                0, 2), // Consistent offset
+                                                Colors.black.withOpacity(0.1),
+                                            blurRadius: 20,
+                                            spreadRadius: 0,
+                                            offset: const Offset(0, 8),
                                           ),
                                         ],
                                       ),
                                       child: Text(
                                         getTooltipText(hoveredState!, gasData),
                                         style: const TextStyle(
-                                          color: const Color(0xFF1C1C1E),
+                                          color: Color(0xFF1C1C1E),
                                           fontFamily: "SF Pro Text",
                                           fontSize: 13, // Reduced font size
                                           fontWeight: FontWeight.w500,

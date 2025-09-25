@@ -10,25 +10,29 @@ class GoogleAdsController extends GetxController {
   final interAndroidTest = 'ca-app-pub-3940256099942544/1033173712';
   final nativeAndroidTest = 'ca-app-pub-3940256099942544/2247696110';
   final rewardedAndroidTest = "ca-app-pub-3940256099942544/5224354917";
+  final appOpenAndroidTest = "ca-app-pub-3940256099942544/9257395921";
 
-  final bannerAndroid = "";
+  final bannerAndroid = "ca-app-pub-4630063238239050/6296336993";
   final interAndroid = "";
   final nativeAndroid = "";
   final rewardedAndroid = "ca-app-pub-4630063238239050/3858959112";
+  final appOpenAndroid = "ca-app-pub-4630063238239050/3262694131";
 
   final banneriOSTest = '';
   final interiOSTest = '';
-  final nativeiOSTest = ''; 
+  final nativeiOSTest = '';
   final rewardediOSTest = "";
+  final appOpenIosTest = "";
 
   final banneriOS = "";
   final interiOS = "";
   final nativeiOS = "";
   final rewardediOS = "";
+  final appOpeniOS = "";
 
   // Increment count variable value on every button tap action.
 
-  int noOfCount = 6;
+  int noOfCount = 5;
   int count = 0;
   RxBool isShow = true.obs;
 
@@ -105,13 +109,58 @@ class GoogleAdsController extends GetxController {
     _rewardedAd = null;
   }
 
-  // BannerAd? bannerAd;
-  // -------------------------- Banner ads --------------------------//
+  //----------------------------- App opne Ads -------------------------------//
+
+  // AppOpenAd? _appOpenAd;
+
+  // Future<void> loadAppOpenAd() async {
+  //   AppOpenAd.load(
+  //     adUnitId: getAppOpneId(), // test id
+  //     request: const AdRequest(),
+  //     adLoadCallback: AppOpenAdLoadCallback(
+  //       onAdLoaded: (ad) {
+  //         _appOpenAd = ad;
+  //       },
+  //       onAdFailedToLoad: (error) {
+  //         debugPrint('AppOpenAd failed to load: $error');
+  //       },
+  //     ),
+  //   );
+  // }
+
+  // bool _isShowingAd = false;
+
+  // Future<void> showAppOpenAd() async {
+  //   if (_appOpenAd == null || _isShowingAd) return;
+
+  //   _appOpenAd!.fullScreenContentCallback = FullScreenContentCallback(
+  //     onAdShowedFullScreenContent: (ad) {
+  //       _isShowingAd = true;
+  //       debugPrint('Ad showed.');
+  //     },
+  //     onAdDismissedFullScreenContent: (ad) {
+  //       _isShowingAd = false;
+  //       ad.dispose();
+  //       loadAppOpenAd(); // Preload next ad
+  //     },
+  //     onAdFailedToShowFullScreenContent: (ad, error) {
+  //       _isShowingAd = false;
+  //       ad.dispose();
+  //       loadAppOpenAd();
+  //     },
+  //   );
+  //   _appOpenAd!.show();
+  // }
+
+//----------------------------------------------------------------------------//
+
+//  BannerAd? bannerAd;
+  // ------------------------------- Banner ads ------------------------------//
   // Future<void> loadBannerAds() async {
   //   BannerAd(
   //     adUnitId: getBannerId(),
   //     request: const AdRequest(),
-  //     size: AdSize.largeBanner,
+  //     size: AdSize.banner,
   //     listener: BannerAdListener(
   //       onAdLoaded: (ad) {
   //         bannerAd = ad as BannerAd;
@@ -187,35 +236,35 @@ class GoogleAdsController extends GetxController {
   // }
 
   // Helper methods
-  String getBannerId() {
-    return Platform.isAndroid
-        ? isForTest
-            ? bannerAndroidTest
-            : bannerAndroid
-        : isForTest
-            ? banneriOSTest
-            : banneriOS;
-  }
+  // String getBannerId() {
+  //   return Platform.isAndroid
+  //       ? isForTest
+  //           ? bannerAndroidTest
+  //           : bannerAndroid
+  //       : isForTest
+  //           ? banneriOSTest
+  //           : banneriOS;
+  // }
 
-  String getInterId() {
-    return Platform.isAndroid
-        ? isForTest
-            ? interAndroidTest
-            : interAndroid
-        : isForTest
-            ? interiOSTest
-            : interiOS;
-  }
+  // String getInterId() {
+  //   return Platform.isAndroid
+  //       ? isForTest
+  //           ? interAndroidTest
+  //           : interAndroid
+  //       : isForTest
+  //           ? interiOSTest
+  //           : interiOS;
+  // }
 
-  String getNativeId() {
-    return Platform.isAndroid
-        ? isForTest
-            ? nativeAndroidTest
-            : nativeAndroid
-        : isForTest
-            ? nativeiOSTest
-            : nativeiOS;
-  }
+  // String getNativeId() {
+  //   return Platform.isAndroid
+  //       ? isForTest
+  //           ? nativeAndroidTest
+  //           : nativeAndroid
+  //       : isForTest
+  //           ? nativeiOSTest
+  //           : nativeiOS;
+  // }
 
   String getRewrededId() {
     return Platform.isAndroid
@@ -226,4 +275,14 @@ class GoogleAdsController extends GetxController {
             ? rewardediOSTest
             : rewardediOS;
   }
+
+  // String getAppOpneId() {
+  //   return Platform.isAndroid
+  //       ? isForTest
+  //           ? appOpenAndroidTest
+  //           : appOpenAndroid
+  //       : isForTest
+  //           ? appOpenIosTest
+  //           : appOpeniOS;
+  // }
 }

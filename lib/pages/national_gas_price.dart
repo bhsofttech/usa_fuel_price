@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:usa_gas_price/controller/gas_controller.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +12,7 @@ class NationalGasPrice extends StatefulWidget {
 
 class _NationalGasPriceState extends State<NationalGasPrice> {
   final GasController _gasController = Get.find();
-  final Color primaryOrange = const Color(0xffF47D4E);
-  final Color darkBlue = const Color(0xFF0A4B9A);
+  final Color primaryBlue = const Color(0xFF007AFF);
 
   @override
   void initState() {
@@ -35,14 +33,25 @@ class _NationalGasPriceState extends State<NationalGasPrice> {
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            color: Colors.white,
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.white.withOpacity(0.9),
+                Colors.white.withOpacity(0.6),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: Colors.white.withOpacity(0.3),
+              width: 1.5,
+            ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 6,
-                spreadRadius: 1,
-                offset: const Offset(0, 2),
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 20,
+                spreadRadius: 0,
+                offset: const Offset(0, 8),
               ),
             ],
           ),
@@ -51,7 +60,7 @@ class _NationalGasPriceState extends State<NationalGasPrice> {
               Text(
                 "NATIONAL AVG GAS PRICE",
                 style: TextStyle(
-                  color: darkBlue.withOpacity(0.8),
+                  color: primaryBlue,
                   fontFamily: "SF Pro Text",
                   fontSize: 14.0,
                   fontWeight: FontWeight.w600,
@@ -63,7 +72,7 @@ class _NationalGasPriceState extends State<NationalGasPrice> {
                 DateFormat('MMMM d, yyyy')
                     .format(DateTime.now().toUtc().toLocal()),
                 style: TextStyle(
-                  color: darkBlue.withOpacity(0.6),
+                  color: primaryBlue.withOpacity(0.6),
                   fontFamily: "SF Pro Text",
                   fontSize: 13.0,
                   fontWeight: FontWeight.w500,
@@ -73,7 +82,7 @@ class _NationalGasPriceState extends State<NationalGasPrice> {
               Text(
                 _gasController.gasInfoAvg[0].regular,
                 style: TextStyle(
-                  color: primaryOrange,
+                  color: primaryBlue,
                   fontFamily: "SF Pro Display",
                   fontSize: 42.0,
                   fontWeight: FontWeight.w700,
@@ -93,22 +102,22 @@ class _NationalGasPriceState extends State<NationalGasPrice> {
                     buildPrice(
                       title: "Regular",
                       price: _gasController.gasInfoAvg[0].regular,
-                      color: primaryOrange,
+                      color: primaryBlue,
                     ),
                     buildPrice(
                       title: "MidGrade",
                       price: _gasController.gasInfoAvg[0].midGrade,
-                      color: primaryOrange,
+                      color: primaryBlue,
                     ),
                     buildPrice(
                       title: "Premium",
                       price: _gasController.gasInfoAvg[0].premium,
-                      color: primaryOrange,
+                      color: primaryBlue,
                     ),
                     buildPrice(
                       title: "Diesel",
                       price: _gasController.gasInfoAvg[0].diesel,
-                      color: primaryOrange,
+                      color: primaryBlue,
                     ),
                   ],
                 ),
@@ -116,7 +125,6 @@ class _NationalGasPriceState extends State<NationalGasPrice> {
             ],
           ),
         ),
-        const SizedBox(height: 16),
         // Regional Prices List
         ListView.separated(
           physics: const NeverScrollableScrollPhysics(),
@@ -128,14 +136,25 @@ class _NationalGasPriceState extends State<NationalGasPrice> {
             return Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(14),
-                color: Colors.white,
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.white.withOpacity(0.9),
+                    Colors.white.withOpacity(0.6),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.3),
+                  width: 1.5,
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 6,
-                    spreadRadius: 1,
-                    offset: const Offset(0, 2),
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 20,
+                    spreadRadius: 0,
+                    offset: const Offset(0, 8),
                   ),
                 ],
               ),
@@ -145,7 +164,7 @@ class _NationalGasPriceState extends State<NationalGasPrice> {
                   Text(
                     _gasController.gasInfoAvg[index].city,
                     style: TextStyle(
-                      color: darkBlue,
+                      color: primaryBlue,
                       fontFamily: "SF Pro Text",
                       fontSize: 16.0,
                       fontWeight: FontWeight.w600,
@@ -165,22 +184,22 @@ class _NationalGasPriceState extends State<NationalGasPrice> {
                         buildPrice(
                           title: "Regular",
                           price: _gasController.gasInfoAvg[index].regular,
-                          color: darkBlue,
+                          color: primaryBlue,
                         ),
                         buildPrice(
                           title: "MidGrade",
                           price: _gasController.gasInfoAvg[index].midGrade,
-                          color: darkBlue,
+                          color: primaryBlue,
                         ),
                         buildPrice(
                           title: "Premium",
                           price: _gasController.gasInfoAvg[index].premium,
-                          color: darkBlue,
+                          color: primaryBlue,
                         ),
                         buildPrice(
                           title: "Diesel",
                           price: _gasController.gasInfoAvg[index].diesel,
-                          color: darkBlue,
+                          color: primaryBlue,
                         ),
                       ],
                     ),

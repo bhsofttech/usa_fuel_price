@@ -226,7 +226,10 @@ class _GasMapHitTestAppState extends State<GasMapHitTestApp> {
                           ),
                           const SizedBox(height: 8),
                           GestureDetector(
-                            onTapDown: (e) {},
+                            onTapDown: (e) {
+                              tooltipPos = e.localPosition;
+                              _detectHit(e.localPosition, mapSize);
+                            },
                             child: MouseRegion(
                               onHover: (e) {
                                 tooltipPos = e.localPosition;

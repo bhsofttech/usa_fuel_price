@@ -30,12 +30,7 @@ class UnitConverterApp extends StatelessWidget {
           ),
           iconTheme: IconThemeData(color: darkBlue),
         ),
-        cardTheme: CardTheme(
-          elevation: 2,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-          margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        ),
+    
         inputDecorationTheme: InputDecorationTheme(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
@@ -82,12 +77,7 @@ class UnitConverterApp extends StatelessWidget {
           ),
           iconTheme: IconThemeData(color: darkBlue),
         ),
-        cardTheme: CardTheme(
-          elevation: 2,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-          margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        ),
+      
         inputDecorationTheme: InputDecorationTheme(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),

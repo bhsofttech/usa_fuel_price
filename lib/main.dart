@@ -21,7 +21,17 @@ List<StockData>? cachedbForexFuture;
 Future<Database>? myDatabase;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+
+  await Firebase.initializeApp(
+    options: FirebaseOptions(
+    apiKey: 'AIzaSyA9V80462I7tr-YM6_3WEYRg-M9AflkVF4',
+    appId: '1:22815255159:android:9e6cc153edb0ce5dc67472',
+    messagingSenderId: '22815255159',
+    projectId: 'usa-fuel-prices',
+    storageBucket: 'com.bhinfotech.usafuelprice',
+  ));
+
+
   MobileAds.instance.initialize();
 
   myDatabase = openDatabase(

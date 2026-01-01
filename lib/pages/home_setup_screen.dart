@@ -1,10 +1,14 @@
 // ignore_for_file: unused_field
 
+import 'package:usa_gas_price/controller/airlines_controller.dart';
 import 'package:usa_gas_price/controller/eu_fule_controller.dart';
 import 'package:usa_gas_price/controller/gas_controller.dart';
+import 'package:usa_gas_price/controller/google_ads_controller.dart';
 import 'package:usa_gas_price/controller/stock_controller.dart';
 import 'package:usa_gas_price/controller/time_controller.dart';
 import 'package:usa_gas_price/controller/update_controller.dart';
+import 'package:usa_gas_price/controller/weather_controller.dart';
+import 'package:usa_gas_price/flight/home_setup_screen.dart';
 import 'package:usa_gas_price/pages/europe/eu_service_screen.dart';
 import 'package:usa_gas_price/pages/market/market_page.dart';
 import 'package:usa_gas_price/pages/service_page.dart';
@@ -14,6 +18,7 @@ import 'package:usa_gas_price/pages/gas_price.dart';
 import 'package:usa_gas_price/pages/map_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:usa_gas_price/pages/weather_screen.dart';
 
 class HomeSetupScreen extends StatefulWidget {
   const HomeSetupScreen({super.key});
@@ -28,6 +33,8 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
   final UpdateController _updateController = Get.put(UpdateController());
   final EUFuelController _euFuelController = Get.put(EUFuelController());
   final StockController stockConroller = Get.put(StockController());
+  final WeatherController weatherController = Get.put(WeatherController());
+  final AirlinesController _airlinesController = Get.put(AirlinesController());
   final Color primaryBlue = const Color(0xFF007AFF); // iOS system blue
   final Color darkBlue = const Color(0xFF0A4B9A); // Darker blue variant
 
@@ -36,6 +43,9 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Get.find<GoogleAdsController>().showAppOpenAd();
+    });
   }
 
   @override
@@ -48,24 +58,25 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
         bottomNavigationBar: _buildIOSNavBar(),
         body: Container(
           color: const Color(0xFFF2F2F7),
-          child: Column(
-            children: [
-              _selectedIndex == 0
-                  ? const Expanded(child: GasMapHitTestApp())
-                  : _selectedIndex == 1
-                      ? const Expanded(child: MarketPage())
-                      : _selectedIndex == 2
-                          ? const Expanded(child: GasPrice())
-                          : _selectedIndex == 3
-                              ? const Expanded(child: DesialPrice())
-                              : _selectedIndex == 4
-                                  ? const Expanded(child: EvPrice())
-                                  : _selectedIndex == 5
-                                      ? const Expanded(child: EUServiceScreen())
-                                      : const Expanded(child: ServicePage())
-              //  _buildIOSNavBar(),
-            ],
-          ),
+          child: Column(children: [
+            _selectedIndex == 0
+                ? const Expanded(child: GasMapHitTestApp())
+                : _selectedIndex == 1
+                    ? const Expanded(child: GasPrice())
+                    : _selectedIndex == 2
+                        ? const Expanded(child: FlightHomeSetupScreen())
+                        : _selectedIndex == 3
+                            ? const Expanded(child: DesialPrice())
+                            : _selectedIndex == 4
+                                ? const Expanded(child: EvPrice())
+                                : _selectedIndex == 5
+                                    ? const Expanded(
+                                        child: MarketPage())
+                                    : _selectedIndex == 6
+                                        ? const Expanded(
+                                            child: EUServiceScreen())
+                                        : const Expanded(child: ServicePage())
+          ]),
         ),
       ),
     );
@@ -76,7 +87,7 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 3),
+          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             color: Colors.red,
@@ -127,15 +138,15 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
                   index: 0,
                 ),
                 _buildNavItem(
-                  icon: Icons.bar_chart_rounded,
-                  activeIcon: Icons.bar_chart_rounded,
-                  label: 'Stock',
-                  index: 1,
-                ),
-                _buildNavItem(
                   icon: Icons.local_gas_station_outlined,
                   activeIcon: Icons.local_gas_station,
                   label: 'Gas',
+                  index: 1,
+                ),
+                _buildNavItem(
+                  icon: Icons.flight,
+                  activeIcon: Icons.flight,
+                  label: 'Flights',
                   index: 2,
                 ),
                 _buildNavItem(
@@ -151,44 +162,27 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
                   index: 4,
                 ),
                 _buildNavItem(
+                  icon: Icons.bar_chart_rounded,
+                  activeIcon: Icons.bar_chart_rounded,
+                  label: 'Stock',
+                  index: 5,
+                ),
+                _buildNavItem(
                   icon: Icons.directions_car_outlined,
                   activeIcon: Icons.directions_car,
                   label: 'Europe',
-                  index: 5,
+                  index: 6,
                 ),
                 _buildNavItem(
                   icon: Icons.more_horiz,
                   activeIcon: Icons.more_horiz,
                   label: 'More',
-                  index: 6,
+                  index: 8,
                 ),
               ],
             ),
           ),
         ),
-        // GetBuilder<GoogleAdsController>(
-        //   id: "Banner",
-        //   builder: (controller) => Get.find<GoogleAdsController>().bannerAd !=
-        //           null
-        //       ? Align(
-        //           alignment: Alignment.topCenter,
-        //           child: SizedBox(
-        //             width: Get.find<GoogleAdsController>()
-        //                 .bannerAd!
-        //                 .size
-        //                 .width
-        //                 .toDouble(),
-        //             height: Get.find<GoogleAdsController>()
-        //                 .bannerAd!
-        //                 .size
-        //                 .height
-        //                 .toDouble(),
-        //             child:
-        //                 AdWidget(ad: Get.find<GoogleAdsController>().bannerAd!),
-        //           ),
-        //         )
-        //       : const SizedBox(),
-        // )
       ],
     );
   }

@@ -111,46 +111,46 @@ class GoogleAdsController extends GetxController {
 
   //----------------------------- App opne Ads -------------------------------//
 
-  // AppOpenAd? _appOpenAd;
+  AppOpenAd? _appOpenAd;
 
-  // Future<void> loadAppOpenAd() async {
-  //   AppOpenAd.load(
-  //     adUnitId: getAppOpneId(), // test id
-  //     request: const AdRequest(),
-  //     adLoadCallback: AppOpenAdLoadCallback(
-  //       onAdLoaded: (ad) {
-  //         _appOpenAd = ad;
-  //       },
-  //       onAdFailedToLoad: (error) {
-  //         debugPrint('AppOpenAd failed to load: $error');
-  //       },
-  //     ),
-  //   );
-  // }
+  Future<void> loadAppOpenAd() async {
+    AppOpenAd.load(
+      adUnitId: getAppOpneId(), // test id
+      request: const AdRequest(),
+      adLoadCallback: AppOpenAdLoadCallback(
+        onAdLoaded: (ad) {
+          _appOpenAd = ad;
+        },
+        onAdFailedToLoad: (error) {
+          debugPrint('AppOpenAd failed to load: $error');
+        },
+      ),
+    );
+  }
 
-  // bool _isShowingAd = false;
+  bool _isShowingAd = false;
 
-  // Future<void> showAppOpenAd() async {
-  //   if (_appOpenAd == null || _isShowingAd) return;
+  Future<void> showAppOpenAd() async {
+    if (_appOpenAd == null || _isShowingAd) return;
 
-  //   _appOpenAd!.fullScreenContentCallback = FullScreenContentCallback(
-  //     onAdShowedFullScreenContent: (ad) {
-  //       _isShowingAd = true;
-  //       debugPrint('Ad showed.');
-  //     },
-  //     onAdDismissedFullScreenContent: (ad) {
-  //       _isShowingAd = false;
-  //       ad.dispose();
-  //       loadAppOpenAd(); // Preload next ad
-  //     },
-  //     onAdFailedToShowFullScreenContent: (ad, error) {
-  //       _isShowingAd = false;
-  //       ad.dispose();
-  //       loadAppOpenAd();
-  //     },
-  //   );
-  //   _appOpenAd!.show();
-  // }
+    _appOpenAd!.fullScreenContentCallback = FullScreenContentCallback(
+      onAdShowedFullScreenContent: (ad) {
+        _isShowingAd = true;
+        debugPrint('Ad showed.');
+      },
+      onAdDismissedFullScreenContent: (ad) {
+        _isShowingAd = false;
+        ad.dispose();
+        loadAppOpenAd(); // Preload next ad
+      },
+      onAdFailedToShowFullScreenContent: (ad, error) {
+        _isShowingAd = false;
+        ad.dispose();
+        loadAppOpenAd();
+      },
+    );
+    _appOpenAd!.show();
+  }
 
 //----------------------------------------------------------------------------//
 
@@ -276,13 +276,13 @@ class GoogleAdsController extends GetxController {
             : rewardediOS;
   }
 
-  // String getAppOpneId() {
-  //   return Platform.isAndroid
-  //       ? isForTest
-  //           ? appOpenAndroidTest
-  //           : appOpenAndroid
-  //       : isForTest
-  //           ? appOpenIosTest
-  //           : appOpeniOS;
-  // }
+  String getAppOpneId() {
+    return Platform.isAndroid
+        ? isForTest
+            ? appOpenAndroidTest
+            : appOpenAndroid
+        : isForTest
+            ? appOpenIosTest
+            : appOpeniOS;
+  }
 }

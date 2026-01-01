@@ -7,7 +7,6 @@ import 'package:usa_gas_price/controller/time_controller.dart';
 import 'package:usa_gas_price/pages/age_cal_pag.dart';
 import 'package:usa_gas_price/pages/born_page.dart';
 import 'package:usa_gas_price/pages/country_list.dart';
-import 'package:usa_gas_price/pages/data/country_list.dart';
 import 'package:usa_gas_price/pages/data/data_list.dart';
 import 'package:usa_gas_price/pages/history_page.dart';
 import 'package:usa_gas_price/pages/time_list_page.dart';

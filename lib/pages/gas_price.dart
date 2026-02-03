@@ -37,8 +37,7 @@ class _GasPriceState extends State<GasPrice> {
   }
 
   Future<void> callApi() async {
-    _googleAdsController.showLoadads();
-    _googleAdsController.isShow.value = false;
+    _googleAdsController.showAds();
     await _gasController.fetchGasPrice(endPoint: "/state-gas-price-averages/");
   }
 
@@ -119,8 +118,8 @@ class _GasPriceState extends State<GasPrice> {
   Widget _buildGasPriceList() {
     return Column(
       children: [
-       const SizedBox(height: 12),
-     const  DateTimeWidget(),
+        const SizedBox(height: 12),
+        const DateTimeWidget(),
         Expanded(
             child: ListView.separated(
           padding: const EdgeInsets.symmetric(
@@ -157,11 +156,18 @@ class _GasPriceState extends State<GasPrice> {
         borderRadius: BorderRadius.circular(12),
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
-          onTap: () => Get.to(
-            () => GasStateWisePrice(
+          onTap: () => Get.find<GoogleAdsController>().navigateWithAd(
+            nextPage: GasStateWisePrice(
               gasinfo: _gasController.gasInfo[index],
             ),
-            transition: Transition.cupertino,
+            onAction: () {
+              Get.to(
+                () => GasStateWisePrice(
+                  gasinfo: _gasController.gasInfo[index],
+                ),
+                transition: Transition.cupertino,
+              );
+            },
           ),
           child: Padding(
             padding:

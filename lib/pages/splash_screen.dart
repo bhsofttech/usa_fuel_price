@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:usa_gas_price/controller/google_ads_controller.dart';
+import 'package:usa_gas_price/controller/reward_ads_controller.dart';
 import 'package:usa_gas_price/pages/home_setup_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -17,11 +18,13 @@ class _SplashScreenState extends State<SplashScreen> {
   FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   final GoogleAdsController googleAdsController =
       Get.put(GoogleAdsController());
+  final RewardAdsController rewardAdsController =
+      Get.put(RewardAdsController());
 
   // Modern iOS color palette matching other screens
   final Color primaryBlue = const Color(0xFF007AFF);
   final Color lightBlue = const Color(0xFF4DA6FF);
-  final Color backgroundGray = const Color(0xFFF2F2F7);
+  final Color backgroundGray = const Color(0xFFF2F2F7); 
   final Color cardWhite = const Color(0xFFFFFFFF);
   final Color textPrimary = const Color(0xFF1C1C1E);
   final Color textSecondary = const Color(0xFF8E8E93);
@@ -29,8 +32,6 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    googleAdsController.loadAppOpenAd();
-    googleAdsController.loadAdMobRewardedAd();
 
     Future.delayed(const Duration(milliseconds: 2500), () {
       // Exit full-screen

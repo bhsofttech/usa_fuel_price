@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:usa_gas_price/controller/google_ads_controller.dart';
 import 'package:usa_gas_price/pages/market/bonds/bond_categories_screen.dart';
 import 'package:usa_gas_price/pages/market/crypto/crypto_categories.dart';
 import 'package:usa_gas_price/pages/market/etf/etf_screen.dart';
@@ -142,49 +143,63 @@ class _MarketPageState extends State<MarketPage> with TickerProviderStateMixin {
         'icon': Icons.show_chart_rounded,
         'color': const Color(0xFF34C759),
         'gradient': [const Color(0xFF5AC8FA), const Color(0xFF34C759)],
-        'onTap': () => Get.to(() => const StockCategoriesScreen())
+        'onTap': () => Get.find<GoogleAdsController>().navigateWithAd(
+              nextPage: const StockCategoriesScreen(),
+            ),
       },
       {
         'title': 'Crypto',
         'icon': Icons.currency_bitcoin_rounded,
         'color': const Color(0xFFFF9500),
         'gradient': [const Color(0xFFFFB340), const Color(0xFFFF9500)],
-        'onTap': () => Get.to(() => const CryptoCategoriesScreen())
+        'onTap': () => Get.find<GoogleAdsController>().navigateWithAd(
+              nextPage: const CryptoCategoriesScreen(),
+            ),
       },
       {
         'title': 'Indices',
         'icon': Icons.trending_up_rounded,
         'color': const Color(0xFF007AFF),
         'gradient': [const Color(0xFF4A90E2), const Color(0xFF007AFF)],
-        'onTap': () => Get.to(() => const IndicesScreen())
+        'onTap': () => Get.find<GoogleAdsController>().navigateWithAd(
+              nextPage: const IndicesScreen(),
+            ),
       },
       {
         'title': 'ETF',
         'icon': Icons.account_balance_wallet_rounded,
         'color': const Color(0xFFAF52DE),
         'gradient': [const Color(0xFFBF5AF2), const Color(0xFFAF52DE)],
-        'onTap': () => Get.to(() => const EtfScreen())
+        'onTap': () => Get.find<GoogleAdsController>().navigateWithAd(
+              nextPage: const EtfScreen(),
+            ),
       },
       {
         'title': 'Features',
         'icon': Icons.star_rounded,
         'color': const Color(0xFFFF3B30),
         'gradient': [const Color(0xFFFF6B6B), const Color(0xFFFF3B30)],
-        'onTap': () => Get.to(() => const FuturesScreen())
+        'onTap': () => Get.find<GoogleAdsController>().navigateWithAd(
+              nextPage: const FuturesScreen(),
+            ),
       },
       {
         'title': 'Bond',
         'icon': Icons.account_balance_rounded,
         'color': const Color(0xFF5856D6),
         'gradient': [const Color(0xFF8E8FFA), const Color(0xFF5856D6)],
-        'onTap': () => Get.to(() => const BondCategoriesScreen())
+        'onTap': () => Get.find<GoogleAdsController>().navigateWithAd(
+              nextPage: const BondCategoriesScreen(),
+            ),
       },
       {
         'title': 'Forex',
         'icon': Icons.currency_exchange,
         'color': const Color(0xFF5856D6),
         'gradient': [const Color(0xFF8E8FFA), const Color(0xFF5856D6)],
-        'onTap': () => Get.to(() => const ForexScreen())
+        'onTap': () => Get.find<GoogleAdsController>().navigateWithAd(
+              nextPage: const ForexScreen(),
+            ),
       },
     ];
 

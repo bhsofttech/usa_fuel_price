@@ -78,11 +78,10 @@ class _CountrySelectionScreenState extends State<CountrySelectionScreen> {
       );
 
       // Convert to list and sort by count (descending)
-      final List<CountryData> countries =
-          countryCounts.entries
-              .map((entry) => CountryData(code: entry.key, count: entry.value))
-              .toList()
-            ..sort((a, b) => b.count.compareTo(a.count));
+      final List<CountryData> countries = countryCounts.entries
+          .map((entry) => CountryData(code: entry.key, count: entry.value))
+          .toList()
+        ..sort((a, b) => b.count.compareTo(a.count));
 
       if (mounted) {
         setState(() {
@@ -662,26 +661,25 @@ class _CountrySelectionScreenState extends State<CountrySelectionScreen> {
   Widget _buildCountryCard(BuildContext context, CountryData country) {
     final accent = const Color(0xFF1E3A8A);
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        color: Color(0xFF1E3A8A),
-        boxShadow: [
-          BoxShadow(
-            color: accent.withOpacity(0.25),
-            blurRadius: 14,
-            offset: const Offset(0, 10),
-          ),
-        ],
+    return GestureDetector(
+      onTap: () => Get.find<GoogleAdsController>().navigateWithAd(
+        nextPage: MapScreen(selectedCountryCode: country.code),
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(12),
-          onTap: () => _openMapForCountry(country.code),
-          splashColor: Colors.white.withOpacity(0.1),
-          highlightColor: Colors.white.withOpacity(0.05),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: Color(0xFF1E3A8A),
+          boxShadow: [
+            BoxShadow(
+              color: accent.withOpacity(0.25),
+              blurRadius: 14,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: Material(
+          color: Colors.transparent,
           child: Padding(
             padding: const EdgeInsets.all(12),
             child: Row(

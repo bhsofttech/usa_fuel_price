@@ -2,6 +2,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:usa_gas_price/controller/google_ads_controller.dart';
 import 'package:usa_gas_price/pages/europe/eu_car_prices.dart';
 import 'package:usa_gas_price/pages/europe/eu_diesel_price.dart';
 import 'package:usa_gas_price/pages/europe/eu_gasoline_price.dart';
@@ -147,28 +148,36 @@ class _EUServiceScreenState extends State<EUServiceScreen>
         'icon': Icons.ev_station_rounded,
         'color': primaryBlue,
         'gradient': [lightBlue, primaryBlue],
-        'onTap': () => Get.to(() => const EUGasolinePriceScreen()),
+        'onTap': () => Get.find<GoogleAdsController>().navigateWithAd(
+              nextPage: const EUGasolinePriceScreen(),
+            ),
       },
       {
         'title': 'Diesel Price Europe',
         'icon': Icons.ev_station_rounded,
         'color': primaryBlue,
         'gradient': [lightBlue, primaryBlue],
-        'onTap': () => Get.to(() => const EUDieselPriceScreen()),
+        'onTap': () => Get.find<GoogleAdsController>().navigateWithAd(
+              nextPage: const EUDieselPriceScreen(),
+            ),
       },
       {
         'title': 'LPG Price Europe',
         'icon': Icons.ev_station_rounded,
         'color': primaryBlue,
         'gradient': [lightBlue, primaryBlue],
-        'onTap': () => Get.to(() => const EuLpgPriceScreen()),
+        'onTap': () => Get.find<GoogleAdsController>().navigateWithAd(
+              nextPage: const EuLpgPriceScreen(),
+            ),
       },
       {
         'title': 'EV Car Prices Europe',
         'icon': Icons.car_rental,
         'color': primaryBlue,
         'gradient': [lightBlue, primaryBlue],
-        'onTap': () => Get.to(() =>  CarListScreen()),
+        'onTap': () => Get.find<GoogleAdsController>().navigateWithAd(
+              nextPage: const CarListScreen(),
+            ),
       },
     ];
 

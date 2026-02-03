@@ -19,19 +19,21 @@ List<StockData>? cachedbfuturesFuture;
 List<StockData>? cachedbForexFuture;
 
 Future<Database>? myDatabase;
+
+const bool isTestMode = false;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(
-  //   options: const FirebaseOptions(
-  //   apiKey: 'AIzaSyA9V80462I7tr-YM6_3WEYRg-M9AflkVF4',
-  //   appId: '1:22815255159:android:9e6cc153edb0ce5dc67472',
-  //   messagingSenderId: '22815255159',
-  //   projectId: 'usa-fuel-prices',
-  //   storageBucket: 'com.bhinfotech.usafuelprice',
-  // )
-  );
-
+      //   options: const FirebaseOptions(
+      //   apiKey: 'AIzaSyA9V80462I7tr-YM6_3WEYRg-M9AflkVF4',
+      //   appId: '1:22815255159:android:9e6cc153edb0ce5dc67472',
+      //   messagingSenderId: '22815255159',
+      //   projectId: 'usa-fuel-prices',
+      //   storageBucket: 'com.bhinfotech.usafuelprice',
+      // )
+      );
 
   MobileAds.instance.initialize();
 

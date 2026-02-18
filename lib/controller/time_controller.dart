@@ -1,126 +1,246 @@
+import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/dom.dart' as dom;
-import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:usa_gas_price/model/born_info.dart';
-import 'package:usa_gas_price/model/country_info.dart';
-import 'package:usa_gas_price/model/history_info.dart';
-import 'package:usa_gas_price/model/holyday_info.dart';
+import 'package:usa_gas_price/model/astronomy_data.dart' show AstronomyData;
 import 'package:usa_gas_price/model/time_info.dart';
+import 'package:usa_gas_price/model/weather_data.dart';
 
+import '../model/location_data.dart';
 
 class TimeController extends GetxController {
-  List<Timeinfo> timeInfo = [];
-
-  List<Timeinfo> get getTimeInfo => timeInfo;
-  Rx showLoading = false.obs;
-  List<Timeinfo> favorites = [];
-  RxBool showFavouritesoading = false.obs;
-
+  // Existing USA specific list
   List<Timeinfo> usaTimeInfo = [];
-  List<Timeinfo> europeTimeInfo = [];
-  List<Timeinfo> asiaTimeInfo = [];
+
+  // Map to hold data for other continents/regions
+  // Key: Region Name (e.g., 'Europe', 'Asia')
+  Map<String, List<Timeinfo>> continentData = {};
+
+  // Loading states for regions
+  Map<String, bool> continentLoading = {};
+
+  List<Timeinfo> favorites = [];
+
+  RxBool showLoading = false.obs;
+  RxBool showFavouritesLoading = false.obs;
+
+  Timer? _timer;
+
+  @override
+  void onInit() {
+    super.onInit();
+    loadFavorites();
+  }
+
+  @override
+  void onClose() {
+    _timer?.cancel();
+    super.onClose();
+  }
+
+  // Generic fetcher for continents
+  Future<void> fetchContinentTime(String regionKey, String url) async {
+    try {
+      continentLoading[regionKey] = true;
+      update(); // Update UI
+
+      final headers = {
+        'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Accept-Language': 'en-US,en;q=0.9',
+      };
+
+      Uri dataLink = Uri.parse(url);
+      debugPrint("Fetching $regionKey: $dataLink");
+      final response = await http.get(dataLink, headers: headers);
+
+      if (response.statusCode == 200) {
+        List<Timeinfo> extracted =
+            _parseTimeAndDateHtml(response.body, regionKey);
+        continentData[regionKey] = extracted;
+
+        // Sync with favorites
+        _syncFavoritesWithList(extracted);
+      } else {
+        debugPrint("Failed to load $regionKey: ${response.statusCode}");
+      }
+
+      continentLoading[regionKey] = false;
+
+      // Ensure timer is running if it was stopped or not started
+      if (_timer == null || !_timer!.isActive) {
+        _startTimer();
+      }
+
+      update();
+    } catch (e) {
+      debugPrint("Error fetching $regionKey: $e");
+      continentLoading[regionKey] = false;
+      update();
+    }
+  }
 
   Future<void> fetchTime() async {
     try {
       showLoading.value = true;
       usaTimeInfo = [];
-      europeTimeInfo = [];
-      asiaTimeInfo = [];
-      // Uri dataLink =
-      //     Uri.parse("https://www.timeanddate.com/worldclock/?sort=1&low=4");
-
-      Uri dataLink = Uri.parse(
-          "https://time.astro-seek.com/current-local-time-in-major-cities-around-the-world");
-
-      final responce = await http.get(dataLink);
-      dom.Document html = dom.Document.html(responce.body);
-      var cell = html.getElementsByTagName("tr");
-      List<Timeinfo> tempList = [];
-
-      for (int i = 1; i < cell.length; i++) {
-        Timeinfo _info = Timeinfo(
-            city: cell[i].children[2].text,
-            country: cell[i].children[4].text,
-            timerCurrentTime:
-                DateFormat("HH:mm").parse(cell[i].children[1].text).toUtc(),
-            dateTime:
-                DateFormat("HH:mm").parse(cell[i].children[1].text).toUtc());
-
-        tempList.add(_info);
-        if (_info.city.toLowerCase() == "new york city") {
-          usaTimeInfo.add(_info);
-        }
-        if (_info.city.toLowerCase() == "los angeles") {
-          usaTimeInfo.add(_info);
-        }
-        if (_info.city.toLowerCase() == "washington dc") {
-          usaTimeInfo.add(_info);
-        }
-
-        if (_info.city.toLowerCase() == "london") {
-          europeTimeInfo.add(_info);
-        }
-        if (_info.city.toLowerCase() == "berlin") {
-          europeTimeInfo.add(_info);
-        }
-        if (_info.city.toLowerCase() == "paris") {
-          europeTimeInfo.add(_info);
-        }
-        if (_info.city.toLowerCase() == "tokyo") {
-          asiaTimeInfo.add(_info);
-        }
-        if (_info.city.toLowerCase() == "new delhi") {
-          asiaTimeInfo.add(_info);
-        }
-        if (_info.city.toLowerCase() == "hong kong") {
-          asiaTimeInfo.add(_info);
-        }
-      }
-      timeInfo = tempList;
-      for (var e in timeInfo) {
-        for (var f in favorites) {
-          if (e.city.toLowerCase() == f.city.toLowerCase()) {
-            e.isFavourit = true;
-          }
-        }
-      }
       update();
+
+      // Actually let's just use the helper method logic but keep this dedicated function as it was "USA" specific
+      // or we can refactor this to use the _parseTimeAndDateHtml helper.
+
+      // Re-implementing using the helper for consistency but keeping specific usaTimeInfo variable
+      // fetch for USA
+      Uri dataLink = Uri.parse("https://www.timeanddate.com/worldclock/usa");
+      final response = await http.get(dataLink, headers: {
+        'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+      });
+
+      if (response.statusCode == 200) {
+        usaTimeInfo = _parseTimeAndDateHtml(response.body, 'USA');
+        _syncFavoritesWithList(usaTimeInfo);
+      }
+
+      _startTimer();
       showLoading.value = false;
+      update();
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint("Error scraping time: $e");
       showLoading.value = false;
+      update();
     }
   }
 
-  Future<void> loadFavorites() async {
-    try {
-      await fetchTime();
-      showFavouritesoading.value = true;
-      final prefs = await SharedPreferences.getInstance();
-      final String? favoritesJson = prefs.getString('favorites');
-      if (favoritesJson != null) {
-        List<Timeinfo> temp = timeinfoFromJson(favoritesJson);
+  // Refactored parsing logic to be reusable
+  List<Timeinfo> _parseTimeAndDateHtml(String htmlBody, String regionName) {
+    List<Timeinfo> results = [];
+    dom.Document html = dom.Document.html(htmlBody);
 
-        // Clear existing favorites before adding new ones
-        favorites.clear();
+    // Find table
+    dom.Element? table;
+    var tables = html.getElementsByTagName("table");
+    for (var t in tables) {
+      if (t.attributes['class'] != null &&
+          t.attributes['class']!.contains('tb-wc')) {
+        table = t;
+        break;
+      }
+    }
+    if (table == null && tables.isNotEmpty) table = tables[0];
 
-        // For each saved favorite, find matching current time info
-        for (var savedItem in temp) {
-          var matchingItem = getTimeInfo.firstWhere(
-            (current) =>
-                current.city.toLowerCase() == savedItem.city.toLowerCase(),
-            orElse: () => savedItem,
-          );
-          favorites.add(matchingItem);
+    if (table != null) {
+      var rows = table.getElementsByTagName("tr");
+      for (var row in rows) {
+        var cells = row.getElementsByTagName("td");
+        // Loop pairs
+        for (int i = 0; i < cells.length; i += 2) {
+          if (i + 1 < cells.length) {
+            var nameCell = cells[i];
+            var timeCell = cells[i + 1];
+
+            String name = nameCell.text.trim();
+            // Simple dedup check within this fetch
+            if (results.any((item) => item.city == name)) continue;
+
+            var timeStrRaw = timeCell.text.trim();
+            final timeRegex = RegExp(r'(\d{1,2})[:.](\d{2})');
+            final match = timeRegex.firstMatch(timeStrRaw);
+            String timeStr =
+                match != null ? match.group(0)! : timeStrRaw.split(" ").last;
+
+            if (name.isNotEmpty && timeStr.isNotEmpty) {
+              DateTime? parsedTime;
+              try {
+                String normalizedTimeStr = timeStr.replaceAll('.', ':');
+                List<String> parts = normalizedTimeStr.split(":");
+                if (parts.length >= 2) {
+                  int hour = int.parse(parts[0]);
+                  int minute = int.parse(parts[1]);
+                  DateTime now = DateTime.now();
+                  parsedTime =
+                      DateTime(now.year, now.month, now.day, hour, minute);
+                }
+              } catch (e) {/* ignore */}
+
+              results.add(Timeinfo(
+                city: name,
+                country: regionName, // Use passed region name
+                time: timeStr,
+                timerCurrentTime: parsedTime,
+              ));
+            }
+          }
         }
       }
-      showFavouritesoading.value = false;
+    }
+    return results;
+  }
+
+  void _syncFavoritesWithList(List<Timeinfo> freshData) {
+    for (var fav in favorites) {
+      for (var fresh in freshData) {
+        if (fav.city == fresh.city) {
+          fav.timerCurrentTime = fresh.timerCurrentTime;
+          fav.time = fresh.time;
+          break;
+        }
+      }
+    }
+  }
+
+  void _startTimer() {
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      // Increment logic for USA
+      for (var item in usaTimeInfo) {
+        _tickItem(item);
+      }
+
+      // Increment logic for Continents
+      continentData.forEach((_, list) {
+        for (var item in list) {
+          _tickItem(item);
+        }
+      });
+
+      // Increment favorites
+      for (var item in favorites) {
+        _tickItem(item);
+      }
+      update();
+    });
+  }
+
+  void _tickItem(Timeinfo item) {
+    if (item.timerCurrentTime != null) {
+      item.timerCurrentTime =
+          item.timerCurrentTime!.add(const Duration(seconds: 1));
+    }
+  }
+
+  // --- Favorites Logic ---
+
+  Future<void> loadFavorites() async {
+    try {
+      showFavouritesLoading.value = true;
+      final prefs = await SharedPreferences.getInstance();
+      final String? favoritesJson = prefs.getString('favorites');
+
+      if (favoritesJson != null) {
+        favorites = timeinfoFromJson(favoritesJson);
+        // Sync with available data
+        _syncFavoritesWithList(usaTimeInfo);
+        continentData.forEach((_, list) => _syncFavoritesWithList(list));
+      }
+
+      showFavouritesLoading.value = false;
       update();
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint("Error loading favorites: $e");
     }
   }
 
@@ -128,222 +248,301 @@ class TimeController extends GetxController {
     try {
       int index = favorites
           .indexWhere((e) => e.city.toLowerCase() == info.city.toLowerCase());
-      if (index < 0) {
-        favorites.add(info);
-      } else {
+      if (index >= 0) {
         favorites.removeAt(index);
+      } else {
+        favorites.add(Timeinfo(
+          city: info.city,
+          country: info.country,
+          time: info.time.split(" ").last,
+          timerCurrentTime: info.timerCurrentTime,
+        ));
       }
       final prefs = await SharedPreferences.getInstance();
-      // Convert the list to JSON
       String jsonString = timeinfoToJson(favorites);
-      // Save the JSON string
       await prefs.setString('favorites', jsonString);
-      await loadFavorites();
       update();
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint("Error saving favorites: $e");
     }
   }
 
-  List<HolidayInfo> _holiDays = [];
-  List<HolidayInfo> get getHoliDays => _holiDays;
-  RxBool showHolyDayLoading = false.obs;
-  Future<void> fetchHoliDay({required String link}) async {
+  // Fetch location-specific data from timeanddate.com
+  Future<List<LocationData>> fetchLocationData(String stateOrCity) async {
     try {
-      showHolyDayLoading.value = true;
-      _holiDays = [];
-      Uri dataLink = Uri.parse(link);
+      // Convert state/city name to URL format (lowercase, replace spaces with hyphens)
+      String urlPath = stateOrCity.toLowerCase().replaceAll(' ', '-');
+      String url = 'https://www.timeanddate.com/worldclock/usa/$urlPath';
 
-      final responce = await http.get(dataLink);
-      dom.Document html = dom.Document.html(responce.body);
-      var holyDay = html.getElementsByTagName("tr");
+      debugPrint("Fetching location data from: $url");
 
-      for (int i = 1; i < holyDay.length; i++) {
-        HolidayInfo _temp = HolidayInfo(
-          day: holyDay[i].children[0].text,
-          date: holyDay[i].children[1].text,
-          name: holyDay[i].children[2].text,
-          type: holyDay[i].children[3].text,
-          comment: holyDay[i].children[4].text,
-        );
-        _holiDays.add(_temp);
+      final headers = {
+        'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Accept-Language': 'en-US,en;q=0.9',
+      };
+
+      final response = await http.get(Uri.parse(url), headers: headers);
+
+      if (response.statusCode == 200) {
+        return _parseLocationHtml(response.body);
+      } else {
+        debugPrint("Failed to load location data: ${response.statusCode}");
+        return [];
       }
-
-      showHolyDayLoading.value = false;
     } catch (e) {
-      debugPrint(e.toString());
-      showHolyDayLoading.value = false;
+      debugPrint("Error fetching location data: $e");
+      return [];
     }
   }
 
-  List<CountryInfo> _countryList = [];
-  List<CountryInfo> get getCountrys => _countryList;
-  RxBool showCountryLoading = false.obs;
-  Future<void> fetchCountry() async {
-    try {
-      _countryList = [];
-      showCountryLoading.value = true;
-      Uri dataLink = Uri.parse("https://www.officeholidays.com/countries");
+  // Parse HTML to extract location data
+  List<LocationData> _parseLocationHtml(String htmlBody) {
+    List<LocationData> locations = [];
+    dom.Document html = dom.Document.html(htmlBody);
 
-      final responce = await http.get(dataLink);
-      dom.Document html = dom.Document.html(responce.body);
-      var colums = html.getElementsByClassName("four omega columns");
-      for (int k = 0; k < colums.length; k++) {
-        var two = colums[k].getElementsByTagName("li");
-        for (int i = 0; i < two.length; i++) {
-          CountryInfo _temp = CountryInfo(
-              country: two[i].children.first.text,
-              link: two[i]
-                  .getElementsByTagName("a")
-                  .first
-                  .attributes["href"]
-                  .toString());
-          _countryList.add(_temp);
+    // Find the table with class 'zebra fw tb-wc'
+    dom.Element? table;
+    var tables = html.getElementsByTagName("table");
+
+    for (var t in tables) {
+      if (t.attributes['class'] != null &&
+          t.attributes['class']!.contains('tb-wc')) {
+        table = t;
+        break;
+      }
+    }
+
+    if (table != null) {
+      var rows = table.getElementsByTagName("tr");
+
+      for (var row in rows) {
+        var cells = row.getElementsByTagName("td");
+
+        // Process cells in pairs (city name, time)
+        for (int i = 0; i < cells.length; i += 2) {
+          if (i + 1 < cells.length) {
+            var nameCell = cells[i];
+            var timeCell = cells[i + 1];
+
+            // Extract city name from anchor tag
+            var anchor = nameCell.getElementsByTagName("a");
+            String cityName = anchor.isNotEmpty
+                ? anchor.first.text.trim()
+                : nameCell.text.trim();
+
+            // Extract time
+            String currentTime = timeCell.text.trim();
+
+            if (cityName.isNotEmpty && currentTime.isNotEmpty) {
+              locations.add(LocationData(
+                cityName: cityName,
+                currentTime: currentTime,
+              ));
+            }
+          }
         }
       }
-      showCountryLoading.value = false;
-    } catch (e) {
-      debugPrint(e.toString());
-      showCountryLoading.value = false;
     }
+
+    debugPrint("Parsed ${locations.length} locations");
+    return locations;
   }
 
-  String calImage = "";
-  String get getCalImage => calImage;
-  RxBool showCalanderLoading = false.obs;
-  Future<void> fetchCalander() async {
+  // Fetch weather data from timeanddate.com
+  Future<List<WeatherData>> fetchWeatherData(String stateOrCity) async {
     try {
-      calImage = "";
-      showCalanderLoading.value = true;
-      Uri dataLink = Uri.parse(
-          "https://www.wincalendar.com/EU-Calendar/Printable-Calendar-May-2025");
+      // Convert state/city name to URL format (lowercase, replace spaces with hyphens)
+      String urlPath = stateOrCity.toLowerCase().replaceAll(' ', '-');
+      String url = 'https://www.timeanddate.com/weather/usa/$urlPath';
 
-      final responce = await http.get(dataLink);
-      dom.Document html = dom.Document.html(responce.body);
-      var colums = html.querySelectorAll("img");
-      for (int k = 0; k < colums.length; k++) {
-        calImage = colums[k]
-            .attributes["src"]
-            .toString()
-            .replaceAll("//", "")
-            .replaceAll('"', "");
+      debugPrint("Fetching weather data from: $url");
 
-        print(calImage);
+      final headers = {
+        'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Accept-Language': 'en-US,en;q=0.9',
+      };
+
+      final response = await http.get(Uri.parse(url), headers: headers);
+
+      if (response.statusCode == 200) {
+        return _parseWeatherHtml(response.body);
+      } else {
+        debugPrint("Failed to load weather data: ${response.statusCode}");
+        return [];
       }
-
-      showCalanderLoading.value = false;
     } catch (e) {
-      debugPrint(e.toString());
-      showCalanderLoading.value = false;
+      debugPrint("Error fetching weather data: $e");
+      return [];
     }
   }
 
-  List<HistoryInfo> history = [];
-  List<HistoryInfo> get getHistory => history;
-  RxBool showHistoryLoading = false.obs;
-  Future<void> fetchHistory({
-    required String month,
-    required String date,
-  }) async {
-    try {
-      history = [];
-      showHistoryLoading.value = true;
-      Uri dataLink = Uri.parse(
-        "https://www.timeanddate.com/on-this-day/$month/$date",
-      );
+  // Parse HTML to extract weather data
+  List<WeatherData> _parseWeatherHtml(String htmlBody) {
+    List<WeatherData> weatherList = [];
+    dom.Document html = dom.Document.html(htmlBody);
 
-      final responce = await http.get(dataLink);
-      dom.Document html = dom.Document.html(responce.body);
-      var colums = html.getElementsByClassName("otd-row otd-detail");
-      var li = colums[0].getElementsByTagName("li");
+    // Find the table with class 'zebra fw tb-wt'
+    dom.Element? table;
+    var tables = html.getElementsByTagName("table");
 
-      for (int k = 0; k < li.length; k++) {
-        HistoryInfo temp = HistoryInfo(
-          title: li[k].children[0].text,
-          subTitle: li[k].children[1].text,
-        );
-        history.add(temp);
+    for (var t in tables) {
+      if (t.attributes['class'] != null &&
+          t.attributes['class']!.contains('tb-wt')) {
+        table = t;
+        break;
       }
-
-      showHistoryLoading.value = false;
-    } catch (e) {
-      debugPrint(e.toString());
-      showHistoryLoading.value = false;
     }
-  }
 
-  List<TodaysBorn> _todaysBorn = [];
-  List<TodaysBorn> get getTodaysBorn => _todaysBorn;
-  RxBool showTodaysBornLoading = false.obs;
-  Future<void> fetchBornToday() async {
-    try {
-      _todaysBorn = [];
-      showTodaysBornLoading.value = true;
-      Uri dataLink = Uri.parse(
-        "https://famouspeople.astro-seek.com/famous-birthdays/24-may",
-      );
+    if (table != null) {
+      var rows = table.getElementsByTagName("tr");
 
-      final responce = await http.get(dataLink);
-      dom.Document html = dom.Document.html(responce.body);
-      var colums = html.getElementsByTagName("tr");
+      for (var row in rows) {
+        var cells = row.getElementsByTagName("td");
 
-      for (int k = 0; k < colums.length; k++) {
-        if (colums[k].children[0].children[0].text.isNotEmpty) {
-          TodaysBorn born = TodaysBorn(
-            name: colums[k].children[0].children[0].text,
-            date: colums[k].children[0].children[1].text,
-            type: colums[k].children[1].text,
-            // flagLink: colums[k]
-            //     .children[1]
-            //     .getElementsByTagName("img")
-            //     .first
-            //     .attributes["src"]
-            //     .toString(),
-            country: colums[k].children[3].text,
-          );
-          _todaysBorn.add(born);
+        // Process cells in groups of 4 (city name, time, weather icon, temperature)
+        for (int i = 0; i < cells.length; i += 4) {
+          if (i + 3 < cells.length) {
+            var nameCell = cells[i];
+            var timeCell = cells[i + 1];
+            var iconCell = cells[i + 2];
+            var tempCell = cells[i + 3];
+
+            // Extract city name from anchor tag
+            var anchor = nameCell.getElementsByTagName("a");
+            String cityName = anchor.isNotEmpty
+                ? anchor.first.text.trim()
+                : nameCell.text.trim();
+
+            // Extract time
+            String time = timeCell.text.trim();
+
+            // Extract weather icon and description
+            var img = iconCell.getElementsByTagName("img");
+            String weatherIcon = '';
+            String weatherDescription = '';
+
+            if (img.isNotEmpty) {
+              var imgSrc = img.first.attributes['src'] ?? '';
+              // Make sure to use full URL
+              if (imgSrc.startsWith('//')) {
+                weatherIcon = 'https:$imgSrc';
+              } else if (imgSrc.startsWith('/')) {
+                weatherIcon = 'https://www.timeanddate.com$imgSrc';
+              } else {
+                weatherIcon = imgSrc;
+              }
+              weatherDescription = img.first.attributes['alt'] ?? '';
+            }
+
+            // Extract temperature
+            String temperature = tempCell.text.trim();
+
+            if (cityName.isNotEmpty) {
+              weatherList.add(WeatherData(
+                cityName: cityName,
+                time: time,
+                weatherIcon: weatherIcon,
+                weatherDescription: weatherDescription,
+                temperature: temperature,
+              ));
+            }
+          }
         }
       }
+    }
 
-      showTodaysBornLoading.value = false;
+    debugPrint("Parsed ${weatherList.length} weather entries");
+    return weatherList;
+  }
+
+  // Fetch astronomy data (sunrise/sunset) from timeanddate.com
+  Future<List<AstronomyData>> fetchAstronomyData(String stateOrCity) async {
+    try {
+      // Convert state/city name to URL format (lowercase, replace spaces with hyphens)
+      String urlPath = stateOrCity.toLowerCase().replaceAll(' ', '-');
+      String url = 'https://www.timeanddate.com/astronomy/usa/$urlPath';
+
+      debugPrint("Fetching astronomy data from: $url");
+
+      final headers = {
+        'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Accept-Language': 'en-US,en;q=0.9',
+      };
+
+      final response = await http.get(Uri.parse(url), headers: headers);
+
+      if (response.statusCode == 200) {
+        return _parseAstronomyHtml(response.body);
+      } else {
+        debugPrint("Failed to load astronomy data: ${response.statusCode}");
+        return [];
+      }
     } catch (e) {
-      debugPrint(e.toString());
-      showTodaysBornLoading.value = false;
+      debugPrint("Error fetching astronomy data: $e");
+      return [];
     }
   }
 
-  RxBool showAILoading = false.obs;
-  Future<void> fetchAIList() async {
-    try {
-      showAILoading.value = true;
-      Uri dataLink = Uri.parse(
-        "https://www.aixploria.com/en/ultimate-list-ai/",
-      );
+  // Parse HTML to extract astronomy data
+  List<AstronomyData> _parseAstronomyHtml(String htmlBody) {
+    List<AstronomyData> astronomyList = [];
+    dom.Document html = dom.Document.html(htmlBody);
 
-      final responce = await http.get(dataLink);
-      dom.Document html = dom.Document.html(responce.body);
-      var colums = html.getElementsByClassName("grid-item");
+    // Find the table with class 'zebra fw tb-sm'
+    dom.Element? table;
+    var tables = html.getElementsByTagName("table");
 
-      for (int k = 0; k < colums.length; k++) {
-        TodaysBorn born = TodaysBorn(
-          name: colums[k].children[0].text,
-
-          // flagLink: colums[k]
-          //     .children[1]
-          //     .getElementsByTagName("img")
-          //     .first
-          //     .attributes["src"]
-          //     .toString(),
-          //country: colums[k].children[3].text,
-        );
-        _todaysBorn.add(born);
-        print(born.name);
+    for (var t in tables) {
+      if (t.attributes['class'] != null &&
+          t.attributes['class']!.contains('tb-sm')) {
+        table = t;
+        break;
       }
-
-      showAILoading.value = false;
-    } catch (e) {
-      debugPrint(e.toString());
-      showAILoading.value = false;
     }
+
+    if (table != null) {
+      var rows = table.getElementsByTagName("tr");
+
+      for (var row in rows) {
+        var cells = row.getElementsByTagName("td");
+
+        // Process cells in groups of 3 (city name, sunrise, sunset)
+        for (int i = 0; i < cells.length; i += 3) {
+          if (i + 2 < cells.length) {
+            var nameCell = cells[i];
+            var sunriseCell = cells[i + 1];
+            var sunsetCell = cells[i + 2];
+
+            // Extract city name from anchor tag
+            var anchor = nameCell.getElementsByTagName("a");
+            String cityName = anchor.isNotEmpty
+                ? anchor.first.text.trim()
+                : nameCell.text.trim();
+
+            // Extract sunrise time (remove the ↑ arrow)
+            String sunrise = sunriseCell.text.trim().replaceAll('↑', '').trim();
+
+            // Extract sunset time (remove the ↓ arrow)
+            String sunset = sunsetCell.text.trim().replaceAll('↓', '').trim();
+
+            if (cityName.isNotEmpty &&
+                sunrise.isNotEmpty &&
+                sunset.isNotEmpty) {
+              astronomyList.add(AstronomyData(
+                cityName: cityName,
+                sunrise: sunrise,
+                sunset: sunset,
+              ));
+            }
+          }
+        }
+      }
+    }
+
+    debugPrint("Parsed ${astronomyList.length} astronomy entries");
+    return astronomyList;
   }
 }

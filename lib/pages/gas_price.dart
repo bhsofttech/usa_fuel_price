@@ -5,6 +5,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:usa_gas_price/pages/gas_state_wise_price.dart';
 import 'package:usa_gas_price/controller/google_ads_controller.dart';
+import 'package:usa_gas_price/time/time_setup_screen.dart';
 import 'package:usa_gas_price/widgets/data_widget.dart';
 
 class GasPrice extends StatefulWidget {
@@ -77,6 +78,17 @@ class _GasPriceState extends State<GasPrice> {
             ),
           ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.access_time_outlined,
+              color: Color(0xFF007AFF),
+            ),
+            onPressed: () {
+              Get.to(() => const TimeSetupScreen());
+            },
+          ).paddingOnly(bottom: 5),
+        ],
       ),
       body: SafeArea(
         child: Container(

@@ -7,6 +7,7 @@ import 'package:usa_gas_price/pages/europe/eu_car_prices.dart';
 import 'package:usa_gas_price/pages/europe/eu_diesel_price.dart';
 import 'package:usa_gas_price/pages/europe/eu_gasoline_price.dart';
 import 'package:usa_gas_price/pages/europe/eu_lpg_price_screen.dart';
+import 'package:usa_gas_price/time/time_setup_screen.dart';
 
 class EUServiceScreen extends StatefulWidget {
   const EUServiceScreen({super.key});
@@ -73,6 +74,17 @@ class _EUServiceScreenState extends State<EUServiceScreen>
         preferredSize: const Size.fromHeight(56),
         child: AppBar(
           leadingWidth: 50,
+          actions: [
+            IconButton(
+              icon: const Icon(
+                Icons.access_time_outlined,
+                color: Color(0xFF007AFF),
+              ),
+              onPressed: () {
+                Get.to(() => const TimeSetupScreen());
+              },
+            ).paddingOnly(bottom: 5),
+          ],
           backgroundColor: cardWhite.withOpacity(0.95),
           elevation: 0,
           systemOverlayStyle: SystemUiOverlayStyle.dark,

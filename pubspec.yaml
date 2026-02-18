@@ -58,6 +58,10 @@ dependencies:
   flutter_map: ^7.0.2
   latlong2: ^0.9.1
   geocoding: ^3.0.0
+  timezone: ^0.10.1
+  animate_do: ^4.2.0
+
+
 
 
 

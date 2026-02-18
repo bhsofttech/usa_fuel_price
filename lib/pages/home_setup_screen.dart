@@ -4,9 +4,6 @@ import 'package:usa_gas_price/controller/airlines_controller.dart';
 import 'package:usa_gas_price/controller/eu_fule_controller.dart';
 import 'package:usa_gas_price/controller/gas_controller.dart';
 import 'package:usa_gas_price/controller/stock_controller.dart';
-import 'package:usa_gas_price/controller/time_controller.dart';
-import 'package:usa_gas_price/controller/update_controller.dart';
-import 'package:usa_gas_price/controller/weather_controller.dart';
 import 'package:usa_gas_price/flight/country_selection_screen.dart';
 import 'package:usa_gas_price/pages/europe/eu_service_screen.dart';
 import 'package:usa_gas_price/pages/market/market_page.dart';
@@ -29,11 +26,8 @@ class HomeSetupScreen extends StatefulWidget {
 
 class _HomeSetupScreenState extends State<HomeSetupScreen> {
   final GasController _gasController = Get.put(GasController());
-  final TimeController _timeController = Get.put(TimeController());
-  final UpdateController _updateController = Get.put(UpdateController());
   final EUFuelController _euFuelController = Get.put(EUFuelController());
   final StockController stockConroller = Get.put(StockController());
-  final WeatherController weatherController = Get.put(WeatherController());
   final AirlinesController _airlinesController = Get.put(AirlinesController());
   final RewardAdsController _rewardAdsController =
       Get.put(RewardAdsController());

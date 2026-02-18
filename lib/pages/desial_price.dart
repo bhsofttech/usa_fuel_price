@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:usa_gas_price/controller/google_ads_controller.dart';
+import 'package:usa_gas_price/time/time_setup_screen.dart';
 
 import '../widgets/data_widget.dart';
 
@@ -86,6 +87,17 @@ class _DesialPriceState extends State<DesialPrice>
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
+      actions: [
+        IconButton(
+          icon: const Icon(
+            Icons.access_time_outlined,
+            color: Color(0xFF007AFF),
+          ),
+          onPressed: () {
+            Get.to(() => const TimeSetupScreen());
+          },
+        ).paddingOnly(bottom: 5),
+      ],
       leadingWidth: 50,
       backgroundColor: cardWhite,
       elevation: 0,

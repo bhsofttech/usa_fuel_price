@@ -6,6 +6,8 @@ import 'package:usa_gas_price/model/gas_info.dart';
 import 'package:path_drawing/path_drawing.dart';
 import 'package:usa_gas_price/controller/google_ads_controller.dart';
 import 'package:usa_gas_price/pages/national_gas_price.dart';
+import 'package:usa_gas_price/time/time_setup_screen.dart';
+import 'package:usa_gas_price/time/world_clock_screen.dart';
 import 'package:xml/xml.dart';
 
 class GasMapHitTestApp extends StatefulWidget {
@@ -177,6 +179,17 @@ class _GasMapHitTestAppState extends State<GasMapHitTestApp> {
             ),
           ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.access_time_outlined,
+              color: Color(0xFF007AFF),
+            ),
+            onPressed: () {
+              Get.to(() => const TimeSetupScreen());
+            },
+          ).paddingOnly(bottom: 5),
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(

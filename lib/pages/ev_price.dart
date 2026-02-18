@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:usa_gas_price/time/time_setup_screen.dart';
 import 'package:usa_gas_price/widgets/data_widget.dart';
 
 import '../controller/google_ads_controller.dart';
@@ -85,6 +86,17 @@ class _EvPriceState extends State<EvPrice> with TickerProviderStateMixin {
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
+      actions: [
+        IconButton(
+          icon: const Icon(
+            Icons.access_time_outlined,
+            color: Color(0xFF007AFF),
+          ),
+          onPressed: () {
+            Get.to(() => const TimeSetupScreen());
+          },
+        ).paddingOnly(bottom: 5),
+      ],
       leadingWidth: 50,
       backgroundColor: cardWhite,
       elevation: 0,

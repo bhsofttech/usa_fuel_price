@@ -1,11 +1,6 @@
-// To parse this JSON data, do
-//
-//     final timeinfo = timeinfoFromJson(jsonString);
-
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:intl/intl.dart';
 
 List<Timeinfo> timeinfoFromJson(String str) =>
     List<Timeinfo>.from(json.decode(str).map((x) => Timeinfo.fromJson(x)));

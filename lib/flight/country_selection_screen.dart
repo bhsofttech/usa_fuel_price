@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:usa_gas_price/controller/google_ads_controller.dart';
 import 'package:usa_gas_price/flight/map_screen.dart';
 import 'package:usa_gas_price/model/airport_map_model.dart';
+import 'package:usa_gas_price/time/time_setup_screen.dart';
 
 class CountrySelectionScreen extends StatefulWidget {
   const CountrySelectionScreen({super.key});
@@ -417,6 +418,17 @@ class _CountrySelectionScreenState extends State<CountrySelectionScreen> {
             ),
           ],
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.access_time_outlined,
+              color: Color(0xFF007AFF),
+            ),
+            onPressed: () {
+              Get.to(() => const TimeSetupScreen());
+            },
+          ).paddingOnly(bottom: 5),
+        ],
       ),
       body: SafeArea(
         top: false,

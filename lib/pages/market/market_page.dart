@@ -9,6 +9,7 @@ import 'package:usa_gas_price/pages/market/forex/forex_screen.dart';
 import 'package:usa_gas_price/pages/market/futures/futures_screen.dart';
 import 'package:usa_gas_price/pages/market/indices/indices_screen.dart';
 import 'package:usa_gas_price/pages/market/stock/stock_categories.dart';
+import 'package:usa_gas_price/time/time_setup_screen.dart';
 
 class MarketPage extends StatefulWidget {
   const MarketPage({super.key});
@@ -82,6 +83,17 @@ class _MarketPageState extends State<MarketPage> with TickerProviderStateMixin {
               letterSpacing: 0.5,
             ),
           ),
+          actions: [
+            IconButton(
+              icon: const Icon(
+                Icons.access_time_outlined,
+                color: Color(0xFF007AFF),
+              ),
+              onPressed: () {
+                Get.to(() => const TimeSetupScreen());
+              },
+            ).paddingOnly(bottom: 5),
+          ],
           iconTheme: IconThemeData(color: primaryBlue),
           flexibleSpace: Container(
             decoration: BoxDecoration(

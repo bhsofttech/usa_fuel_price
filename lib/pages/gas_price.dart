@@ -172,14 +172,6 @@ class _GasPriceState extends State<GasPrice> {
             nextPage: GasStateWisePrice(
               gasinfo: _gasController.gasInfo[index],
             ),
-            onAction: () {
-              Get.to(
-                () => GasStateWisePrice(
-                  gasinfo: _gasController.gasInfo[index],
-                ),
-                transition: Transition.cupertino,
-              );
-            },
           ),
           child: Padding(
             padding:

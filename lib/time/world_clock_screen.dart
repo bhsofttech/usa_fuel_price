@@ -1,6 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:usa_gas_price/controller/google_ads_controller.dart';
 import 'package:usa_gas_price/widgets/time_card.dart';
 
 import '../controller/time_controller.dart';
@@ -182,7 +183,12 @@ class _ContinentTimeListState extends State<ContinentTimeList>
             return TimeCard(
               item: item,
               isFav: isFav,
-              onFavTap: () => controller.saveFavorites(info: item),
+              onFavTap: () async {
+                Get.find<GoogleAdsController>().navigateWithAd(
+                    onAction: () async {
+                  await controller.saveFavorites(info: item);
+                });
+              },
             );
           },
         );

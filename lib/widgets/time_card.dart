@@ -57,10 +57,10 @@ class TimeCard extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-            Get.to(
-              () => TimeDetailScreen(timeInfo: item),
-              transition: Transition.cupertino,
-            );
+            // Get.to(
+            //   () => TimeDetailScreen(timeInfo: item),
+            //   transition: Transition.cupertino,
+            // );
           },
           borderRadius: BorderRadius.circular(10),
           child: Padding(

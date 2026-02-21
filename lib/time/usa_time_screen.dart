@@ -1,6 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:usa_gas_price/controller/google_ads_controller.dart';
 import 'package:usa_gas_price/controller/time_controller.dart'
     show TimeController;
 import 'package:usa_gas_price/time/favorite_screen.dart';
@@ -126,7 +127,10 @@ class _USATimeScreenState extends State<USATimeScreen> {
                   item: item,
                   isFav: isFav,
                   onFavTap: () async {
-                    await ctrl.saveFavorites(info: item);
+                    Get.find<GoogleAdsController>().navigateWithAd(
+                        onAction: () async {
+                      await ctrl.saveFavorites(info: item);
+                    });
                   },
                 );
               },

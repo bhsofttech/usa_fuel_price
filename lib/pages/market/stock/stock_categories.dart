@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:usa_gas_price/controller/google_ads_controller.dart';
 import 'package:usa_gas_price/pages/market/stock/stock_list_screen.dart';
 
 class StockCategoriesScreen extends StatefulWidget {
@@ -10,7 +11,8 @@ class StockCategoriesScreen extends StatefulWidget {
   State<StockCategoriesScreen> createState() => _StockCategoriesScreenState();
 }
 
-class _StockCategoriesScreenState extends State<StockCategoriesScreen> with TickerProviderStateMixin {
+class _StockCategoriesScreenState extends State<StockCategoriesScreen>
+    with TickerProviderStateMixin {
   final Color primaryBlue = const Color(0xFF007AFF);
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -21,19 +23,22 @@ class _StockCategoriesScreenState extends State<StockCategoriesScreen> with Tick
       title: "All stocks",
       icon: Icons.list_alt,
       color: const Color(0xFF0A84FF),
-      route: 'https://in.tradingview.com/markets/stocks-usa/market-movers-all-stocks/',
+      route:
+          'https://in.tradingview.com/markets/stocks-usa/market-movers-all-stocks/',
     ),
     StockCategory(
       title: "Top gainers",
       icon: Icons.trending_up,
       color: const Color(0xFF30D158),
-      route: 'https://in.tradingview.com/markets/stocks-usa/market-movers-gainers/',
+      route:
+          'https://in.tradingview.com/markets/stocks-usa/market-movers-gainers/',
     ),
     StockCategory(
       title: "Biggest losers",
       icon: Icons.trending_down,
       color: const Color(0xFFFF453A),
-      route: 'https://in.tradingview.com/markets/stocks-usa/market-movers-losers/',
+      route:
+          'https://in.tradingview.com/markets/stocks-usa/market-movers-losers/',
     ),
     StockCategory(
       title: "All Time High",
@@ -51,109 +56,127 @@ class _StockCategoriesScreenState extends State<StockCategoriesScreen> with Tick
       title: "52 Week High",
       icon: Icons.bedtime,
       color: const Color(0xFFFF2D55),
-      route: 'https://in.tradingview.com/markets/stocks-usa/market-movers-52wk-high/',
+      route:
+          'https://in.tradingview.com/markets/stocks-usa/market-movers-52wk-high/',
     ),
     StockCategory(
       title: "52 Week Low",
       icon: Icons.emoji_events,
       color: const Color(0xFFFF9F0A),
-      route: 'https://in.tradingview.com/markets/stocks-usa/market-movers-52wk-low/',
+      route:
+          'https://in.tradingview.com/markets/stocks-usa/market-movers-52wk-low/',
     ),
     StockCategory(
       title: "Large-cap",
       icon: Icons.business,
       color: const Color(0xFFBF5AF2),
-      route: 'https://in.tradingview.com/markets/stocks-usa/market-movers-large-cap/',
+      route:
+          'https://in.tradingview.com/markets/stocks-usa/market-movers-large-cap/',
     ),
     StockCategory(
       title: "Small-cap",
       icon: Icons.business_center,
       color: const Color(0xFFFF9500),
-      route: 'https://in.tradingview.com/markets/stocks-usa/market-movers-small-cap/',
+      route:
+          'https://in.tradingview.com/markets/stocks-usa/market-movers-small-cap/',
     ),
     StockCategory(
       title: "Largest-Employers",
       icon: Icons.attach_money,
       color: const Color(0xFF00C4B4),
-      route: 'https://in.tradingview.com/markets/stocks-usa/market-movers-largest-employers/',
+      route:
+          'https://in.tradingview.com/markets/stocks-usa/market-movers-largest-employers/',
     ),
     StockCategory(
       title: "High Dividend",
       icon: Icons.bar_chart,
       color: const Color(0xFF5856D6),
-      route: 'https://in.tradingview.com/markets/stocks-usa/market-movers-high-dividend/',
+      route:
+          'https://in.tradingview.com/markets/stocks-usa/market-movers-high-dividend/',
     ),
     StockCategory(
       title: "Highest Net Income",
       icon: Icons.show_chart,
       color: const Color(0xFFFF375F),
-      route: 'https://in.tradingview.com/markets/stocks-usa/market-movers-highest-net-income/',
+      route:
+          'https://in.tradingview.com/markets/stocks-usa/market-movers-highest-net-income/',
     ),
     StockCategory(
       title: "Highest Cash",
       icon: Icons.arrow_upward,
       color: const Color(0xFF30D158),
-      route: 'https://in.tradingview.com/markets/stocks-usa/market-movers-highest-cash/',
+      route:
+          'https://in.tradingview.com/markets/stocks-usa/market-movers-highest-cash/',
     ),
     StockCategory(
       title: "Highest Profit Per Employee",
       icon: Icons.arrow_downward,
       color: const Color(0xFFFF453A),
-      route: 'https://in.tradingview.com/markets/stocks-usa/market-movers-highest-profit-per-employee/',
+      route:
+          'https://in.tradingview.com/markets/stocks-usa/market-movers-highest-profit-per-employee/',
     ),
     StockCategory(
       title: "highest Revenue Per Employee",
       icon: Icons.star,
       color: const Color(0xFFFF9F0A),
-      route: 'https://in.tradingview.com/markets/stocks-usa/market-movers-highest-revenue-per-employee/',
+      route:
+          'https://in.tradingview.com/markets/stocks-usa/market-movers-highest-revenue-per-employee/',
     ),
     StockCategory(
       title: "Most Active",
       icon: Icons.warning,
       color: const Color(0xFFFF3B30),
-      route: 'https://in.tradingview.com/markets/stocks-usa/market-movers-active/',
+      route:
+          'https://in.tradingview.com/markets/stocks-usa/market-movers-active/',
     ),
     StockCategory(
       title: "Pre Market Gainers",
       icon: Icons.volume_up,
       color: const Color(0xFF8E8E93),
-      route: 'https://in.tradingview.com/markets/stocks-usa/market-movers-pre-market-gainers/',
+      route:
+          'https://in.tradingview.com/markets/stocks-usa/market-movers-pre-market-gainers/',
     ),
     StockCategory(
       title: "Pre Market Losers",
       icon: Icons.money_off,
       color: const Color(0xFF8B6F47),
-      route: 'https://in.tradingview.com/markets/stocks-usa/market-movers-pre-market-losers/',
+      route:
+          'https://in.tradingview.com/markets/stocks-usa/market-movers-pre-market-losers/',
     ),
     StockCategory(
       title: "Highest Revenue",
       icon: Icons.account_balance,
       color: const Color(0xFF32D74B),
-      route: 'https://in.tradingview.com/markets/stocks-usa/market-movers-highest-revenue/',
+      route:
+          'https://in.tradingview.com/markets/stocks-usa/market-movers-highest-revenue/',
     ),
     StockCategory(
       title: "Most Expensive",
       icon: Icons.account_balance_wallet,
       color: const Color(0xFFD0FD3E),
-      route: 'https://in.tradingview.com/markets/stocks-usa/market-movers-most-expensive/',
+      route:
+          'https://in.tradingview.com/markets/stocks-usa/market-movers-most-expensive/',
     ),
     StockCategory(
       title: "Penny Stocks",
       icon: Icons.emoji_people,
       color: const Color(0xFF66D9E8),
-      route: 'https://in.tradingview.com/markets/stocks-usa/market-movers-penny-stocks/',
+      route:
+          'https://in.tradingview.com/markets/stocks-usa/market-movers-penny-stocks/',
     ),
     StockCategory(
       title: "Overbought",
       icon: Icons.work,
       color: const Color(0xFF0A84FF),
-      route: 'https://in.tradingview.com/markets/stocks-usa/market-movers-overbought/',
+      route:
+          'https://in.tradingview.com/markets/stocks-usa/market-movers-overbought/',
     ),
     StockCategory(
       title: "Oversold",
       icon: Icons.nightlight_round,
       color: const Color(0xFF8A4AF3),
-      route: 'https://in.tradingview.com/markets/stocks-usa/market-movers-oversold/',
+      route:
+          'https://in.tradingview.com/markets/stocks-usa/market-movers-oversold/',
     ),
   ];
 
@@ -244,7 +267,8 @@ class _StockCategoriesScreenState extends State<StockCategoriesScreen> with Tick
             position: _slideAnimation,
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -279,7 +303,8 @@ class _StockCategoriesScreenState extends State<StockCategoriesScreen> with Tick
           animation: _animationController,
           builder: (context, child) {
             return Transform.translate(
-              offset: Offset(0, (1 - _animationController.value) * 20 * (index + 1)),
+              offset: Offset(
+                  0, (1 - _animationController.value) * 20 * (index + 1)),
               child: Opacity(
                 opacity: _animationController.value,
                 child: Padding(
@@ -289,7 +314,9 @@ class _StockCategoriesScreenState extends State<StockCategoriesScreen> with Tick
                     category.icon,
                     category.color,
                     [category.color.withOpacity(0.7), category.color],
-                    () => Get.to(() => StockListScreen(url: category.route)),
+                    ()=> Get.find<GoogleAdsController>().navigateWithAd(
+                      nextPage: StockListScreen(url: category.route),
+                    ),
                   ),
                 ),
               ),
@@ -407,4 +434,3 @@ class StockCategory {
     required this.route,
   });
 }
-

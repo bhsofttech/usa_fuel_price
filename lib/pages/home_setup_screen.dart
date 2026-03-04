@@ -40,6 +40,7 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
   // Unlock status for tabs
   bool _isTab1Unlocked = false; // Index 1 (Gas)
   bool _isTab3Unlocked = false; // Index 3 (Diesel)
+  bool _isTab5Unlocked = false; // Index 5 (Stock)
 
   @override
   void initState() {
@@ -61,10 +62,15 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
     final tab3UnlockTime = prefs.getInt('tab3_unlock_time') ?? 0;
     final tab3Unlocked = now < tab3UnlockTime;
 
+    // Check Tab 5 (Stock)
+    final tab5UnlockTime = prefs.getInt('tab5_unlock_time') ?? 0;
+    final tab5Unlocked = now < tab5UnlockTime;
+
     if (mounted) {
       setState(() {
         _isTab1Unlocked = tab1Unlocked;
         _isTab3Unlocked = tab3Unlocked;
+        _isTab5Unlocked = tab5Unlocked;
       });
     }
   }
@@ -90,6 +96,14 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
         });
       }
       _scheduleAutoLock(tabIndex, const Duration(hours: 12));
+    } else if (tabIndex == 5) {
+      await prefs.setInt('tab5_unlock_time', unlockUntil);
+      if (mounted) {
+        setState(() {
+          _isTab5Unlocked = true;
+        });
+      }
+      _scheduleAutoLock(tabIndex, const Duration(hours: 12));
     }
   }
 
@@ -101,6 +115,8 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
             _isTab1Unlocked = false;
           } else if (tabIndex == 3) {
             _isTab3Unlocked = false;
+          } else if (tabIndex == 5) {
+            _isTab5Unlocked = false;
           }
         });
       }
@@ -116,8 +132,10 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
       return;
     }
 
-    // Check if tabs 1 or 3 are locked
-    if ((index == 1 && !_isTab1Unlocked) || (index == 3 && !_isTab3Unlocked)) {
+    // Check if tabs 1, 3 or 5 are locked
+    if ((index == 1 && !_isTab1Unlocked) ||
+        (index == 3 && !_isTab3Unlocked) ||
+        (index == 5 && !_isTab5Unlocked)) {
       _showUnlockDialog(index);
     } else {
       if (mounted) {
@@ -148,7 +166,11 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
   }
 
   void _showUnlockDialog(int tabIndex) {
-    final tabName = tabIndex == 1 ? 'Gas' : 'Diesel';
+    final tabName = tabIndex == 1
+        ? 'Gas'
+        : tabIndex == 3
+            ? 'Diesel'
+            : 'Stock';
 
     showDialog(
       context: context,
@@ -260,7 +282,7 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
         }
         Get.snackbar(
           'Unlocked!',
-          'You can now access ${tabIndex == 1 ? 'Gas' : 'Diesel'} feature for 12 hours',
+          'You can now access ${tabIndex == 1 ? 'Gas' : tabIndex == 3 ? 'Diesel' : 'Stock'} feature for 12 hours',
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: primaryBlue.withOpacity(0.9),
           colorText: Colors.white,
@@ -440,8 +462,9 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
     required String label,
     required int index,
   }) {
-    final isLocked =
-        (index == 1 && !_isTab1Unlocked) || (index == 3 && !_isTab3Unlocked);
+    final isLocked = (index == 1 && !_isTab1Unlocked) ||
+        (index == 3 && !_isTab3Unlocked) ||
+        (index == 5 && !_isTab5Unlocked);
 
     return BottomNavigationBarItem(
       icon: Stack(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:usa_gas_price/controller/google_ads_controller.dart';
 import 'package:usa_gas_price/pages/market/stock/stock_list_screen.dart';
 
 class CryptoCategoriesScreen extends StatefulWidget {
@@ -10,7 +11,8 @@ class CryptoCategoriesScreen extends StatefulWidget {
   State<CryptoCategoriesScreen> createState() => _CryptoCategoriesScreenState();
 }
 
-class _CryptoCategoriesScreenState extends State<CryptoCategoriesScreen> with TickerProviderStateMixin {
+class _CryptoCategoriesScreenState extends State<CryptoCategoriesScreen>
+    with TickerProviderStateMixin {
   final Color primaryBlue = const Color(0xFF007AFF);
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -27,13 +29,15 @@ class _CryptoCategoriesScreenState extends State<CryptoCategoriesScreen> with Ti
       title: "Top Gainers",
       icon: Icons.trending_up_rounded,
       color: Color(0xFF30D158),
-      route: 'https://in.tradingview.com/markets/cryptocurrencies/prices-gainers/',
+      route:
+          'https://in.tradingview.com/markets/cryptocurrencies/prices-gainers/',
     ),
     StockCategory(
       title: "Biggest Losers",
       icon: Icons.trending_down_rounded,
       color: Color(0xFFFF453A),
-      route: 'https://in.tradingview.com/markets/cryptocurrencies/prices-losers/',
+      route:
+          'https://in.tradingview.com/markets/cryptocurrencies/prices-losers/',
     ),
     StockCategory(
       title: "DeFi Coins",
@@ -45,37 +49,43 @@ class _CryptoCategoriesScreenState extends State<CryptoCategoriesScreen> with Ti
       title: "Large Cap",
       icon: Icons.diamond_rounded,
       color: Color(0xFFBF5AF2),
-      route: 'https://in.tradingview.com/markets/cryptocurrencies/prices-large-cap/',
+      route:
+          'https://in.tradingview.com/markets/cryptocurrencies/prices-large-cap/',
     ),
     StockCategory(
       title: "Small Cap",
       icon: Icons.emoji_objects_rounded,
       color: Color(0xFFFF9F0A),
-      route: 'https://in.tradingview.com/markets/cryptocurrencies/prices-small-cap/',
+      route:
+          'https://in.tradingview.com/markets/cryptocurrencies/prices-small-cap/',
     ),
     StockCategory(
       title: "52 Week High",
       icon: Icons.arrow_upward_rounded,
       color: Color(0xFF30D158),
-      route: 'https://in.tradingview.com/markets/cryptocurrencies/prices-52-week-high/',
+      route:
+          'https://in.tradingview.com/markets/cryptocurrencies/prices-52-week-high/',
     ),
     StockCategory(
       title: "52 Week Low",
       icon: Icons.arrow_downward_rounded,
       color: Color(0xFFFF453A),
-      route: 'https://in.tradingview.com/markets/cryptocurrencies/prices-52-week-low/',
+      route:
+          'https://in.tradingview.com/markets/cryptocurrencies/prices-52-week-low/',
     ),
     StockCategory(
       title: "All Time High",
       icon: Icons.rocket_launch_rounded,
       color: Color(0xFFFF2D55),
-      route: 'https://in.tradingview.com/markets/cryptocurrencies/prices-all-time-high/',
+      route:
+          'https://in.tradingview.com/markets/cryptocurrencies/prices-all-time-high/',
     ),
     StockCategory(
       title: "All Time Low",
       icon: Icons.water_drop_rounded,
       color: Color(0xFF66D9E8),
-      route: 'https://in.tradingview.com/markets/cryptocurrencies/prices-all-time-low/',
+      route:
+          'https://in.tradingview.com/markets/cryptocurrencies/prices-all-time-low/',
     ),
     StockCategory(
       title: "NFT Coins",
@@ -178,7 +188,8 @@ class _CryptoCategoriesScreenState extends State<CryptoCategoriesScreen> with Ti
             position: _slideAnimation,
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -213,7 +224,8 @@ class _CryptoCategoriesScreenState extends State<CryptoCategoriesScreen> with Ti
           animation: _animationController,
           builder: (context, child) {
             return Transform.translate(
-              offset: Offset(0, (1 - _animationController.value) * 20 * (index + 1)),
+              offset: Offset(
+                  0, (1 - _animationController.value) * 20 * (index + 1)),
               child: Opacity(
                 opacity: _animationController.value,
                 child: Padding(
@@ -223,7 +235,9 @@ class _CryptoCategoriesScreenState extends State<CryptoCategoriesScreen> with Ti
                     category.icon,
                     category.color,
                     [category.color.withOpacity(0.7), category.color],
-                    () => Get.to(() => StockListScreen(url: category.route)),
+                    () => Get.find<GoogleAdsController>().navigateWithAd(
+                      nextPage: StockListScreen(url: category.route),
+                    ),
                   ),
                 ),
               ),

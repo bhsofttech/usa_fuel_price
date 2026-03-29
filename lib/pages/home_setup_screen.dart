@@ -5,17 +5,21 @@ import 'package:usa_gas_price/controller/eu_fule_controller.dart';
 import 'package:usa_gas_price/controller/gas_controller.dart';
 import 'package:usa_gas_price/controller/stock_controller.dart';
 import 'package:usa_gas_price/flight/country_selection_screen.dart';
+import 'package:usa_gas_price/new_flow/avg_screen.dart';
+import 'package:usa_gas_price/new_flow/canada_gas_screen.dart';
+import 'package:usa_gas_price/new_flow/crude_price_screen.dart';
+import 'package:usa_gas_price/new_flow/diesel_prices_screen.dart';
+import 'package:usa_gas_price/new_flow/company_wise_screen.dart';
 import 'package:usa_gas_price/pages/europe/eu_service_screen.dart';
 import 'package:usa_gas_price/pages/market/market_page.dart';
-import 'package:usa_gas_price/pages/desial_price.dart';
-import 'package:usa_gas_price/pages/ev_price.dart';
-import 'package:usa_gas_price/pages/gas_price.dart';
-import 'package:usa_gas_price/pages/map_screen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:usa_gas_price/controller/reward_ads_controller.dart';
+
+import '../new_flow/usa_gas_screen.dart';
 
 class HomeSetupScreen extends StatefulWidget {
   const HomeSetupScreen({super.key});
@@ -339,15 +343,15 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
           color: const Color(0xFFF2F2F7),
           child: Column(children: [
             _selectedIndex == 0
-                ? const Expanded(child: GasMapHitTestApp())
+                ? const Expanded(child: NationalAvgPrice())
                 : _selectedIndex == 1
-                    ? const Expanded(child: GasPrice())
+                    ? const Expanded(child: GasPricesScreen())
                     : _selectedIndex == 2
                         ? const Expanded(child: CountrySelectionScreen())
                         : _selectedIndex == 3
-                            ? const Expanded(child: DesialPrice())
+                            ? const Expanded(child: DieselPriceScreen())
                             : _selectedIndex == 4
-                                ? const Expanded(child: EvPrice())
+                                ? const Expanded(child: CrudeOilPricesScreen())
                                 : _selectedIndex == 5
                                     ? const Expanded(child: MarketPage())
                                     : const Expanded(child: EUServiceScreen())
@@ -403,7 +407,7 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
                 _buildNavItem(
                   icon: Icons.map_outlined,
                   activeIcon: Icons.map,
-                  label: 'Map',
+                  label: 'Avg',
                   index: 0,
                 ),
                 _buildNavItem(
@@ -427,7 +431,7 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
                 _buildNavItem(
                   icon: Icons.electric_bolt_outlined,
                   activeIcon: Icons.electric_bolt,
-                  label: 'EV',
+                  label: 'Crude',
                   index: 4,
                 ),
                 _buildNavItem(

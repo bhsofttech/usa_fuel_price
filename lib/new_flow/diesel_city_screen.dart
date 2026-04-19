@@ -97,12 +97,15 @@ class _DieselCityWiseScreenState extends State<DieselCityWiseScreen>
       for (var box in wdBoxes) {
         final nameEl = box.querySelector('h4.wdname, .wdname');
         final priceEl = box.querySelector('.wdprice, div.wdprice');
-        final changeEl = box.querySelector('div[class*="wdprice"]');
+        final changeEl = box.querySelector('.wdpriceup, .wdpricedown');
 
         if (nameEl != null && priceEl != null) {
           final fuel = nameEl.text.trim();
           final price = priceEl.text.trim();
-          final change = changeEl?.text.trim() ?? '';
+          String change = '';
+          if (changeEl != null) {
+            change = changeEl.text.trim();
+          }
           avg[fuel] = {'price': price, 'change': change};
         }
       }

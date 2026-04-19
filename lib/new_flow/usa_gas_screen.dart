@@ -90,19 +90,17 @@ class _GasPricesScreenState extends State<GasPricesScreen>
       Map<String, Map<String, String>> national = {};
       final wdNames = document.querySelectorAll('h4.wdname');
       final wdPrices = document.querySelectorAll('div.wdprice');
-      final wdChanges = document.querySelectorAll('div[class*="wdprice"]');
+      final wdChanges = document.querySelectorAll('.wdpriceup, .wdpricedown');
 
       for (int i = 0; i < wdNames.length && i < wdPrices.length; i++) {
         final type = wdNames[i].text.trim();
         final price = wdPrices[i].text.trim();
         String change = '0.00';
 
-        if (i < wdChanges.length) {
-          final changeEl = wdChanges[i];
-          if (changeEl != wdPrices[i]) {
+          if (i < wdChanges.length) {
+            final changeEl = wdChanges[i];
             change = changeEl.text.trim();
           }
-        }
         national[type] = {'price': price, 'change': change};
       }
 

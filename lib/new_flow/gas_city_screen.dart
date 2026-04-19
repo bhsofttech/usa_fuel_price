@@ -98,7 +98,7 @@ class _GasCityWiseScreenState extends State<GasCityWiseScreen>
       for (var box in wdBoxes) {
         final nameEl = box.querySelector('h4.wdname, .wdname');
         final priceEl = box.querySelector('.wdprice, div.wdprice');
-        final changeEl = box.querySelector('div[class*="wdprice"]');
+        final changeEl = box.querySelector('.wdpriceup, .wdpricedown');
 
         if (nameEl != null && priceEl != null) {
           final fuel = nameEl.text.trim();

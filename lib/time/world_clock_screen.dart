@@ -2,12 +2,15 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:usa_gas_price/controller/google_ads_controller.dart';
+import 'package:usa_gas_price/time/favorite_screen.dart';
 import 'package:usa_gas_price/widgets/time_card.dart';
 
 import '../controller/time_controller.dart';
 
 class WorldClockScreen extends StatelessWidget {
-  const WorldClockScreen({super.key});
+  final TimeController controller = Get.put(TimeController());
+
+  WorldClockScreen({super.key});
 
   final List<Map<String, String>> continents = const [
     {
@@ -44,7 +47,7 @@ class WorldClockScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'World',
+            'World Clock',
             style: TextStyle(
               color: primaryBlue,
               fontFamily: "SF Pro Display",
@@ -53,6 +56,15 @@ class WorldClockScreen extends StatelessWidget {
               letterSpacing: 0.5,
             ),
           ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.favorite_rounded, color: Colors.red),
+              onPressed: () => Get.to(() => const FavoritesPage(),
+                  transition: Transition.cupertino),
+              tooltip: 'Favorites',
+            ),
+            const SizedBox(width: 12),
+          ],
         ),
         body: Column(
           children: [

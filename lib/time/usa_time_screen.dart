@@ -15,7 +15,7 @@ class USATimeScreen extends StatefulWidget {
 }
 
 class _USATimeScreenState extends State<USATimeScreen> {
-  final TimeController controller = Get.put(TimeController());
+    final TimeController controller = Get.put(TimeController());
   final ScrollController _scrollController = ScrollController();
   final Color primaryBlue = const Color(0xFF007AFF);
 

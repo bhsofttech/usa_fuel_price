@@ -20,7 +20,7 @@ List<StockData>? cachedbForexFuture;
 
 Future<Database>? myDatabase;
 
-const bool isTestMode = false;
+const bool isTestMode = true;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

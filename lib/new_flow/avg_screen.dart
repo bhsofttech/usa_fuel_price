@@ -435,7 +435,7 @@ class _NationalAvgPriceState extends State<NationalAvgPrice>
                                 ),
                                 child: Column(
                                   children: crudeOilPrices
-                                      .take(4)
+                                      .take(2)
                                       .toList()
                                       .asMap()
                                       .entries
@@ -521,7 +521,7 @@ class _NationalAvgPriceState extends State<NationalAvgPrice>
                                 ),
                                 child: Column(
                                   children: naturalGasPrices
-                                      .take(4)
+                                      .take(2)
                                       .toList()
                                       .asMap()
                                       .entries

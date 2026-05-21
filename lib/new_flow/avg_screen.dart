@@ -6,7 +6,9 @@ import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;
 import 'package:usa_gas_price/controller/google_ads_controller.dart';
 import 'package:usa_gas_price/new_flow/crude_oil_list_screen.dart';
+import 'package:usa_gas_price/new_flow/data_details_screen.dart';
 import 'package:usa_gas_price/new_flow/natural_gas_list_screen.dart';
+import 'package:usa_gas_price/new_flow/electricity_list_screen.dart';
 import 'package:usa_gas_price/time/time_setup_screen.dart';
 
 class NationalAvgPrice extends StatefulWidget {
@@ -19,8 +21,6 @@ class NationalAvgPrice extends StatefulWidget {
 class _NationalAvgPriceState extends State<NationalAvgPrice>
     with TickerProviderStateMixin {
   Map<String, Map<String, String>> gasPrices = {};
-  List<Map<String, String>> crudeOilPrices = [];
-  List<Map<String, String>> naturalGasPrices = [];
   bool isLoading = true;
   String errorMessage = '';
 
@@ -126,65 +126,9 @@ class _NationalAvgPriceState extends State<NationalAvgPrice>
         }
       }
 
-      // 2. Fetch Crude Oil Prices from home page
-      const homeUrl = 'https://www.oilmonster.com/';
-      final homeResponse = await http.get(
-        Uri.parse(homeUrl),
-        headers: {
-          'User-Agent':
-              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
-        },
-      );
-
-      List<Map<String, String>> tempCrude = [];
-      List<Map<String, String>> tempNaturalGas = [];
-      if (homeResponse.statusCode == 200) {
-        final homeDoc = parser.parse(homeResponse.body);
-
-        // Crude Oil
-        final crudeRows =
-            homeDoc.querySelectorAll('table.iternataionalcrude tbody tr');
-        for (var row in crudeRows) {
-          final cells = row.querySelectorAll('td');
-          if (cells.length >= 4) {
-            final region = cells[0].text.trim();
-            final blend = cells[1].text.trim();
-            final price = cells[2].text.trim();
-            final change = cells[3].text.trim();
-
-            tempCrude.add({
-              'region': region,
-              'blend': blend,
-              'price': price,
-              'change': change,
-            });
-          }
-        }
-
-        // Natural Gas
-        final gasRows =
-            homeDoc.querySelectorAll('table.gaselectricity tbody tr');
-        for (var row in gasRows) {
-          final cells = row.querySelectorAll('td');
-          if (cells.length >= 3) {
-            final location = cells[0].text.trim();
-            final price = cells[1].text.trim();
-            final change = cells[2].text.trim();
-
-            tempNaturalGas.add({
-              'location': location,
-              'price': price,
-              'change': change,
-            });
-          }
-        }
-      }
-
       if (mounted) {
         setState(() {
           gasPrices = tempPrices;
-          crudeOilPrices = tempCrude;
-          naturalGasPrices = tempNaturalGas;
           isLoading = false;
         });
         _animationController.forward();
@@ -388,177 +332,346 @@ class _NationalAvgPriceState extends State<NationalAvgPrice>
 
                             const SizedBox(height: 16),
 
-                            if (crudeOilPrices.isNotEmpty) ...[
-                              _buildSectionHeader(
-                                label: "International Crude Oil",
-                                icon: Icons.opacity_rounded,
-                                color: Colors.deepOrange,
-                                trailing: GestureDetector(
-                                  onTap: () {
-                                    Get.find<GoogleAdsController>()
-                                        .navigateWithAd(
-                                            nextPage: CrudeOilListScreen(
-                                      crudeOilPrices: crudeOilPrices,
-                                    ));
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 3),
-                                    decoration: BoxDecoration(
-                                      color: primaryBlue.withOpacity(0.08),
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: Text(
-                                      "View All",
-                                      style: TextStyle(
-                                        color: primaryBlue,
-                                        fontFamily: "SF Pro Text",
-                                        fontSize: 11.0,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),
+                            // International Crude Oil Card
+                            _buildNavigationCard(
+                              label: "International Crude Oil",
+                              subtitle: "Live Market Prices",
+                              icon: Icons.opacity_rounded,
+                              color1: const Color(0xFFFF9500),
+                              color2: const Color(0xFFFF3B30),
+                              onTap: () {
+                                Get.find<GoogleAdsController>().navigateWithAd(
+                                    nextPage: const CrudeOilListScreen());
+                              },
+                            ),
+
+                            // USA Natural Gas Card
+                            _buildNavigationCard(
+                              label: "USA Natural Gas",
+                              subtitle: "Natural Gas Indices",
+                              icon: Icons.whatshot_rounded,
+                              color1: const Color(0xFF5AC8FA),
+                              color2: const Color(0xFF007AFF),
+                              onTap: () {
+                                Get.find<GoogleAdsController>().navigateWithAd(
+                                    nextPage: const NaturalGasListScreen());
+                              },
+                            ),
+
+                            //USA Electricity Prices
+                            _buildNavigationCard(
+                              label: "USA Electricity Prices",
+                              subtitle: "Electricity Indices",
+                              icon: Icons.power_rounded,
+                              color1: const Color(0xFFFFD60A),
+                              color2: const Color(0xFFFF9F0A),
+                              onTap: () {
+                                Get.find<GoogleAdsController>().navigateWithAd(
+                                    nextPage: const ElectricityListScreen());
+                              },
+                            ),
+
+                            // Finance Section
+                            _buildNavigationCard(
+                              label: "World Currencies Price",
+                              subtitle: "Global Exchange Rates",
+                              icon: Icons.currency_exchange_rounded,
+                              color1: const Color(0xFFAF52DE),
+                              color2: const Color(0xFF5856D6),
+                              onTap: () => Get.find<GoogleAdsController>().navigateWithAd(
+                                nextPage: const DataDetailsScreen(
+                                  title: "World Currencies Price",
+                                  endPoint: "https://tradingeconomics.com/currencies",
                                 ),
                               ),
-                              const SizedBox(height: 8),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: cardWhite,
-                                  borderRadius: BorderRadius.circular(14),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.05),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: Column(
-                                  children: crudeOilPrices
-                                      .take(2)
-                                      .toList()
-                                      .asMap()
-                                      .entries
-                                      .map((entry) {
-                                    int index = entry.key;
-                                    final data = entry.value;
-                                    final isLast = index ==
-                                        (crudeOilPrices.length > 4
-                                                ? 4
-                                                : crudeOilPrices.length) -
-                                            1;
-
-                                    return AnimatedBuilder(
-                                      animation: _animationController,
-                                      builder: (context, child) {
-                                        return Transform.translate(
-                                          offset: Offset(
-                                              0,
-                                              (1 - _animationController.value) *
-                                                  15 *
-                                                  (index +
-                                                      gasPrices.length +
-                                                      1)),
-                                          child: Opacity(
-                                            opacity: _animationController.value,
-                                            child: _buildCrudeRow(data,
-                                                isLast: isLast),
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  }).toList(),
+                            ),
+                            _buildNavigationCard(
+                              label: "World Crypto Price",
+                              subtitle: "Digital Asset Markets",
+                              icon: Icons.currency_bitcoin_rounded,
+                              color1: const Color(0xFF5856D6),
+                              color2: const Color(0xFF343396),
+                              onTap: () => Get.find<GoogleAdsController>().navigateWithAd(
+                                nextPage: const DataDetailsScreen(
+                                  title: "World Crypto Price",
+                                  endPoint: "https://tradingeconomics.com/crypto",
                                 ),
                               ),
-                            ],
-
-                            const SizedBox(height: 16),
-
-                            if (naturalGasPrices.isNotEmpty) ...[
-                              _buildSectionHeader(
-                                label: "USA Natural Gas",
-                                icon: Icons.whatshot_rounded,
-                                color: const Color(0xFF007AFF),
-                                trailing: GestureDetector(
-                                  onTap: () {
-                                    Get.find<GoogleAdsController>()
-                                        .navigateWithAd(
-                                            nextPage: NaturalGasListScreen(
-                                                naturalGasPrices:
-                                                    naturalGasPrices));
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 3),
-                                    decoration: BoxDecoration(
-                                      color: primaryBlue.withOpacity(0.08),
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: Text(
-                                      "View All",
-                                      style: TextStyle(
-                                        color: primaryBlue,
-                                        fontFamily: "SF Pro Text",
-                                        fontSize: 11.0,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),
+                            ),
+                            _buildNavigationCard(
+                              label: "World Bonds",
+                              subtitle: "Fixed Income Securities",
+                              icon: Icons.analytics_rounded,
+                              color1: const Color(0xFF5E5CE6),
+                              color2: const Color(0xFF24235C),
+                              onTap: () => Get.find<GoogleAdsController>().navigateWithAd(
+                                nextPage: const DataDetailsScreen(
+                                  title: "World Bonds",
+                                  endPoint: "https://tradingeconomics.com/bonds",
                                 ),
                               ),
-                              const SizedBox(height: 8),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: cardWhite,
-                                  borderRadius: BorderRadius.circular(14),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.05),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: Column(
-                                  children: naturalGasPrices
-                                      .take(2)
-                                      .toList()
-                                      .asMap()
-                                      .entries
-                                      .map((entry) {
-                                    int index = entry.key;
-                                    final data = entry.value;
-                                    final isLast = index ==
-                                        (naturalGasPrices.length > 4
-                                                ? 4
-                                                : naturalGasPrices.length) -
-                                            1;
+                            ),
 
-                                    return AnimatedBuilder(
-                                      animation: _animationController,
-                                      builder: (context, child) {
-                                        return Transform.translate(
-                                          offset: Offset(
-                                              0,
-                                              (1 - _animationController.value) *
-                                                  15 *
-                                                  (index +
-                                                      gasPrices.length +
-                                                      crudeOilPrices.length +
-                                                      1)),
-                                          child: Opacity(
-                                            opacity: _animationController.value,
-                                            child: _buildNaturalGasRow(data,
-                                                isLast: isLast),
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  }).toList(),
+                            // Economy Section
+                            _buildNavigationCard(
+                              label: "GDP Growth Rate By Country",
+                              subtitle: "Economic Performance",
+                              icon: Icons.trending_up_rounded,
+                              color1: const Color(0xFF34C759),
+                              color2: const Color(0xFF1D943B),
+                              onTap: () => Get.find<GoogleAdsController>().navigateWithAd(
+                                nextPage: const DataDetailsScreen(
+                                  title: "GDP Growth Rate By Country",
+                                  endPoint: "https://tradingeconomics.com/country-list/gdp-growth-rate?continent=world",
                                 ),
                               ),
-                            ],
-                            const SizedBox(height: 12),
+                            ),
+                            _buildNavigationCard(
+                              label: "Employment Rate",
+                              subtitle: "Workforce Participation",
+                              icon: Icons.people_rounded,
+                              color1: const Color(0xFF30B0C7),
+                              color2: const Color(0xFF1E8A9C),
+                              onTap: () => Get.find<GoogleAdsController>().navigateWithAd(
+                                nextPage: const DataDetailsScreen(
+                                  title: "Employment Rate",
+                                  endPoint: "https://tradingeconomics.com/country-list/employment-rate",
+                                ),
+                              ),
+                            ),
+                            _buildNavigationCard(
+                              label: "Unemployment Rate",
+                              subtitle: "Job Market Statistics",
+                              icon: Icons.person_search_rounded,
+                              color1: const Color(0xFFFF453A),
+                              color2: const Color(0xFFD70015),
+                              onTap: () => Get.find<GoogleAdsController>().navigateWithAd(
+                                nextPage: const DataDetailsScreen(
+                                  title: "Unemployment Rate",
+                                  endPoint: "https://tradingeconomics.com/country-list/unemployment-rate?continent=world",
+                                ),
+                              ),
+                            ),
+                            _buildNavigationCard(
+                              label: "Minimum Wages",
+                              subtitle: "Labor Compensation",
+                              icon: Icons.payments_rounded,
+                              color1: const Color(0xFF32D74B),
+                              color2: const Color(0xFF248A3D),
+                              onTap: () => Get.find<GoogleAdsController>().navigateWithAd(
+                                nextPage: const DataDetailsScreen(
+                                  title: "Minimum Wages",
+                                  endPoint: "https://tradingeconomics.com/country-list/minimum-wages",
+                                ),
+                              ),
+                            ),
+
+                            // Banking & Reserves
+                            _buildNavigationCard(
+                              label: "Central Bank Balance Sheet",
+                              subtitle: "Monetary Policy Data",
+                              icon: Icons.account_balance_rounded,
+                              color1: const Color(0xFF007AFF),
+                              color2: const Color(0xFF0040DD),
+                              onTap: () => Get.find<GoogleAdsController>().navigateWithAd(
+                                nextPage: const DataDetailsScreen(
+                                  title: "Central Bank Balance Sheet",
+                                  endPoint: "https://tradingeconomics.com/country-list/central-bank-balance-sheet",
+                                ),
+                              ),
+                            ),
+                            _buildNavigationCard(
+                              label: "Foreign Exchange Reserves",
+                              subtitle: "National Currency Assets",
+                              icon: Icons.savings_rounded,
+                              color1: const Color(0xFF64D2FF),
+                              color2: const Color(0xFF007AFF),
+                              onTap: () => Get.find<GoogleAdsController>().navigateWithAd(
+                                nextPage: const DataDetailsScreen(
+                                  title: "Foreign Exchange Reserves",
+                                  endPoint: "https://tradingeconomics.com/country-list/foreign-exchange-reserves",
+                                ),
+                              ),
+                            ),
+
+                            // Resources & Energy
+                            _buildNavigationCard(
+                              label: "Crude Oil Production",
+                              subtitle: "Energy Output Stats",
+                              icon: Icons.oil_barrel_rounded,
+                              color1: const Color(0xFFFF9500),
+                              color2: const Color(0xFF8B4513),
+                              onTap: () => Get.find<GoogleAdsController>().navigateWithAd(
+                                nextPage: const DataDetailsScreen(
+                                  title: "Crude Oil Production",
+                                  endPoint: "https://tradingeconomics.com/country-list/crude-oil-production",
+                                ),
+                              ),
+                            ),
+                            _buildNavigationCard(
+                              label: "Gold Reserves",
+                              subtitle: "Precious Metal Holdings",
+                              icon: Icons.toll_rounded,
+                              color1: const Color(0xFFFFD60A),
+                              color2: const Color(0xFFFF9F0A),
+                              onTap: () => Get.find<GoogleAdsController>().navigateWithAd(
+                                nextPage: const DataDetailsScreen(
+                                  title: "Gold Reserves",
+                                  endPoint: "https://tradingeconomics.com/country-list/gold-reserves",
+                                ),
+                              ),
+                            ),
+
+                            // GDP Detailed
+                            _buildNavigationCard(
+                              label: "GDP Per Capita",
+                              subtitle: "Individual Economic Share",
+                              icon: Icons.bar_chart_rounded,
+                              color1: const Color(0xFF34C759),
+                              color2: const Color(0xFF135D26),
+                              onTap: () => Get.find<GoogleAdsController>().navigateWithAd(
+                                nextPage: const DataDetailsScreen(
+                                  title: "GDP Per Capita",
+                                  endPoint: "https://tradingeconomics.com/country-list/gdp-per-capita",
+                                ),
+                              ),
+                            ),
+                            _buildNavigationCard(
+                              label: "GDP Per Capita PPP",
+                              subtitle: "Purchasing Power Parity",
+                              icon: Icons.shopping_cart_rounded,
+                              color1: const Color(0xFF30D158),
+                              color2: const Color(0xFF1D943B),
+                              onTap: () => Get.find<GoogleAdsController>().navigateWithAd(
+                                nextPage: const DataDetailsScreen(
+                                  title: "GDP Per Capita PPP",
+                                  endPoint: "https://tradingeconomics.com/country-list/gdp-per-capita-ppp",
+                                ),
+                              ),
+                            ),
+
+                            // Governance & Tax
+                            _buildNavigationCard(
+                              label: "Military Expenditure",
+                              subtitle: "Defense Spending Data",
+                              icon: Icons.security_rounded,
+                              color1: const Color(0xFF8E8E93),
+                              color2: const Color(0xFF48484A),
+                              onTap: () => Get.find<GoogleAdsController>().navigateWithAd(
+                                nextPage: const DataDetailsScreen(
+                                  title: "Military Expenditure",
+                                  endPoint: "https://tradingeconomics.com/country-list/military-expenditure",
+                                ),
+                              ),
+                            ),
+                            _buildNavigationCard(
+                              label: "Corporate Tax Rate",
+                              subtitle: "Business Taxation Stats",
+                              icon: Icons.business_rounded,
+                              color1: const Color(0xFF5856D6),
+                              color2: const Color(0xFF24235C),
+                              onTap: () => Get.find<GoogleAdsController>().navigateWithAd(
+                                nextPage: const DataDetailsScreen(
+                                  title: "Corporate Tax Rate",
+                                  endPoint: "https://tradingeconomics.com/country-list/corporate-tax-rate",
+                                ),
+                              ),
+                            ),
+                            _buildNavigationCard(
+                              label: "Personal Income Tax Rate",
+                              subtitle: "Individual Tax Burdens",
+                              icon: Icons.person_rounded,
+                              color1: const Color(0xFFBF5AF2),
+                              color2: const Color(0xFF5E5CE6),
+                              onTap: () => Get.find<GoogleAdsController>().navigateWithAd(
+                                nextPage: const DataDetailsScreen(
+                                  title: "Personal Income Tax Rate",
+                                  endPoint: "https://tradingeconomics.com/country-list/personal-income-tax-rate",
+                                ),
+                              ),
+                            ),
+
+                            // Healthcare Section
+                            _buildNavigationCard(
+                              label: "Hospitals",
+                              subtitle: "Healthcare Infrastructure",
+                              icon: Icons.local_hospital_rounded,
+                              color1: const Color(0xFFFF375F),
+                              color2: const Color(0xFFBF1131),
+                              onTap: () => Get.find<GoogleAdsController>().navigateWithAd(
+                                nextPage: const DataDetailsScreen(
+                                  title: "Hospitals",
+                                  endPoint: "https://tradingeconomics.com/country-list/hospitals",
+                                ),
+                              ),
+                            ),
+                            _buildNavigationCard(
+                              label: "Medical Doctors",
+                              subtitle: "Physician Workforce",
+                              icon: Icons.health_and_safety_rounded,
+                              color1: const Color(0xFFFF2D55),
+                              color2: const Color(0xFFD70015),
+                              onTap: () => Get.find<GoogleAdsController>().navigateWithAd(
+                                nextPage: const DataDetailsScreen(
+                                  title: "Medical Doctors",
+                                  endPoint: "https://tradingeconomics.com/country-list/medical-doctors",
+                                ),
+                              ),
+                            ),
+                            _buildNavigationCard(
+                              label: "ICU Beds",
+                              subtitle: "Critical Care Capacity",
+                              icon: Icons.bed_rounded,
+                              color1: const Color(0xFFFF453A),
+                              color2: const Color(0xFFBF1131),
+                              onTap: () => Get.find<GoogleAdsController>().navigateWithAd(
+                                nextPage: const DataDetailsScreen(
+                                  title: "ICU Beds",
+                                  endPoint: "https://tradingeconomics.com/country-list/icu-beds",
+                                ),
+                              ),
+                            ),
+                            _buildNavigationCard(
+                              label: "Nurses",
+                              subtitle: "Nursing Staff Statistics",
+                              icon: Icons.medical_services_rounded,
+                              color1: const Color(0xFFFF375F),
+                              color2: const Color(0xFFFF2D55),
+                              onTap: () => Get.find<GoogleAdsController>().navigateWithAd(
+                                nextPage: const DataDetailsScreen(
+                                  title: "Nurses",
+                                  endPoint: "https://tradingeconomics.com/country-list/nurses",
+                                ),
+                              ),
+                            ),
+
+                            // Environment & Infrastructure
+                            _buildNavigationCard(
+                              label: "CO2 Emissions",
+                              subtitle: "Environmental Impact",
+                              icon: Icons.cloud_rounded,
+                              color1: const Color(0xFF636366),
+                              color2: const Color(0xFF1C1C1E),
+                              onTap: () => Get.find<GoogleAdsController>().navigateWithAd(
+                                nextPage: const DataDetailsScreen(
+                                  title: "CO2 Emissions",
+                                  endPoint: "https://tradingeconomics.com/country-list/co2-emissions",
+                                ),
+                              ),
+                            ),
+                            _buildNavigationCard(
+                              label: "Natural Gas Stocks Capacity",
+                              subtitle: "Energy Storage Stats",
+                              icon: Icons.storage_rounded,
+                              color1: const Color(0xFF0A84FF),
+                              color2: const Color(0xFF0040DD),
+                              onTap: () => Get.find<GoogleAdsController>().navigateWithAd(
+                                nextPage: const DataDetailsScreen(
+                                  title: "Natural Gas Stocks Capacity",
+                                  endPoint: "https://tradingeconomics.com/country-list/natural-gas-stocks-capacity",
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -708,231 +821,114 @@ class _NationalAvgPriceState extends State<NationalAvgPrice>
     );
   }
 
-  /// Row inside grouped card for Crude Oil
-  Widget _buildCrudeRow(Map<String, String> data, {bool isLast = false}) {
-    final change = data['change'] ?? '0.00';
-    final changeColor = _getChangeColor(change);
-    final bool isPositive = change.contains('+');
-    final bool isNegative = change.contains('-');
-
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-          child: Row(
-            children: [
-              Container(
-                width: 34,
-                height: 34,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(9),
-                  gradient: const LinearGradient(
-                    colors: [Colors.orangeAccent, Colors.deepOrange],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-                child: const Icon(
-                  Icons.opacity_rounded,
-                  color: Colors.white,
-                  size: 17,
-                ),
+  /// Stylized navigation card with gradient and watermark
+  Widget _buildNavigationCard({
+    required String label,
+    required String subtitle,
+    required IconData icon,
+    required Color color1,
+    required Color color2,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 75,
+        margin: const EdgeInsets.only(bottom: 12),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          gradient: LinearGradient(
+            colors: [color1, color2],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: color2.withOpacity(0.2),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Stack(
+          children: [
+            // Background Watermark Icon
+            Positioned(
+              right: -10,
+              bottom: -15,
+              child: Icon(
+                icon,
+                size: 85,
+                color: Colors.white.withOpacity(0.12),
               ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      data['region'] ?? '',
-                      style: TextStyle(
-                        color: textPrimary,
-                        fontFamily: "SF Pro Text",
-                        fontSize: 13.5,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Text(
-                      data['blend'] ?? '',
-                      style: TextStyle(
-                        color: textSecondary,
-                        fontFamily: "SF Pro Text",
-                        fontSize: 11.0,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+            ),
+            // Content
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
                 children: [
-                  Text(
-                    data['price'] ?? 'N/A',
-                    style: TextStyle(
-                      color: textPrimary,
-                      fontFamily: "SF Pro Display",
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w700,
+                  // Icon Container
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      icon,
+                      color: Colors.white,
+                      size: 20,
                     ),
                   ),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-                    decoration: BoxDecoration(
-                      color: changeColor.withOpacity(0.10),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
+                  const SizedBox(width: 14),
+                  // Text Content
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (isPositive || isNegative)
-                          Icon(
-                            isPositive
-                                ? Icons.arrow_drop_up_rounded
-                                : Icons.arrow_drop_down_rounded,
-                            color: changeColor,
-                            size: 12,
-                          ),
                         Text(
-                          change,
+                          label,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontFamily: "SF Pro Display",
+                            fontSize: 15.5,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: -0.3,
+                          ),
+                        ),
+                        Text(
+                          subtitle,
                           style: TextStyle(
-                            color: changeColor,
+                            color: Colors.white.withOpacity(0.9),
                             fontFamily: "SF Pro Text",
-                            fontSize: 10.5,
-                            fontWeight: FontWeight.w600,
+                            fontSize: 11.5,
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
                       ],
                     ),
                   ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        if (!isLast)
-          Divider(
-            height: 1,
-            thickness: 0.5,
-            indent: 58,
-            color: const Color(0xFFE5E5EA),
-          ),
-      ],
-    );
-  }
-
-  /// Row inside grouped card for Natural Gas
-  Widget _buildNaturalGasRow(Map<String, String> data, {bool isLast = false}) {
-    final change = data['change'] ?? '0.00';
-    final changeColor = _getChangeColor(change);
-    final bool isPositive = change.contains('+');
-    final bool isNegative = change.contains('-');
-
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-          child: Row(
-            children: [
-              Container(
-                width: 34,
-                height: 34,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(9),
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF4AC1FF), Color(0xFF007AFF)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-                child: const Icon(
-                  Icons.whatshot_rounded,
-                  color: Colors.white,
-                  size: 17,
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      data['location'] ?? '',
-                      style: TextStyle(
-                        color: textPrimary,
-                        fontFamily: "SF Pro Text",
-                        fontSize: 13.5,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Text(
-                      "Natural Gas",
-                      style: TextStyle(
-                        color: textSecondary,
-                        fontFamily: "SF Pro Text",
-                        fontSize: 11.0,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    data['price'] ?? 'N/A',
-                    style: TextStyle(
-                      color: textPrimary,
-                      fontFamily: "SF Pro Display",
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+                  // Action Icon
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-                    decoration: BoxDecoration(
-                      color: changeColor.withOpacity(0.10),
-                      borderRadius: BorderRadius.circular(5),
+                    padding: const EdgeInsets.all(7),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (isPositive || isNegative)
-                          Icon(
-                            isPositive
-                                ? Icons.arrow_drop_up_rounded
-                                : Icons.arrow_drop_down_rounded,
-                            color: changeColor,
-                            size: 12,
-                          ),
-                        Text(
-                          change,
-                          style: TextStyle(
-                            color: changeColor,
-                            fontFamily: "SF Pro Text",
-                            fontSize: 10.5,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
+                    child: Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      color: color2,
+                      size: 11,
                     ),
                   ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-        if (!isLast)
-          Divider(
-            height: 1,
-            thickness: 0.5,
-            indent: 58,
-            color: const Color(0xFFE5E5EA),
-          ),
-      ],
+      ),
     );
   }
 }

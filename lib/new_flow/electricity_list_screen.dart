@@ -4,19 +4,19 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;
 
-class NaturalGasListScreen extends StatefulWidget {
-  const NaturalGasListScreen({super.key});
+class ElectricityListScreen extends StatefulWidget {
+  const ElectricityListScreen({super.key});
 
   @override
-  State<NaturalGasListScreen> createState() => _NaturalGasListScreenState();
+  State<ElectricityListScreen> createState() => _ElectricityListScreenState();
 }
 
-class _NaturalGasListScreenState extends State<NaturalGasListScreen> {
-  List<Map<String, String>> naturalGasPrices = [];
+class _ElectricityListScreenState extends State<ElectricityListScreen> {
+  List<Map<String, String>> electricityPrices = [];
   bool isLoading = true;
   String errorMessage = '';
 
-  final Color primaryBlue = const Color(0xFF007AFF);
+  final Color primaryOrange = const Color(0xFFFF9500);
   final Color backgroundGray = const Color(0xFFF2F2F7);
   final Color cardWhite = const Color(0xFFFFFFFF);
   final Color textPrimary = const Color(0xFF1C1C1E);
@@ -25,10 +25,10 @@ class _NaturalGasListScreenState extends State<NaturalGasListScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchNaturalGasPrices();
+    _fetchElectricityPrices();
   }
 
-  Future<void> _fetchNaturalGasPrices() async {
+  Future<void> _fetchElectricityPrices() async {
     const url = 'https://www.oilmonster.com/';
     try {
       final response = await http.get(
@@ -44,28 +44,37 @@ class _NaturalGasListScreenState extends State<NaturalGasListScreen> {
       }
 
       final document = parser.parse(response.body);
-      List<Map<String, String>> tempNaturalGas = [];
+      List<Map<String, String>> tempElectricity = [];
 
-      final gasRows =
-          document.querySelectorAll('table.gaselectricity tbody tr');
-      for (var row in gasRows) {
-        final cells = row.querySelectorAll('td');
-        if (cells.length >= 3) {
-          final location = cells[0].text.trim();
-          final price = cells[1].text.trim();
-          final change = cells[2].text.trim();
+      // Find all tables with class gaselectricity
+      final tables = document.querySelectorAll('table.gaselectricity');
+      
+      for (var table in tables) {
+        // Check if this table is for Electricity by looking at the links
+        final firstLink = table.querySelector('a');
+        if (firstLink != null && firstLink.attributes['href']?.contains('electricity-price') == true) {
+          final rows = table.querySelectorAll('tbody tr');
+          for (var row in rows) {
+            final cells = row.querySelectorAll('td');
+            if (cells.length >= 3) {
+              final location = cells[0].text.trim();
+              final price = cells[1].text.trim();
+              final change = cells[2].text.trim();
 
-          tempNaturalGas.add({
-            'location': location,
-            'price': price,
-            'change': change,
-          });
+              tempElectricity.add({
+                'location': location,
+                'price': price,
+                'change': change,
+              });
+            }
+          }
+          break; // Found the electricity table
         }
       }
 
       if (mounted) {
         setState(() {
-          naturalGasPrices = tempNaturalGas;
+          electricityPrices = tempElectricity;
           isLoading = false;
         });
       }
@@ -97,9 +106,9 @@ class _NaturalGasListScreenState extends State<NaturalGasListScreen> {
           systemOverlayStyle: SystemUiOverlayStyle.dark,
           centerTitle: true,
           title: Text(
-            "USA NATURAL GAS PRICES",
+            "USA ELECTRICITY PRICES",
             style: TextStyle(
-              color: primaryBlue,
+              color: primaryOrange,
               fontFamily: "SF Pro Display",
               fontSize: 16.0,
               fontWeight: FontWeight.w600,
@@ -108,7 +117,7 @@ class _NaturalGasListScreenState extends State<NaturalGasListScreen> {
           ),
           leading: IconButton(
             icon: Icon(Icons.arrow_back_ios_new_rounded,
-                color: primaryBlue, size: 20),
+                color: primaryOrange, size: 20),
             onPressed: () => Get.back(),
           ),
           flexibleSpace: Container(
@@ -126,26 +135,28 @@ class _NaturalGasListScreenState extends State<NaturalGasListScreen> {
       ),
       body: SafeArea(
         child: isLoading
-            ? Center(child: CircularProgressIndicator(color: primaryBlue))
+            ? Center(child: CircularProgressIndicator(color: primaryOrange))
             : errorMessage.isNotEmpty
                 ? Center(child: Text(errorMessage))
-                : ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: naturalGasPrices.length,
-                    itemBuilder: (context, index) {
-                      final data = naturalGasPrices[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: _buildGasCard(data),
-                      );
-                    },
-                  ),
+                : electricityPrices.isEmpty
+                    ? const Center(child: Text("No electricity data found."))
+                    : ListView.builder(
+                        padding: const EdgeInsets.all(16),
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: electricityPrices.length,
+                        itemBuilder: (context, index) {
+                          final data = electricityPrices[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: _buildElectricityCard(data),
+                          );
+                        },
+                      ),
       ),
     );
   }
 
-  Widget _buildGasCard(Map<String, String> data) {
+  Widget _buildElectricityCard(Map<String, String> data) {
     final change = data['change'] ?? '0.00';
     return Container(
       decoration: BoxDecoration(
@@ -169,20 +180,20 @@ class _NaturalGasListScreenState extends State<NaturalGasListScreen> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 gradient: const LinearGradient(
-                  colors: [Color(0xFF4AC1FF), Color(0xFF007AFF)],
+                  colors: [Color(0xFFFFD60A), Color(0xFFFF9F0A)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF007AFF).withOpacity(0.2),
+                    color: const Color(0xFFFF9F0A).withOpacity(0.2),
                     blurRadius: 6,
                     offset: const Offset(0, 2),
                   ),
                 ],
               ),
               child: const Icon(
-                Icons.whatshot_rounded,
+                Icons.bolt_rounded,
                 color: Colors.white,
                 size: 20,
               ),
@@ -202,7 +213,7 @@ class _NaturalGasListScreenState extends State<NaturalGasListScreen> {
                     ),
                   ),
                   Text(
-                    "Natural Gas",
+                    "Electricity Price",
                     style: TextStyle(
                       color: textSecondary,
                       fontFamily: "SF Pro Text",

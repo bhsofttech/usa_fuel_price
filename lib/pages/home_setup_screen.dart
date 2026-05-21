@@ -3,7 +3,9 @@
 import 'package:usa_gas_price/controller/airlines_controller.dart';
 import 'package:usa_gas_price/controller/eu_fule_controller.dart';
 import 'package:usa_gas_price/controller/gas_controller.dart';
+import 'package:usa_gas_price/controller/google_ads_controller.dart';
 import 'package:usa_gas_price/controller/stock_controller.dart';
+import 'package:usa_gas_price/controller/update_controller.dart';
 import 'package:usa_gas_price/flight/country_selection_screen.dart';
 import 'package:usa_gas_price/new_flow/avg_screen.dart';
 import 'package:usa_gas_price/new_flow/canada_gas_screen.dart';
@@ -33,8 +35,11 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
   final EUFuelController _euFuelController = Get.put(EUFuelController());
   final StockController stockConroller = Get.put(StockController());
   final AirlinesController _airlinesController = Get.put(AirlinesController());
+  final GoogleAdsController googleAdsController =
+      Get.put(GoogleAdsController());
   final RewardAdsController _rewardAdsController =
       Get.put(RewardAdsController());
+  final UpdateController updateController = Get.put(UpdateController());
 
   final Color primaryBlue = const Color(0xFF007AFF); // iOS system blue
   final Color darkBlue = const Color(0xFF0A4B9A); // Darker blue variant

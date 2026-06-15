@@ -24,7 +24,7 @@ class RewardAdsController extends GetxController {
           : 'ca-app-pub-3940256099942544/1712485313';
     } else {
       return Platform.isAndroid
-          ? 'ca-app-pub-4630063238239050/3858959112'
+          ? 'ca-app-pub-4630063238239050/4653989086'
           : 'YOUR_IOS_REWARDED_AD_UNIT_ID';
     }
   }

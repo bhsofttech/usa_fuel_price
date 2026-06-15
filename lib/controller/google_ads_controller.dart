@@ -25,7 +25,7 @@ class GoogleAdsController extends GetxController {
           : 'ca-app-pub-3940256099942544/4411468910';
     } else {
       return Platform.isAndroid
-          ? 'ca-app-pub-4630063238239050/7049935488'
+          ? 'ca-app-pub-4630063238239050/9960110480'
           : 'ca-app-pub-xxxxxxxx/interstitial_ios ';
     }
   }

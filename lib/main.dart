@@ -11,6 +11,8 @@ import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 
+
+
 List<StockData>? cachedbLargeCapStocksFuture;
 List<StockData>? cachedbLossStocksFuture;
 List<StockData>? cachedbGStocksFuture;

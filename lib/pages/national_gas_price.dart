@@ -31,7 +31,7 @@ class _NationalGasPriceState extends State<NationalGasPrice> {
       children: [
         // National Average Card
         Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
@@ -41,17 +41,17 @@ class _NationalGasPriceState extends State<NationalGasPrice> {
                 Colors.white.withOpacity(0.6),
               ],
             ),
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: Colors.white.withOpacity(0.3),
               width: 1.5,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 20,
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 10,
                 spreadRadius: 0,
-                offset: const Offset(0, 8),
+                offset: const Offset(0, 4),
               ),
             ],
           ),
@@ -62,38 +62,38 @@ class _NationalGasPriceState extends State<NationalGasPrice> {
                 style: TextStyle(
                   color: primaryBlue,
                   fontFamily: "SF Pro Text",
-                  fontSize: 14.0,
+                  fontSize: 12.0,
                   fontWeight: FontWeight.w600,
-                  letterSpacing: 1.0,
+                  letterSpacing: 0.5,
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 4),
               Text(
                 DateFormat('MMMM d, yyyy')
                     .format(DateTime.now().toUtc().toLocal()),
                 style: TextStyle(
                   color: primaryBlue.withOpacity(0.6),
                   fontFamily: "SF Pro Text",
-                  fontSize: 13.0,
+                  fontSize: 11.0,
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
               Text(
                 _gasController.gasInfoAvg[0].regular,
                 style: TextStyle(
                   color: primaryBlue,
                   fontFamily: "SF Pro Display",
-                  fontSize: 42.0,
+                  fontSize: 32.0,
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 12),
               Container(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(10),
                   color: const Color(0xFFF2F2F7),
                 ),
                 child: Row(
@@ -130,11 +130,11 @@ class _NationalGasPriceState extends State<NationalGasPrice> {
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           itemCount: _gasController.gasInfoAvg.length,
-          separatorBuilder: (context, index) => const SizedBox(height: 12),
+          separatorBuilder: (context, index) => const SizedBox(height: 8),
           itemBuilder: (context, index) {
             if (index == 0) return const SizedBox.shrink();
             return Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -144,17 +144,17 @@ class _NationalGasPriceState extends State<NationalGasPrice> {
                     Colors.white.withOpacity(0.6),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: Colors.white.withOpacity(0.3),
                   width: 1.5,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 20,
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
                     spreadRadius: 0,
-                    offset: const Offset(0, 8),
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
@@ -166,14 +166,14 @@ class _NationalGasPriceState extends State<NationalGasPrice> {
                     style: TextStyle(
                       color: primaryBlue,
                       fontFamily: "SF Pro Text",
-                      fontSize: 16.0,
+                      fontSize: 14.0,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 8),
                   Container(
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color: const Color(0xFFF2F2F7),

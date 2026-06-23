@@ -31,7 +31,6 @@ class _FuturesScreenState extends State<FuturesScreen>
   @override
   void initState() {
     super.initState();
-    Get.find<GoogleAdsController>().showAds();
 
     stockController
         .loadFutures("https://in.tradingview.com/markets/futures/quotes-all/");

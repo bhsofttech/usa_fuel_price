@@ -32,7 +32,6 @@ class _ForexScreenState extends State<ForexScreen>
   @override
   void initState() {
     super.initState();
-    Get.find<GoogleAdsController>().showAds();
 
     stockController.loadForex(
         "https://in.tradingview.com/markets/currencies/rates-americas/");

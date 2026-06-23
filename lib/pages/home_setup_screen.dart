@@ -7,12 +7,12 @@ import 'package:usa_gas_price/controller/google_ads_controller.dart';
 import 'package:usa_gas_price/controller/stock_controller.dart';
 import 'package:usa_gas_price/controller/update_controller.dart';
 import 'package:usa_gas_price/flight/country_selection_screen.dart';
-import 'package:usa_gas_price/new_flow/avg_screen.dart';
-import 'package:usa_gas_price/new_flow/canada_gas_screen.dart';
 import 'package:usa_gas_price/new_flow/crude_price_screen.dart';
 import 'package:usa_gas_price/new_flow/diesel_prices_screen.dart';
-import 'package:usa_gas_price/new_flow/company_wise_screen.dart';
+import 'package:usa_gas_price/pages/desial_price.dart';
 import 'package:usa_gas_price/pages/europe/eu_service_screen.dart';
+import 'package:usa_gas_price/pages/gas_price.dart';
+import 'package:usa_gas_price/pages/map_screen.dart';
 import 'package:usa_gas_price/pages/market/market_page.dart';
 
 import 'package:flutter/material.dart';
@@ -21,16 +21,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:usa_gas_price/controller/reward_ads_controller.dart';
 
-import '../new_flow/usa_gas_screen.dart';
 
 class HomeSetupScreen extends StatefulWidget {
   const HomeSetupScreen({super.key});
 
   @override
-  _HomeSetupScreenState createState() => _HomeSetupScreenState();
+  HomeSetupScreenState createState() => HomeSetupScreenState();
 }
 
-class _HomeSetupScreenState extends State<HomeSetupScreen> {
+class HomeSetupScreenState extends State<HomeSetupScreen> {
   final GasController _gasController = Get.put(GasController());
   final EUFuelController _euFuelController = Get.put(EUFuelController());
   final StockController stockConroller = Get.put(StockController());
@@ -161,16 +160,25 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
   }
 
   void _showNoInternetToast() {
-    Get.snackbar(
-      'No Internet Connection',
-      'Please check your internet connection and try again',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.red.withOpacity(0.9),
-      colorText: Colors.white,
-      duration: const Duration(seconds: 3),
-      margin: const EdgeInsets.all(16),
-      borderRadius: 8,
-      icon: const Icon(Icons.wifi_off, color: Colors.white),
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Row(
+          children: [
+            Icon(Icons.wifi_off, color: Colors.white),
+            SizedBox(width: 12),
+            Expanded(
+                child: Text(
+                    'Please check your internet connection and try again',
+                    style: TextStyle(color: Colors.white))),
+          ],
+        ),
+        backgroundColor: Colors.red.withOpacity(0.9),
+        duration: const Duration(seconds: 3),
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.all(16),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
     );
   }
 
@@ -288,50 +296,71 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
           setState(() {
             _selectedIndex = tabIndex;
           });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Unlocked! You can now access ${tabIndex == 1 ? 'Gas' : tabIndex == 3 ? 'Diesel' : 'Stock'} feature for 12 hours',
+                style: const TextStyle(color: Colors.white),
+              ),
+              backgroundColor: primaryBlue.withOpacity(0.9),
+              duration: const Duration(seconds: 3),
+              behavior: SnackBarBehavior.floating,
+              margin: const EdgeInsets.all(16),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+            ),
+          );
         }
-        Get.snackbar(
-          'Unlocked!',
-          'You can now access ${tabIndex == 1 ? 'Gas' : tabIndex == 3 ? 'Diesel' : 'Stock'} feature for 12 hours',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: primaryBlue.withOpacity(0.9),
-          colorText: Colors.white,
-          duration: const Duration(seconds: 3),
-          margin: const EdgeInsets.all(16),
-          borderRadius: 8,
-        );
       },
       onAdSkipped: () {
         // Dismiss loading dialog if still showing
         if (Navigator.canPop(context)) {
           Navigator.pop(context);
         }
-        Get.snackbar(
-          'Ad Not Completed',
-          'Please watch the full ad to unlock this feature',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: const Color(0xFFFF9500).withOpacity(0.9),
-          colorText: Colors.white,
-          duration: const Duration(seconds: 3),
-          margin: const EdgeInsets.all(16),
-          borderRadius: 8,
-          icon: const Icon(Icons.info_outline, color: Colors.white),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Row(
+                children: [
+                  Icon(Icons.info_outline, color: Colors.white),
+                  SizedBox(width: 12),
+                  Expanded(
+                      child: Text(
+                          'Ad Not Completed: Please watch the full ad to unlock this feature',
+                          style: TextStyle(color: Colors.white))),
+                ],
+              ),
+              backgroundColor: const Color(0xFFFF9500).withOpacity(0.9),
+              duration: const Duration(seconds: 3),
+              behavior: SnackBarBehavior.floating,
+              margin: const EdgeInsets.all(16),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+            ),
+          );
+        }
       },
       onAdFailedToLoad: () {
         // Dismiss loading dialog
         if (Navigator.canPop(context)) {
           Navigator.pop(context);
         }
-        Get.snackbar(
-          'Ad Unavailable',
-          'Unable to load ad. Please try again later.',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red.withOpacity(0.9),
-          colorText: Colors.white,
-          duration: const Duration(seconds: 3),
-          margin: const EdgeInsets.all(16),
-          borderRadius: 8,
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text(
+                'Ad Unavailable: Unable to load ad. Please try again later.',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Colors.red.withOpacity(0.9),
+              duration: const Duration(seconds: 3),
+              behavior: SnackBarBehavior.floating,
+              margin: const EdgeInsets.all(16),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+            ),
+          );
+        }
       },
     );
   }
@@ -348,13 +377,16 @@ class _HomeSetupScreenState extends State<HomeSetupScreen> {
           color: const Color(0xFFF2F2F7),
           child: Column(children: [
             _selectedIndex == 0
-                ? const Expanded(child: NationalAvgPrice())
+                ? const Expanded(child: GasMapHitTestApp())
+                //const Expanded(child: NationalAvgPrice())
                 : _selectedIndex == 1
-                    ? const Expanded(child: GasPricesScreen())
+                    ? const Expanded(child: GasPrice())
+                    //const Expanded(child: GasPricesScreen())
                     : _selectedIndex == 2
                         ? const Expanded(child: CountrySelectionScreen())
                         : _selectedIndex == 3
-                            ? const Expanded(child: DieselPriceScreen())
+                            ? const Expanded(child: DesialPrice())
+                            //const Expanded(child: DieselPriceScreen())
                             : _selectedIndex == 4
                                 ? const Expanded(child: CrudeOilPricesScreen())
                                 : _selectedIndex == 5

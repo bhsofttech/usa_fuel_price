@@ -5,9 +5,11 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/dom.dart' as dom;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timezone/timezone.dart' as tz;
 import 'package:usa_gas_price/model/astronomy_data.dart' show AstronomyData;
 import 'package:usa_gas_price/model/time_info.dart';
 import 'package:usa_gas_price/model/weather_data.dart';
+import 'package:intl/intl.dart';
 
 import '../model/location_data.dart';
 
@@ -41,36 +43,18 @@ class TimeController extends GetxController {
     super.onClose();
   }
 
-  // Generic fetcher for continents
-  Future<void> fetchContinentTime(String regionKey, String url) async {
+  // Generic fetcher for continents using timezone package
+  Future<void> fetchContinentTime(String regionKey) async {
     try {
       continentLoading[regionKey] = true;
-      update(); // Update UI
+      update();
 
-      final headers = {
-        'User-Agent':
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-        'Accept-Language': 'en-US,en;q=0.9',
-      };
-
-      Uri dataLink = Uri.parse(url);
-      debugPrint("Fetching $regionKey: $dataLink");
-      final response = await http.get(dataLink, headers: headers);
-
-      if (response.statusCode == 200) {
-        List<Timeinfo> extracted =
-            _parseTimeAndDateHtml(response.body, regionKey);
-        continentData[regionKey] = extracted;
-
-        // Sync with favorites
-        _syncFavoritesWithList(extracted);
-      } else {
-        debugPrint("Failed to load $regionKey: ${response.statusCode}");
-      }
+      List<Timeinfo> extracted = _getTimeinfoListForRegion(regionKey);
+      continentData[regionKey] = extracted;
+      _syncFavoritesWithList(extracted);
 
       continentLoading[regionKey] = false;
 
-      // Ensure timer is running if it was stopped or not started
       if (_timer == null || !_timer!.isActive) {
         _startTimer();
       }
@@ -86,33 +70,101 @@ class TimeController extends GetxController {
   Future<void> fetchTime() async {
     try {
       showLoading.value = true;
-      usaTimeInfo = [];
       update();
 
-      // Actually let's just use the helper method logic but keep this dedicated function as it was "USA" specific
-      // or we can refactor this to use the _parseTimeAndDateHtml helper.
+      usaTimeInfo = _getTimeinfoListForRegion('USA');
+      _syncFavoritesWithList(usaTimeInfo);
 
-      // Re-implementing using the helper for consistency but keeping specific usaTimeInfo variable
-      // fetch for USA
-      Uri dataLink = Uri.parse("https://www.timeanddate.com/worldclock/usa");
-      final response = await http.get(dataLink, headers: {
-        'User-Agent':
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-      });
-
-      if (response.statusCode == 200) {
-        usaTimeInfo = _parseTimeAndDateHtml(response.body, 'USA');
-        _syncFavoritesWithList(usaTimeInfo);
+      if (_timer == null || !_timer!.isActive) {
+        _startTimer();
       }
 
-      _startTimer();
       showLoading.value = false;
       update();
     } catch (e) {
-      debugPrint("Error scraping time: $e");
+      debugPrint("Error fetching USA time: $e");
       showLoading.value = false;
       update();
     }
+  }
+
+  List<Timeinfo> _getTimeinfoListForRegion(String regionKey) {
+    List<Timeinfo> results = [];
+    Iterable<String> ianaLocations = [];
+    final allKeys = tz.timeZoneDatabase.locations.keys.toList();
+
+    if (regionKey == 'Europe') {
+      ianaLocations = allKeys.where((k) => k.startsWith('Europe/'));
+    } else if (regionKey == 'Asia') {
+      ianaLocations = allKeys.where((k) => k.startsWith('Asia/') || k.startsWith('Indian/'));
+    } else if (regionKey == 'Africa') {
+      ianaLocations = allKeys.where((k) => k.startsWith('Africa/'));
+    } else if (regionKey == 'Australia') {
+      ianaLocations = allKeys.where((k) => k.startsWith('Australia/') || k.startsWith('Pacific/') || k.startsWith('Antarctica/'));
+    } else if (regionKey == 'North America') {
+      ianaLocations = allKeys.where((k) => k.startsWith('America/') && !_isSouthAmerica(k));
+    } else if (regionKey == 'South America') {
+      ianaLocations = allKeys.where((k) => k.startsWith('America/') && _isSouthAmerica(k));
+    } else if (regionKey == 'USA') {
+      ianaLocations = allKeys.where((k) => _isUSA(k));
+    }
+
+    for (String iana in ianaLocations) {
+      try {
+        final location = tz.getLocation(iana);
+        final nowInTz = tz.TZDateTime.now(location);
+        
+        String cityName = iana.split('/').last.replaceAll('_', ' ');
+        String timeStr = DateFormat('HH:mm').format(nowInTz);
+
+        results.add(Timeinfo(
+          city: cityName,
+          country: regionKey,
+          time: timeStr,
+          timerCurrentTime: nowInTz,
+        ));
+      } catch (e) {
+        debugPrint("Unknown timezone location: $iana");
+      }
+    }
+    
+    // Sort alphabetically by city name for better UX
+    results.sort((a, b) => a.city.compareTo(b.city));
+
+    return results;
+  }
+
+  bool _isSouthAmerica(String iana) {
+    const southAmericanPrefixes = [
+      'America/Argentina', 'America/Araguaina', 'America/Asuncion', 'America/Bahia',
+      'America/Belem', 'America/Boa_Vista', 'America/Bogota', 'America/Branco',
+      'America/Buenos_Aires', 'America/Campo_Grande', 'America/Caracas', 'America/Catamarca',
+      'America/Cayenne', 'America/Cordoba', 'America/Cuiaba', 'America/Fortaleza',
+      'America/Guayaquil', 'America/Guyana', 'America/Jujuy', 'America/La_Paz',
+      'America/Lima', 'America/Maceio', 'America/Manaus', 'America/Mendoza',
+      'America/Montevideo', 'America/Noronha', 'America/Paramaribo', 'America/Porto_Velho',
+      'America/Punta_Arenas', 'America/Recife', 'America/Rio_Branco', 'America/Rosario',
+      'America/Santiago', 'America/Santarem', 'America/Sao_Paulo', 'America/Tucuman',
+      'America/Ushuaia'
+    ];
+    for (var prefix in southAmericanPrefixes) {
+      if (iana.startsWith(prefix)) return true;
+    }
+    return false;
+  }
+
+  bool _isUSA(String iana) {
+    const usaPrefixes = [
+      'America/Adak', 'America/Anchorage', 'America/Boise', 'America/Chicago',
+      'America/Denver', 'America/Detroit', 'America/Indiana', 'America/Juneau',
+      'America/Kentucky', 'America/Los_Angeles', 'America/Menominee', 'America/Metlakatla',
+      'America/New_York', 'America/Nome', 'America/North_Dakota', 'America/Phoenix',
+      'America/Sitka', 'America/Yakutat', 'Pacific/Honolulu'
+    ];
+    for (var prefix in usaPrefixes) {
+      if (iana.startsWith(prefix)) return true;
+    }
+    return false;
   }
 
   // Refactored parsing logic to be reusable

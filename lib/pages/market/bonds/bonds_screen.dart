@@ -30,7 +30,6 @@ class _BondsScreenState extends State<BondsScreen>
   @override
   void initState() {
     super.initState();
-    Get.find<GoogleAdsController>().showAds();
     stockController.fetchBonds(widget.url);
 
     // Sync vertical

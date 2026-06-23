@@ -27,7 +27,6 @@ class _CountrySelectionScreenState extends State<CountrySelectionScreen> {
   @override
   void initState() {
     super.initState();
-    Get.find<GoogleAdsController>().showAds();
     _loadCountries();
     _searchController.addListener(_onSearchChanged);
   }

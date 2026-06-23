@@ -30,7 +30,6 @@ class _EtfScreenState extends State<EtfScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    Get.find<GoogleAdsController>().showAds();
 
     stockController
         .loadETF("https://in.tradingview.com/markets/etfs/funds-usa/");

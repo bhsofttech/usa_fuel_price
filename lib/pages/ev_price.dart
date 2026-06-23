@@ -51,7 +51,6 @@ class _EvPriceState extends State<EvPrice> with TickerProviderStateMixin {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       callApi();
-      Get.find<GoogleAdsController>().showAds();
     });
   }
 

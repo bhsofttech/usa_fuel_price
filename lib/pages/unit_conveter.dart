@@ -746,7 +746,6 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-    Get.find<GoogleAdsController>().showAds();
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),  

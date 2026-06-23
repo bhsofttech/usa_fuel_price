@@ -35,7 +35,6 @@ class _FlightDetailsScreenState extends State<FlightDetailsScreen> {
   @override
   initState() {
     super.initState();
-    Get.find<GoogleAdsController>().showAds();
     controller = Get.find<AirlinesController>();
     init();
   }

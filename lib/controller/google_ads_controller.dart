@@ -112,8 +112,6 @@ class GoogleAdsController extends GetxController {
 
     ad.show();
   }
-
-  void showAds() {}
 }
 
 

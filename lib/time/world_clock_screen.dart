@@ -14,29 +14,25 @@ class WorldClockScreen extends StatelessWidget {
 
   final List<Map<String, String>> continents = const [
     {
+      'name': 'USA',
+    },
+    {
       'name': 'Europe',
-      'url': 'https://www.timeanddate.com/worldclock/?continent=europe'
     },
     {
       'name': 'North America',
-      'url': 'https://www.timeanddate.com/worldclock/?continent=namerica'
     },
     {
       'name': 'South America',
-      'url': 'https://www.timeanddate.com/worldclock/?continent=samerica&low=1'
     },
     {
       'name': 'Australia',
-      'url':
-          'https://www.timeanddate.com/worldclock/?continent=australasia&low=1'
     },
     {
       'name': 'Asia',
-      'url': 'https://www.timeanddate.com/worldclock/?continent=asia'
     },
     {
       'name': 'Africa',
-      'url': 'https://www.timeanddate.com/worldclock/?continent=africa&low=1'
     },
   ];
   final Color primaryBlue = const Color(0xFF007AFF);
@@ -66,43 +62,44 @@ class WorldClockScreen extends StatelessWidget {
             const SizedBox(width: 12),
           ],
         ),
-        body: Column(
-          children: [
-            TabBar(
-              isScrollable: true,
-              tabAlignment: TabAlignment.start,
-              indicatorColor: primaryBlue,
-              labelColor: primaryBlue,
-              unselectedLabelColor: Colors.black,
-              dividerColor: Colors.transparent,
-              labelStyle: const TextStyle(
-                color: Colors.black,
-                fontFamily: "SF Pro Display",
-                fontSize: 16.0,
-                fontWeight: FontWeight.w500,
-                letterSpacing: 0.5,
+        body: SafeArea(
+          child: Column(
+            children: [
+              TabBar(
+                isScrollable: true,
+                tabAlignment: TabAlignment.start,
+                indicatorColor: primaryBlue,
+                labelColor: primaryBlue,
+                unselectedLabelColor: Colors.black,
+                dividerColor: Colors.transparent,
+                labelStyle: const TextStyle(
+                  color: Colors.black,
+                  fontFamily: "SF Pro Display",
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 0.5,
+                ),
+                unselectedLabelStyle: const TextStyle(
+                  color: Colors.black,
+                  fontFamily: "SF Pro Display",
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w400,
+                  letterSpacing: 0.5,
+                ),
+                tabs: continents.map((e) => Tab(text: e['name'])).toList(),
               ),
-              unselectedLabelStyle: const TextStyle(
-                color: Colors.black,
-                fontFamily: "SF Pro Display",
-                fontSize: 14.0,
-                fontWeight: FontWeight.w400,
-                letterSpacing: 0.5,
+              const SizedBox(height: 4),
+              Expanded(
+                child: TabBarView(
+                  children: continents
+                      .map((e) => ContinentTimeList(
+                            regionName: e['name']!,
+                          ))
+                      .toList(),
+                ),
               ),
-              tabs: continents.map((e) => Tab(text: e['name'])).toList(),
-            ),
-            const SizedBox(height: 4),
-            Expanded(
-              child: TabBarView(
-                children: continents
-                    .map((e) => ContinentTimeList(
-                          regionName: e['name']!,
-                          url: e['url']!,
-                        ))
-                    .toList(),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -111,12 +108,10 @@ class WorldClockScreen extends StatelessWidget {
 
 class ContinentTimeList extends StatefulWidget {
   final String regionName;
-  final String url;
 
   const ContinentTimeList({
     super.key,
     required this.regionName,
-    required this.url,
   });
 
   @override
@@ -139,7 +134,7 @@ class _ContinentTimeListState extends State<ContinentTimeList>
       // We should avoid setState in initState unless we listen to controller
       // But controller.fetch is async
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        controller.fetchContinentTime(widget.regionName, widget.url);
+        controller.fetchContinentTime(widget.regionName);
       });
     }
   }
@@ -177,8 +172,8 @@ class _ContinentTimeListState extends State<ContinentTimeList>
                 Text("No data for ${widget.regionName}",
                     style: const TextStyle(color: Colors.white54)),
                 TextButton(
-                  onPressed: () => controller.fetchContinentTime(
-                      widget.regionName, widget.url),
+                  onPressed: () =>
+                      controller.fetchContinentTime(widget.regionName),
                   child: const Text("Retry"),
                 )
               ],

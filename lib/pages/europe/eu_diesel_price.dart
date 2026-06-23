@@ -79,7 +79,6 @@ class _EUDieselPriceScreenState extends State<EUDieselPriceScreen>
   }
 
   Future<void> callApi() async {
-    Get.find<GoogleAdsController>().showAds();
     await _fuelController.fetchFuelPrice(endPoint: "");
     _animationController.forward();
   }

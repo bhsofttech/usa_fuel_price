@@ -7,7 +7,6 @@ import 'package:path_drawing/path_drawing.dart';
 import 'package:usa_gas_price/controller/google_ads_controller.dart';
 import 'package:usa_gas_price/pages/national_gas_price.dart';
 import 'package:usa_gas_price/time/time_setup_screen.dart';
-import 'package:usa_gas_price/time/world_clock_screen.dart';
 import 'package:xml/xml.dart';
 
 class GasMapHitTestApp extends StatefulWidget {
@@ -151,54 +150,47 @@ class _GasMapHitTestAppState extends State<GasMapHitTestApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F2F7),
+      backgroundColor: const Color(0xFFF4F5F7), // Softer modern grey background
       appBar: AppBar(
         leadingWidth: 50,
         backgroundColor: Colors.white,
-        elevation: 0.5,
+        elevation: 0,
         centerTitle: true,
         title: Text(
           "USA Fuel Prices".toUpperCase(),
           style: TextStyle(
             color: primaryBlue,
             fontFamily: "SF Pro Display",
-            fontSize: 18.0,
+            fontSize: 16.0, // Reduced font size as requested
             fontWeight: FontWeight.w600,
-            letterSpacing: 1.0,
+            letterSpacing: 0.5,
           ),
         ),
         iconTheme: IconThemeData(color: darkBlue),
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            border: Border(
-              bottom: BorderSide(
-                color: Color(0xFFD1D1D6),
-                width: 0.5,
-              ),
-            ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1.0),
+          child: Container(
+            color: Colors.grey.shade200,
+            height: 1.0,
           ),
         ),
         actions: [
           IconButton(
-            icon: const Icon(
-              Icons.access_time_outlined,
-              color: Color(0xFF007AFF),
-            ),
-            onPressed: () {
-              Get.to(() => const TimeSetupScreen());
-            },
-          ).paddingOnly(bottom: 5),
+            icon: const Icon(Icons.access_time_outlined,
+                color: Color(0xFF007AFF)),
+            onPressed: () => Get.to(() => const TimeSetupScreen()),
+          ),
         ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(12), // Reduced padding as requested
           child: LayoutBuilder(
             builder: (context, constraints) {
               final mapSize = Size(
                 constraints.maxWidth,
-                constraints.maxWidth * 0.99,
+                constraints.maxWidth *
+                    0.65, // Adjust map ratio so it's fully visible
               );
 
               return Obx(() {
@@ -206,117 +198,121 @@ class _GasMapHitTestAppState extends State<GasMapHitTestApp> {
                 return _gasController.showGasLoading.value ||
                         _gasController.showGasLoadingAvg.value
                     ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SpinKitFadingCircle(
-                              color: primaryBlue,
-                              size: 40.0,
-                            ),
-                            const SizedBox(height: 20),
-                            Text(
-                              "Loading Fuel Prices...",
-                              style: TextStyle(
-                                color: darkBlue.withOpacity(0.8),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                fontFamily: "SF Pro Text",
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 40),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SpinKitFadingCircle(
+                                  color: primaryBlue, size: 40.0),
+                              const SizedBox(height: 16),
+                              Text(
+                                "Loading Fuel Prices...",
+                                style: TextStyle(
+                                  color: darkBlue.withOpacity(0.8),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: "SF Pro Text",
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       )
                     : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            "Select a state to check fuel prices",
-                            style: TextStyle(
-                              color: primaryBlue,
-                              fontFamily: "SF Pro Text",
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Interactive Map",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
+                                  color: darkBlue,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  Icon(Icons.touch_app,
+                                      size: 16,
+                                      color: primaryBlue.withOpacity(0.8)),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    "Tap a state to check prices",
+                                    style: TextStyle(
+                                      color: primaryBlue.withOpacity(0.9),
+                                      fontFamily: "SF Pro Text",
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 16),
                           GestureDetector(
                             onTapDown: (e) {
-                              tooltipPos = e.localPosition;
-                              _detectHit(e.localPosition, mapSize);
+                              Get.find<GoogleAdsController>().navigateWithAd(
+                                  onAction: () {
+                                tooltipPos = e.localPosition;
+                                _detectHit(e.localPosition, mapSize);
+                              });
                             },
                             child: MouseRegion(
                               onHover: (e) {
-                                tooltipPos = e.localPosition;
-                                _detectHit(e.localPosition, mapSize);
+                                // tooltipPos = e.localPosition;
+                                // _detectHit(e.localPosition, mapSize);
                               },
-                              child: Stack(
-                                alignment: AlignmentDirectional.bottomCenter,
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(14),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.05),
-                                          blurRadius: 10,
-                                          spreadRadius: 2,
-                                          offset: const Offset(0, 2),
-                                        ),
-                                      ],
+                              // Extracted the tooltip out of the Stack so the map is 100% visible
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border:
+                                      Border.all(color: Colors.grey.shade200),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.02),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 2),
                                     ),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(14),
-                                      child: CustomPaint(
-                                        size: mapSize,
-                                        painter: _MapPainter(
-                                            statePaths, hoveredState, gasData),
-                                      ),
-                                    ),
+                                  ],
+                                ),
+                                padding: const EdgeInsets.all(8),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: CustomPaint(
+                                    size: mapSize,
+                                    painter: _MapPainter(
+                                        statePaths, hoveredState, gasData),
                                   ),
-                                  if (hoveredState != null)
-                                    Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      // Reduced margin
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 12,
-                                          vertical: 10), // Reduced padding
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          begin: Alignment.topLeft,
-                                          end: Alignment.bottomRight,
-                                          colors: [
-                                            Colors.white.withOpacity(0.9),
-                                            Colors.white.withOpacity(0.6),
-                                          ],
-                                        ),
-                                        borderRadius: BorderRadius.circular(20),
-                                        border: Border.all(
-                                          color: Colors.white.withOpacity(0.3),
-                                          width: 1.5,
-                                        ),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color:
-                                                Colors.black.withOpacity(0.1),
-                                            blurRadius: 20,
-                                            spreadRadius: 0,
-                                            offset: const Offset(0, 8),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Text(
-                                        getTooltipText(hoveredState!, gasData),
-                                        style: const TextStyle(
-                                          color: Color(0xFF1C1C1E),
-                                          fontFamily: "SF Pro Text",
-                                          fontSize: 13, // Reduced font size
-                                          fontWeight: FontWeight.w500,
-                                          letterSpacing:
-                                              -0.3, // Added letter spacing
-                                        ),
-                                      ),
-                                    )
-                                ],
+                                ),
                               ),
+                            ),
+                          ),
+                          if (hoveredState != null &&
+                              gasData.containsKey(hoveredState)) ...[
+                            const SizedBox(height: 12),
+                            _buildGasInfoCard(gasData[hoveredState]!),
+                          ] else ...[
+                            const SizedBox(height: 12),
+                            _buildEmptyStateCard(),
+                          ],
+                          const SizedBox(height: 12),
+                          // Visual Separation for the Next Section
+                          Divider(color: Colors.grey.shade300, thickness: 1.5),
+                          const SizedBox(height: 12),
+                          Text(
+                            "Averages Overview",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w800,
+                              color: darkBlue,
+                              letterSpacing: 0.5,
                             ),
                           ),
                           const SizedBox(height: 16),
@@ -361,15 +357,134 @@ class _GasMapHitTestAppState extends State<GasMapHitTestApp> {
       setState(() => hoveredState = hit);
     }
     if (hit != null && (hit?.isNotEmpty ?? false)) {
-      Get.find<GoogleAdsController>().showAds();
+      // Add Ads
     }
   }
 
-  String getTooltipText(String id, Map<String, Gasinfo> gasData) {
-    final gas = gasData[id];
-    return gas != null
-        ? 'State: ${gas.city}\nRegular Gas Price: ${gas.regular}\nMid-Grade Gas Price: ${gas.midGrade}\nPremium Gas Price: ${gas.premium}\nDiesel Price: ${gas.diesel}'
-        : 'No data for $id';
+  Widget _buildGasInfoCard(Gasinfo gas) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade200),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.location_on, size: 16, color: primaryBlue),
+              const SizedBox(width: 4),
+              Text(
+                gas.city,
+                style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF1C1C1E)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildPriceItem('Regular', gas.regular, const Color(0xFF34C759)),
+              _buildPriceItem(
+                  'Mid-Grade', gas.midGrade, const Color(0xFFFFCC00)),
+              _buildPriceItem('Premium', gas.premium, const Color(0xFFFF9500)),
+              _buildPriceItem('Diesel', gas.diesel, const Color(0xFFFF3B30)),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPriceItem(String label, String price, Color color) {
+    // Prevent double dollar signs if the API returns it
+    final displayPrice = price.startsWith('\$') ? price : '\$$price';
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+            ),
+            const SizedBox(width: 4),
+            Text(
+              label,
+              style: const TextStyle(
+                  fontSize: 11,
+                  color: Color(0xFF8E8E93),
+                  fontWeight: FontWeight.w500),
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        Text(
+          displayPrice,
+          style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF1C1C1E)),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEmptyStateCard() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade200),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(Icons.map_outlined, size: 32, color: Colors.grey.shade400),
+          const SizedBox(height: 12),
+          Text(
+            "No State Selected",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: darkBlue.withOpacity(0.7),
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            "Tap on any state on the map to view its fuel prices.",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.grey.shade600,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -405,7 +520,11 @@ class _MapPainter extends CustomPainter {
       paint.color = (id == highlight)
           ? const Color(0xFF007AFF).withOpacity(0.8)
           : gas != null
-              ? _getColorForPrice(double.tryParse(gas.regular.toString()) ?? 0)
+              ? _getColorForPrice(double.tryParse(gas.regular
+                      .toString()
+                      .replaceAll('\$', '')
+                      .replaceAll(',', '')) ??
+                  0)
               : const Color(0xFFE5E5EA);
 
       canvas.drawPath(path, paint);

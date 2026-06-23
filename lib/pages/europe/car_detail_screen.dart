@@ -31,7 +31,6 @@ class _CarDetailsScreenState extends State<CarDetailsScreen>
   @override
   void initState() {
     super.initState();
-    Get.find<GoogleAdsController>().showAds();
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 1200),
       vsync: this,

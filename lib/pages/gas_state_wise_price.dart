@@ -42,7 +42,6 @@ class _GasStateWiseGasPriceState extends State<GasStateWisePrice> {
   }
 
   Future<void> callApi() async {
-    Get.find<GoogleAdsController>().showAds();
     await _gasController.fetchGasDetailsPrice(endPoint: widget.gasinfo.link);
   }
 

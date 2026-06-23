@@ -55,7 +55,6 @@ class _MapScreenState extends State<MapScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _googleAdsController.showAds();
     });
     _loadInitialAirports();
   }

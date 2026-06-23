@@ -19,7 +19,6 @@ class _FlightListScreenState extends State<FlightListScreen> {
   @override
   initState() {
     super.initState();
-    Get.find<GoogleAdsController>().showAds();
 
     init();
   }

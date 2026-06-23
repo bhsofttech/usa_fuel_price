@@ -38,7 +38,6 @@ class _GasPriceState extends State<GasPrice> {
   }
 
   Future<void> callApi() async {
-    _googleAdsController.showAds();
     await _gasController.fetchGasPrice(endPoint: "/state-gas-price-averages/");
   }
 

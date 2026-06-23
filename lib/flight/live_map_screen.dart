@@ -214,7 +214,6 @@ class _LiveFlightMapState extends State<LiveFlightMap>
 
   /// ===================== INFO POPUP =====================
   void _showAircraftInfo(Aircraft a) {
-    Get.find<GoogleAdsController>().showAds();
 
     showModalBottomSheet(
       context: context,

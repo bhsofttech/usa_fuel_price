@@ -84,7 +84,6 @@ class _EuLpgPriceScreenState extends State<EuLpgPriceScreen>
   }
 
   Future<void> callApi() async {
-    Get.find<GoogleAdsController>().showAds();
     await _fuelController.fetchFuelPrice(endPoint: "");
     _animationController.forward();
   }

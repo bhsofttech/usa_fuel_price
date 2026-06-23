@@ -9,6 +9,7 @@ import 'package:usa_gas_price/pages/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
 
 List<StockData>? cachedbLargeCapStocksFuture;
 List<StockData>? cachedbLossStocksFuture;
@@ -20,12 +21,13 @@ List<StockData>? cachedbForexFuture;
 
 Future<Database>? myDatabase;
 
-const bool isTestMode = true;
+const bool isTestMode = false;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp();
+  tz.initializeTimeZones();
 
   MobileAds.instance.initialize();
 

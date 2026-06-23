@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:usa_gas_price/controller/google_ads_controller.dart';
 import 'package:usa_gas_price/time/time_setup_screen.dart';
 
 import '../widgets/data_widget.dart';
@@ -52,7 +51,6 @@ class _DesialPriceState extends State<DesialPrice>
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       callApi();
-      Get.find<GoogleAdsController>().showAds();
     });
   }
 

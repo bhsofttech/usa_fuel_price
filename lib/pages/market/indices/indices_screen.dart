@@ -31,7 +31,6 @@ class _IndicesScreenState extends State<IndicesScreen>
   @override
   void initState() {
     super.initState();
-    Get.find<GoogleAdsController>().showAds();
 
     stockController
         .loadIndices("https://in.tradingview.com/markets/indices/quotes-us/");

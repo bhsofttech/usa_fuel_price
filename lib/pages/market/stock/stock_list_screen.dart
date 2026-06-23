@@ -31,7 +31,6 @@ class _StockListScreenState extends State<StockListScreen>
   @override
   void initState() {
     super.initState();
-    Get.find<GoogleAdsController>().showAds();
     stockController.fetchStocks(widget.url);
 
     // Sync vertical

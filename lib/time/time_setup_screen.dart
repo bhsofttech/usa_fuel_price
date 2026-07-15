@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-
-import 'converter_screen.dart';
-import 'usa_time_screen.dart';
 import 'world_clock_screen.dart';
 
 class TimeSetupScreen extends StatefulWidget {
@@ -15,9 +12,7 @@ class _TimeSetupScreenState extends State<TimeSetupScreen> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-   // const USATimeScreen(),
      WorldClockScreen(),
-    // const ConverterScreen(),
   ];
 
   @override

@@ -1,16 +1,15 @@
 // ignore_for_file: unused_field
 
-import 'package:usa_gas_price/controller/airlines_controller.dart';
 import 'package:usa_gas_price/controller/eu_fule_controller.dart';
 import 'package:usa_gas_price/controller/gas_controller.dart';
 import 'package:usa_gas_price/controller/google_ads_controller.dart';
 import 'package:usa_gas_price/controller/stock_controller.dart';
 import 'package:usa_gas_price/controller/update_controller.dart';
-import 'package:usa_gas_price/flight/country_selection_screen.dart';
+import 'package:usa_gas_price/new_flow/avg_screen.dart';
 import 'package:usa_gas_price/new_flow/crude_price_screen.dart';
-import 'package:usa_gas_price/new_flow/diesel_prices_screen.dart';
+import 'package:usa_gas_price/new_flow/fuel_price_screen.dart';
 import 'package:usa_gas_price/pages/desial_price.dart';
-import 'package:usa_gas_price/pages/europe/eu_service_screen.dart';
+import 'package:usa_gas_price/pages/ev_price.dart';
 import 'package:usa_gas_price/pages/gas_price.dart';
 import 'package:usa_gas_price/pages/map_screen.dart';
 import 'package:usa_gas_price/pages/market/market_page.dart';
@@ -21,7 +20,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:usa_gas_price/controller/reward_ads_controller.dart';
 
-
 class HomeSetupScreen extends StatefulWidget {
   const HomeSetupScreen({super.key});
 
@@ -31,9 +29,7 @@ class HomeSetupScreen extends StatefulWidget {
 
 class HomeSetupScreenState extends State<HomeSetupScreen> {
   final GasController _gasController = Get.put(GasController());
-  final EUFuelController _euFuelController = Get.put(EUFuelController());
   final StockController stockConroller = Get.put(StockController());
-  final AirlinesController _airlinesController = Get.put(AirlinesController());
   final GoogleAdsController googleAdsController =
       Get.put(GoogleAdsController());
   final RewardAdsController _rewardAdsController =
@@ -383,15 +379,16 @@ class HomeSetupScreenState extends State<HomeSetupScreen> {
                     ? const Expanded(child: GasPrice())
                     //const Expanded(child: GasPricesScreen())
                     : _selectedIndex == 2
-                        ? const Expanded(child: CountrySelectionScreen())
+                        ? const Expanded(child: FuelPriceScreen())
                         : _selectedIndex == 3
                             ? const Expanded(child: DesialPrice())
                             //const Expanded(child: DieselPriceScreen())
                             : _selectedIndex == 4
-                                ? const Expanded(child: CrudeOilPricesScreen())
+                                ? const Expanded(child: EvPrice())
                                 : _selectedIndex == 5
                                     ? const Expanded(child: MarketPage())
-                                    : const Expanded(child: EUServiceScreen())
+                                    : const Expanded(
+                                        child: CrudeOilPricesScreen())
           ]),
         ),
       ),
@@ -454,9 +451,9 @@ class HomeSetupScreenState extends State<HomeSetupScreen> {
                   index: 1,
                 ),
                 _buildNavItem(
-                  icon: Icons.flight,
-                  activeIcon: Icons.flight,
-                  label: 'Airpot',
+                  icon: Icons.gas_meter_outlined,
+                  activeIcon: Icons.gas_meter,
+                  label: 'Fuel',
                   index: 2,
                 ),
                 _buildNavItem(
@@ -468,7 +465,7 @@ class HomeSetupScreenState extends State<HomeSetupScreen> {
                 _buildNavItem(
                   icon: Icons.electric_bolt_outlined,
                   activeIcon: Icons.electric_bolt,
-                  label: 'Crude',
+                  label: 'EV',
                   index: 4,
                 ),
                 _buildNavItem(
@@ -478,17 +475,12 @@ class HomeSetupScreenState extends State<HomeSetupScreen> {
                   index: 5,
                 ),
                 _buildNavItem(
-                  icon: Icons.directions_car_outlined,
-                  activeIcon: Icons.directions_car,
-                  label: 'Europe',
+                  icon: Icons.water_drop_outlined,
+                  activeIcon: Icons.water_drop,
+                  label: 'Crude',
                   index: 6,
                 ),
-                // _buildNavItem(
-                //   icon: Icons.more_horiz,
-                //   activeIcon: Icons.more_horiz,
-                //   label: 'More',
-                //   index: 8,
-                // ),
+               
               ],
             ),
           ),

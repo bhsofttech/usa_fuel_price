@@ -1,14 +1,11 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/dom.dart' as dom;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
-import 'package:usa_gas_price/model/astronomy_data.dart' show AstronomyData;
 import 'package:usa_gas_price/model/time_info.dart';
-import 'package:usa_gas_price/model/weather_data.dart';
 import 'package:intl/intl.dart';
 
 import '../model/location_data.dart';
@@ -96,15 +93,21 @@ class TimeController extends GetxController {
     if (regionKey == 'Europe') {
       ianaLocations = allKeys.where((k) => k.startsWith('Europe/'));
     } else if (regionKey == 'Asia') {
-      ianaLocations = allKeys.where((k) => k.startsWith('Asia/') || k.startsWith('Indian/'));
+      ianaLocations = allKeys
+          .where((k) => k.startsWith('Asia/') || k.startsWith('Indian/'));
     } else if (regionKey == 'Africa') {
       ianaLocations = allKeys.where((k) => k.startsWith('Africa/'));
     } else if (regionKey == 'Australia') {
-      ianaLocations = allKeys.where((k) => k.startsWith('Australia/') || k.startsWith('Pacific/') || k.startsWith('Antarctica/'));
+      ianaLocations = allKeys.where((k) =>
+          k.startsWith('Australia/') ||
+          k.startsWith('Pacific/') ||
+          k.startsWith('Antarctica/'));
     } else if (regionKey == 'North America') {
-      ianaLocations = allKeys.where((k) => k.startsWith('America/') && !_isSouthAmerica(k));
+      ianaLocations =
+          allKeys.where((k) => k.startsWith('America/') && !_isSouthAmerica(k));
     } else if (regionKey == 'South America') {
-      ianaLocations = allKeys.where((k) => k.startsWith('America/') && _isSouthAmerica(k));
+      ianaLocations =
+          allKeys.where((k) => k.startsWith('America/') && _isSouthAmerica(k));
     } else if (regionKey == 'USA') {
       ianaLocations = allKeys.where((k) => _isUSA(k));
     }
@@ -113,7 +116,7 @@ class TimeController extends GetxController {
       try {
         final location = tz.getLocation(iana);
         final nowInTz = tz.TZDateTime.now(location);
-        
+
         String cityName = iana.split('/').last.replaceAll('_', ' ');
         String timeStr = DateFormat('HH:mm').format(nowInTz);
 
@@ -127,7 +130,7 @@ class TimeController extends GetxController {
         debugPrint("Unknown timezone location: $iana");
       }
     }
-    
+
     // Sort alphabetically by city name for better UX
     results.sort((a, b) => a.city.compareTo(b.city));
 
@@ -136,15 +139,42 @@ class TimeController extends GetxController {
 
   bool _isSouthAmerica(String iana) {
     const southAmericanPrefixes = [
-      'America/Argentina', 'America/Araguaina', 'America/Asuncion', 'America/Bahia',
-      'America/Belem', 'America/Boa_Vista', 'America/Bogota', 'America/Branco',
-      'America/Buenos_Aires', 'America/Campo_Grande', 'America/Caracas', 'America/Catamarca',
-      'America/Cayenne', 'America/Cordoba', 'America/Cuiaba', 'America/Fortaleza',
-      'America/Guayaquil', 'America/Guyana', 'America/Jujuy', 'America/La_Paz',
-      'America/Lima', 'America/Maceio', 'America/Manaus', 'America/Mendoza',
-      'America/Montevideo', 'America/Noronha', 'America/Paramaribo', 'America/Porto_Velho',
-      'America/Punta_Arenas', 'America/Recife', 'America/Rio_Branco', 'America/Rosario',
-      'America/Santiago', 'America/Santarem', 'America/Sao_Paulo', 'America/Tucuman',
+      'America/Argentina',
+      'America/Araguaina',
+      'America/Asuncion',
+      'America/Bahia',
+      'America/Belem',
+      'America/Boa_Vista',
+      'America/Bogota',
+      'America/Branco',
+      'America/Buenos_Aires',
+      'America/Campo_Grande',
+      'America/Caracas',
+      'America/Catamarca',
+      'America/Cayenne',
+      'America/Cordoba',
+      'America/Cuiaba',
+      'America/Fortaleza',
+      'America/Guayaquil',
+      'America/Guyana',
+      'America/Jujuy',
+      'America/La_Paz',
+      'America/Lima',
+      'America/Maceio',
+      'America/Manaus',
+      'America/Mendoza',
+      'America/Montevideo',
+      'America/Noronha',
+      'America/Paramaribo',
+      'America/Porto_Velho',
+      'America/Punta_Arenas',
+      'America/Recife',
+      'America/Rio_Branco',
+      'America/Rosario',
+      'America/Santiago',
+      'America/Santarem',
+      'America/Sao_Paulo',
+      'America/Tucuman',
       'America/Ushuaia'
     ];
     for (var prefix in southAmericanPrefixes) {
@@ -155,11 +185,25 @@ class TimeController extends GetxController {
 
   bool _isUSA(String iana) {
     const usaPrefixes = [
-      'America/Adak', 'America/Anchorage', 'America/Boise', 'America/Chicago',
-      'America/Denver', 'America/Detroit', 'America/Indiana', 'America/Juneau',
-      'America/Kentucky', 'America/Los_Angeles', 'America/Menominee', 'America/Metlakatla',
-      'America/New_York', 'America/Nome', 'America/North_Dakota', 'America/Phoenix',
-      'America/Sitka', 'America/Yakutat', 'Pacific/Honolulu'
+      'America/Adak',
+      'America/Anchorage',
+      'America/Boise',
+      'America/Chicago',
+      'America/Denver',
+      'America/Detroit',
+      'America/Indiana',
+      'America/Juneau',
+      'America/Kentucky',
+      'America/Los_Angeles',
+      'America/Menominee',
+      'America/Metlakatla',
+      'America/New_York',
+      'America/Nome',
+      'America/North_Dakota',
+      'America/Phoenix',
+      'America/Sitka',
+      'America/Yakutat',
+      'Pacific/Honolulu'
     ];
     for (var prefix in usaPrefixes) {
       if (iana.startsWith(prefix)) return true;
@@ -399,202 +443,5 @@ class TimeController extends GetxController {
 
     debugPrint("Parsed ${locations.length} locations");
     return locations;
-  }
-
-  // Fetch weather data from timeanddate.com
-  Future<List<WeatherData>> fetchWeatherData(String stateOrCity) async {
-    try {
-      // Convert state/city name to URL format (lowercase, replace spaces with hyphens)
-      String urlPath = stateOrCity.toLowerCase().replaceAll(' ', '-');
-      String url = 'https://www.timeanddate.com/weather/usa/$urlPath';
-
-      debugPrint("Fetching weather data from: $url");
-
-      final headers = {
-        'User-Agent':
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-        'Accept-Language': 'en-US,en;q=0.9',
-      };
-
-      final response = await http.get(Uri.parse(url), headers: headers);
-
-      if (response.statusCode == 200) {
-        return _parseWeatherHtml(response.body);
-      } else {
-        debugPrint("Failed to load weather data: ${response.statusCode}");
-        return [];
-      }
-    } catch (e) {
-      debugPrint("Error fetching weather data: $e");
-      return [];
-    }
-  }
-
-  // Parse HTML to extract weather data
-  List<WeatherData> _parseWeatherHtml(String htmlBody) {
-    List<WeatherData> weatherList = [];
-    dom.Document html = dom.Document.html(htmlBody);
-
-    // Find the table with class 'zebra fw tb-wt'
-    dom.Element? table;
-    var tables = html.getElementsByTagName("table");
-
-    for (var t in tables) {
-      if (t.attributes['class'] != null &&
-          t.attributes['class']!.contains('tb-wt')) {
-        table = t;
-        break;
-      }
-    }
-
-    if (table != null) {
-      var rows = table.getElementsByTagName("tr");
-
-      for (var row in rows) {
-        var cells = row.getElementsByTagName("td");
-
-        // Process cells in groups of 4 (city name, time, weather icon, temperature)
-        for (int i = 0; i < cells.length; i += 4) {
-          if (i + 3 < cells.length) {
-            var nameCell = cells[i];
-            var timeCell = cells[i + 1];
-            var iconCell = cells[i + 2];
-            var tempCell = cells[i + 3];
-
-            // Extract city name from anchor tag
-            var anchor = nameCell.getElementsByTagName("a");
-            String cityName = anchor.isNotEmpty
-                ? anchor.first.text.trim()
-                : nameCell.text.trim();
-
-            // Extract time
-            String time = timeCell.text.trim();
-
-            // Extract weather icon and description
-            var img = iconCell.getElementsByTagName("img");
-            String weatherIcon = '';
-            String weatherDescription = '';
-
-            if (img.isNotEmpty) {
-              var imgSrc = img.first.attributes['src'] ?? '';
-              // Make sure to use full URL
-              if (imgSrc.startsWith('//')) {
-                weatherIcon = 'https:$imgSrc';
-              } else if (imgSrc.startsWith('/')) {
-                weatherIcon = 'https://www.timeanddate.com$imgSrc';
-              } else {
-                weatherIcon = imgSrc;
-              }
-              weatherDescription = img.first.attributes['alt'] ?? '';
-            }
-
-            // Extract temperature
-            String temperature = tempCell.text.trim();
-
-            if (cityName.isNotEmpty) {
-              weatherList.add(WeatherData(
-                cityName: cityName,
-                time: time,
-                weatherIcon: weatherIcon,
-                weatherDescription: weatherDescription,
-                temperature: temperature,
-              ));
-            }
-          }
-        }
-      }
-    }
-
-    debugPrint("Parsed ${weatherList.length} weather entries");
-    return weatherList;
-  }
-
-  // Fetch astronomy data (sunrise/sunset) from timeanddate.com
-  Future<List<AstronomyData>> fetchAstronomyData(String stateOrCity) async {
-    try {
-      // Convert state/city name to URL format (lowercase, replace spaces with hyphens)
-      String urlPath = stateOrCity.toLowerCase().replaceAll(' ', '-');
-      String url = 'https://www.timeanddate.com/astronomy/usa/$urlPath';
-
-      debugPrint("Fetching astronomy data from: $url");
-
-      final headers = {
-        'User-Agent':
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-        'Accept-Language': 'en-US,en;q=0.9',
-      };
-
-      final response = await http.get(Uri.parse(url), headers: headers);
-
-      if (response.statusCode == 200) {
-        return _parseAstronomyHtml(response.body);
-      } else {
-        debugPrint("Failed to load astronomy data: ${response.statusCode}");
-        return [];
-      }
-    } catch (e) {
-      debugPrint("Error fetching astronomy data: $e");
-      return [];
-    }
-  }
-
-  // Parse HTML to extract astronomy data
-  List<AstronomyData> _parseAstronomyHtml(String htmlBody) {
-    List<AstronomyData> astronomyList = [];
-    dom.Document html = dom.Document.html(htmlBody);
-
-    // Find the table with class 'zebra fw tb-sm'
-    dom.Element? table;
-    var tables = html.getElementsByTagName("table");
-
-    for (var t in tables) {
-      if (t.attributes['class'] != null &&
-          t.attributes['class']!.contains('tb-sm')) {
-        table = t;
-        break;
-      }
-    }
-
-    if (table != null) {
-      var rows = table.getElementsByTagName("tr");
-
-      for (var row in rows) {
-        var cells = row.getElementsByTagName("td");
-
-        // Process cells in groups of 3 (city name, sunrise, sunset)
-        for (int i = 0; i < cells.length; i += 3) {
-          if (i + 2 < cells.length) {
-            var nameCell = cells[i];
-            var sunriseCell = cells[i + 1];
-            var sunsetCell = cells[i + 2];
-
-            // Extract city name from anchor tag
-            var anchor = nameCell.getElementsByTagName("a");
-            String cityName = anchor.isNotEmpty
-                ? anchor.first.text.trim()
-                : nameCell.text.trim();
-
-            // Extract sunrise time (remove the ↑ arrow)
-            String sunrise = sunriseCell.text.trim().replaceAll('↑', '').trim();
-
-            // Extract sunset time (remove the ↓ arrow)
-            String sunset = sunsetCell.text.trim().replaceAll('↓', '').trim();
-
-            if (cityName.isNotEmpty &&
-                sunrise.isNotEmpty &&
-                sunset.isNotEmpty) {
-              astronomyList.add(AstronomyData(
-                cityName: cityName,
-                sunrise: sunrise,
-                sunset: sunset,
-              ));
-            }
-          }
-        }
-      }
-    }
-
-    debugPrint("Parsed ${astronomyList.length} astronomy entries");
-    return astronomyList;
   }
 }

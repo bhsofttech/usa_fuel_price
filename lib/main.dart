@@ -3,14 +3,12 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:usa_gas_price/model/stock_data.dart';
 import 'package:usa_gas_price/pages/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
-
 
 
 List<StockData>? cachedbLargeCapStocksFuture;
@@ -21,9 +19,8 @@ List<StockData>? cachedbETFFuture;
 List<StockData>? cachedbfuturesFuture;
 List<StockData>? cachedbForexFuture;
 
-Future<Database>? myDatabase;
 
-const bool isTestMode = false;
+const bool isTestMode = true;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,62 +29,6 @@ void main() async {
   tz.initializeTimeZones();
 
   MobileAds.instance.initialize();
-
-  myDatabase = openDatabase(
-    await getDatabasesPath().then((path) => '$path/vehicle_manager.db'),
-    onCreate: (db, version) async {
-      await db.execute('''
-        CREATE TABLE vehicles (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          name TEXT,
-          type TEXT,
-          mileage REAL
-        )
-      ''');
-      await db.execute('''
-        CREATE TABLE trips (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          vehicleId INTEGER,
-          source TEXT,
-          destination TEXT,
-          distance REAL,
-          FOREIGN KEY (vehicleId) REFERENCES vehicles(id)
-        )
-      ''');
-      await db.execute('''
-  CREATE TABLE fuel_logs (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    vehicleId INTEGER,
-    date TEXT,
-    volume REAL,
-    cost REAL,
-    fuelType TEXT,
-    FOREIGN KEY (vehicleId) REFERENCES vehicles(id)
-  )
-      ''');
-      await db.execute('''
-        CREATE TABLE expenses (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          vehicleId INTEGER,
-          date TEXT,
-          category TEXT,
-          amount REAL,
-          FOREIGN KEY (vehicleId) REFERENCES vehicles(id)
-        )
-      ''');
-      await db.execute('''
-        CREATE TABLE maintenance (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          vehicleId INTEGER,
-          date TEXT,
-          detail TEXT,
-          cost REAL,
-          FOREIGN KEY (vehicleId) REFERENCES vehicles(id)
-        )
-      ''');
-    },
-    version: 1,
-  );
 
   runApp(const GetMaterialApp(
     debugShowCheckedModeBanner: false,

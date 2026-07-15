@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:usa_gas_price/model/time_info.dart';
-import 'package:usa_gas_price/time/time_detail_screen.dart';
 
 class TimeCard extends StatelessWidget {
   final Timeinfo item;

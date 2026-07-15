@@ -7,7 +7,6 @@ import 'package:html/parser.dart' as parser;
 import 'package:html/dom.dart' as dom;
 import 'package:usa_gas_price/time/time_setup_screen.dart';
 
-
 class CrudeOilPricesScreen extends StatefulWidget {
   const CrudeOilPricesScreen({super.key});
 
@@ -35,7 +34,7 @@ class _CrudeOilPricesScreenState extends State<CrudeOilPricesScreen>
   @override
   void initState() {
     super.initState();
-    analytics.logScreenView(screenName: "US Crude Oil Prices Screen");
+    analytics.logScreenView(screenName: "USA Crude Oil Prices Screen");
 
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 800),
@@ -175,7 +174,7 @@ class _CrudeOilPricesScreenState extends State<CrudeOilPricesScreen>
           systemOverlayStyle: SystemUiOverlayStyle.dark,
           centerTitle: true,
           title: Text(
-            "US Crude Oil Prices".toUpperCase(),
+            "USA Crude Oil Prices".toUpperCase(),
             style: TextStyle(
               color: primaryBlue,
               fontFamily: "SF Pro Display",
@@ -314,7 +313,8 @@ class _CrudeOilPricesScreenState extends State<CrudeOilPricesScreen>
                     color: primaryBlue.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(6),
                   ),
-                  child: Icon(Icons.oil_barrel_rounded, color: primaryBlue, size: 18),
+                  child: Icon(Icons.oil_barrel_rounded,
+                      color: primaryBlue, size: 18),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -393,4 +393,4 @@ class _CrudeOilPricesScreenState extends State<CrudeOilPricesScreen>
       ],
     );
   }
-}
+}
